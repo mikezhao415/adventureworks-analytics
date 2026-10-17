@@ -9,7 +9,7 @@ Requires Python 3.13. From the repository root:
 ```bash
 python -m venv .venv
 # Activate .venv in your shell
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.lock
 python -m unittest discover -s tests -v
 python src/run.py
 ```
@@ -34,7 +34,7 @@ The Python fixture calculates independent per-tenant/month control totals. The d
 
 ## CI and evidence
 
-GitHub Actions runs unit tests, the positive dbt pipeline, deterministic report comparison, and three negative scenarios. It uploads the successful report, **positive** dbt results, each targeted negative result, and the resolved dependency list. The resolved dependency list is evidence of the tested environment, **not yet a checked-in transitive dependency lockfile**; only top-level requirements are pinned.
+GitHub Actions runs unit tests, the positive dbt pipeline, deterministic report comparison, and three negative scenarios. It uploads the successful report, **positive** dbt results, each targeted negative result, and the resolved dependency list. The committed `requirements.lock` pins the full Python 3.13 dependency resolution observed in CI, and CI verifies the installed package versions match it. `requirements.txt` records direct dependencies. The lock is version-pinned but not hash-locked; refresh it intentionally when upgrading dependencies.
 
 ## Limitations
 
