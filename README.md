@@ -4,7 +4,7 @@ A reproducible analytics engineering project exploring how transactional sales d
 
 The project uses **AdventureWorks 2022** as a representative transactional source and will develop a read-only extraction workflow, validated snapshots, a DuckDB analytical layer, dbt models, and measurable reporting experiments. The emphasis is on **data correctness, reproducibility, explainable trade-offs, and clear business metrics**.
 
-> **Project status: Foundation / planning.** The architecture below describes intended work, not implemented or validated capabilities. No benchmark, performance improvement, or production-readiness claim is made.
+> **Project status: Initial implementation in progress.** A synthetic vertical slice is being developed; it must pass CI and review before being treated as validated. The full AdventureWorks extraction, benchmarks, and production capabilities are not implemented.
 
 ## Questions this project explores
 
@@ -89,7 +89,7 @@ These are planned phases, not completion claims. Each phase should ship through 
 
 ## Reproducing the work
 
-**Not available yet.** The first functional change will provide a single documented lightweight command and exact dependency versions. The full AdventureWorks reproduction path will be documented separately after it is implemented and verified. Avoid interpreting a passing synthetic test as proof that the SQL Server extraction path works.
+The initial synthetic execution instructions are in [docs/synthetic-slice.md](docs/synthetic-slice.md). They require Python 3.13 and the pinned packages in requirements.txt. Full AdventureWorks reproduction remains a separate future milestone. Avoid interpreting a passing synthetic test as proof that the SQL Server extraction path works.
 
 ## Data provenance and licensing
 
