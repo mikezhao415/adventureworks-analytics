@@ -1,0 +1,44 @@
+name: Synthetic BI vertical slice
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - name: Positive end-to-end pipeline
+        run: python src/run.py
+      - name: Verify reproducibility
+        run: |
+          cp output/report.json /tmp/success-report.json
+          python src/run.py
+          cmp output/report.json /tmp/success-report.json
+          mkdir -p output/evidence
+          cp output/report.json output/evidence/success-report.json
+      - name: Negative test rejects orphan and publishes no report
+        shell: bash
+        run: |
+          set +e
+          python src/run.py --inject-orphan
+          code=$?
+          set -e
+          test "$code" -eq 42
+          test ! -f output/report.json
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-slice-evidence
+          path: |
+            output/evidence/success-report.json
+            output/dbt-target/run_results.json
+          retention-days: 7
