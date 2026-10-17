@@ -1,32 +1,41 @@
 # Synthetic vertical slice
 
-This is the **first implementation milestone** for AdventureWorks Analytics. It uses deterministic synthetic records, **not** AdventureWorks data.
+This is the first functional milestone for AdventureWorks Analytics. All records are **deterministic synthetic fixtures**, not AdventureWorks data.
 
 ## Quick start
 
-Requires Python 3.13.
+Requires Python 3.13. From the repository root:
 
 ```bash
 python -m venv .venv
-# Activate the virtual environment for your shell
+# Activate .venv in your shell
 python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
 python src/run.py
 ```
 
-The runner creates `output/slice.duckdb` and `output/report.json`. It creates 50 orders per simulated tenant (100 total) and reconciles monthly order counts, quantities, and line sales against controls computed independently from the fixture generator. The report is JSON with `mode`, `seed`, `source_orders`, `source_lines`, `totals`, and `monthly` fields.
+The runner creates `output/slice.duckdb` and publishes `output/report.json` only after a successful dbt build and an independent Python reconciliation. The report contains `mode`, `seed`, `source_orders`, `source_lines`, `totals`, and `monthly` fields. Published values are read from the validated **DuckDB monthly mart**, not copied from the fixture's expected controls. Publication uses a temporary file and atomic rename.
 
-Run the intentional corruption test:
+To verify negative cases, run each command separately:
 
 ```bash
-python src/run.py --inject-orphan
+python src/run.py --inject orphan
+python src/run.py --inject duplicate-order
+python src/run.py --inject wrong-subtotal
 ```
 
-A successful negative test exits with code **42** and prints `EXPECTED_ORPHAN_REJECTION`. It deliberately does **not** publish `output/report.json`. Any other failure is a defect, not a passing negative test.
+Each expected rejection exits with **42**, names the failing dbt test, and leaves no published `output/report.json`. Any different exit status indicates a defect. These scenarios respectively target `no_orphans`, `unique_order_keys`, and `reconcile_headers`. The negative runner first builds models, then executes **only** the named test to avoid mistaking unrelated failures for the expected rejection. The ordinary positive run executes the entire dbt build/test suite.
 
-The fixture uses two simulated tenant labels, order dates in January–March 2025, line quantities and decimal prices, 8% synthetic tax and fixed $2.50 freight. `net_sales` means **line sales excluding tax and freight**. Month is based on the fixture's date-only order date. There are no returns, cancellations, exchange rates, or access-control guarantees.
+## Data and metric contracts
 
-CI runs the positive path, repeats it for deterministic output comparison, then injects an orphan. Full AdventureWorks extraction and benchmarks are **not implemented**.
+The fixture creates 50 orders per simulated tenant (100 total), across January–March 2025. Order and line identifiers intentionally repeat across tenants; joins and uniqueness checks must use composite tenant-scoped keys. Order lines have integer quantities and decimal sales amounts; synthetic tax is 8% of the subtotal (rounded to cents), with fixed $2.50 freight per order. `net_sales` is line sales **excluding** tax and freight. The month is the first day of the month of the date-only order date. No returns, cancellations, exchange rates, or production tenant authorization are modeled.
+
+The Python fixture calculates independent per-tenant/month control totals. The dbt monthly reconciliation separately reads raw tables rather than relying on staging views as its oracle. Python compares actual mart rows to expected controls and fails closed on discrepancies. This provides meaningful independent checks but is not an external financial audit.
+
+## CI and evidence
+
+GitHub Actions runs unit tests, the positive dbt pipeline, deterministic report comparison, and three negative scenarios. It uploads the successful report, **positive** dbt results, each targeted negative result, and the resolved dependency list. The resolved dependency list is evidence of the tested environment, **not yet a checked-in transitive dependency lockfile**; only top-level requirements are pinned.
 
 ## Limitations
 
-This validates a tiny synthetic pipeline, not SQL Server extraction, production performance, authorization, or real-world ROI. The fixture controls are independent of dbt's mart queries, but the generator and expected-value logic share one code module. Larger datasets and richer accounting semantics require separate contracts.
+This is a small synthetic pipeline. It does not demonstrate SQL Server extraction, production performance, data access controls, freshness guarantees, or ROI. Full AdventureWorks reproduction is a separate milestone.
