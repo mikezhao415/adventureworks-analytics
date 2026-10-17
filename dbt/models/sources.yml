@@ -1,0 +1,26 @@
+version: 2
+sources:
+  - name: raw
+    schema: main
+    tables:
+      - name: raw_orders
+      - name: raw_lines
+models:
+  - name: stg_orders
+    columns:
+      - name: order_id
+        data_tests: [not_null]
+      - name: tenant_id
+        data_tests: [not_null]
+  - name: stg_lines
+    columns:
+      - name: line_id
+        data_tests: [not_null]
+      - name: order_id
+        data_tests: [not_null]
+      - name: tenant_id
+        data_tests: [not_null]
+  - name: fct_sales_lines
+    columns:
+      - name: amount
+        data_tests: [not_null]

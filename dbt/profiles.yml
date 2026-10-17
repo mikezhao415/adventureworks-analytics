@@ -1,0 +1,7 @@
+adventureworks_slice:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('SLICE_DB_PATH') }}"
+      threads: 1

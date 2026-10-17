@@ -1,0 +1,20 @@
+with expected as (
+    select o.tenant_id,
+           date_trunc('month', o.order_date)::date as sales_month,
+           count(distinct o.order_id) as orders,
+           sum(l.quantity)::bigint as units,
+           sum(l.amount)::decimal(18,4) as net_sales
+    from {{ source('raw', 'raw_orders') }} o
+    join {{ source('raw', 'raw_lines') }} l
+      on o.tenant_id = l.tenant_id and o.order_id = l.order_id
+    group by 1, 2
+)
+select coalesce(e.tenant_id, m.tenant_id) as tenant_id,
+       coalesce(e.sales_month, m.sales_month) as sales_month
+from expected e
+full outer join {{ ref('monthly_sales') }} m
+  on e.tenant_id = m.tenant_id and e.sales_month = m.sales_month
+where e.tenant_id is null or m.tenant_id is null
+   or e.orders is distinct from m.orders
+   or e.units is distinct from m.units
+   or e.net_sales is distinct from m.net_sales

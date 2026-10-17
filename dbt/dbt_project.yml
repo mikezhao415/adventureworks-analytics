@@ -1,0 +1,9 @@
+name: 'adventureworks_slice'
+version: '1.0.0'
+config-version: 2
+profile: 'adventureworks_slice'
+model-paths: ['models']
+test-paths: ['tests']
+models:
+  adventureworks_slice:
+    +materialized: table
