@@ -2,123 +2,101 @@
 
 ## Mission and project identity
 
-Build a **standalone, publicly reproducible analytics engineering case study** using AdventureWorks 2022 to explore transactional-to-analytical modernization. Favor credible engineering evidence over feature breadth. Treat this repository as a project beginning from its own stated requirements.
+Build a **standalone, publicly reproducible end-to-end BI-as-Code portfolio project** using AdventureWorks 2022. Demonstrate modern ingestion, dimensional modeling, automated data quality, business intelligence delivery, and clear communication of business metrics. The goal is to **implement the modern approach**, not to compare it against a traditional reporting architecture.
 
-Do not reference unrelated repositories, employer systems, proprietary schemas, customers, or internal infrastructure in public code, documentation, issues, commits, or pull requests. Do not copy confidential material into this project. Do not invent a project history or imply capabilities exist before they are implemented.
+Do not reference unrelated repositories, employer systems, proprietary schemas, customers, or internal infrastructure in public code, documentation, issues, commits, or pull requests. Do not invent project history or imply planned capabilities are implemented.
 
-## Source of truth and status discipline
+## Sources of truth and status
 
-- README.md describes public intent, scope, and user-facing reproduction instructions.
+- README.md describes public intent, roadmap, and reproduction instructions.
 - AGENTS.md defines engineering and agent behavior.
-- Executable code, tests, CI configuration, and observed logs establish implementation status.
-- Design documents and plans are **proposals** until implemented and validated.
-- Keep README, documentation, and tests synchronized with changes; do not mark a phase complete based solely on a PR description.
-- State precisely what was executed, where, and with which inputs. Never claim tests passed without evidence.
-- Never claim synthetic evidence proves full-source extraction, production performance, tenant authorization, or real-world ROI.
+- Code, tests, CI, and observed logs establish what is implemented and validated.
+- Issues and plans are proposals until acceptance evidence exists.
+- Keep status accurate: the synthetic vertical slice is merged and validated; full AdventureWorks extraction, expanded models, dashboards, and publication are future work.
+- Synthetic fixtures use two tenant labels solely to exercise scoped composite keys. **Do not expand multi-tenant simulation into a required project deliverable.**
+- **Do not add legacy-vs-modern benchmarks or direct transactional-query comparisons** without an explicit change of scope.
 
-## Scope and architecture boundaries
+## Stack and architecture
 
-Initial stack: Python, SQL Server 2022 / AdventureWorks 2022 (optional full reproduction), Parquet, DuckDB, dbt Core with dbt-duckdb, and GitHub Actions. Pin exact dependency versions when implementing. Avoid cloud platforms, orchestration frameworks, web apps, and paid services unless a specific experiment requires them and the scope is approved.
+Python; SQL Server 2022 / AdventureWorks 2022 for optional local source reproduction; read-only extraction; Parquet with manifests; DuckDB; dbt Core + dbt-duckdb; independent SQL/Python validation; GitHub Actions. Choose dashboard technology when reporting requirements are concrete. Avoid unnecessary cloud services, paid platforms, speculative abstractions, and frameworks.
 
-Proposed pipeline:
-1. Read-only extraction from transactional tables.
-2. Immutable, fingerprinted Parquet snapshot with a manifest and validation.
-3. DuckDB ingestion with explicit source and schema contracts.
-4. dbt staging, fact/dimension, and mart models with declared grain.
-5. Independent reconciliation and failure-safe publication of analytical results.
-6. Measured, reproducible reporting experiments.
+Planned full-source path:
+1. Read AdventureWorks with least-privilege, read-only access.
+2. Publish immutable, validated Parquet snapshots and source manifests.
+3. Ingest snapshots into DuckDB with declared schemas.
+4. Build dbt staging, fact/dimension, and sales mart models.
+5. Reconcile metrics independently; run data-quality and regression gates.
+6. Deliver business-ready sales reporting and insights.
+7. Publish reproducible technical and business case-study materials.
 
-Do not connect CI to an external production database. Do not require Docker or SQL Server for ordinary PR validation. Avoid committing raw database backups, large Parquet datasets, credentials, generated DuckDB files, or build artifacts.
+Routine CI must not require SQL Server, Docker, credentials, external downloads, or large datasets. Full-source reproduction remains local/manual until explicitly implemented and validated.
 
-## Implementation sequence
+## Delivery roadmap
 
-**Phase A — Foundation:** README, AGENTS.md, license/provenance decision, architecture/metric contracts, repository hygiene, and planned CI.
+- **Foundation / alignment — [#3](https://github.com/mikezhao415/adventureworks-analytics/issues/3):** Public scope, architecture, guidance, provenance, and status.
+- **Synthetic proof of concept — [#1](https://github.com/mikezhao415/adventureworks-analytics/issues/1), PR #2 (complete):** Deterministic fixtures, DuckDB/dbt, reconciliation, negative tests, CI.
+- **AdventureWorks extraction — [#4](https://github.com/mikezhao415/adventureworks-analytics/issues/4):** SQL Server, read-only extraction, Parquet snapshots, manifest and reconciliation.
+- **Dimensional modeling — [#5](https://github.com/mikezhao415/adventureworks-analytics/issues/5):** Sales facts, dimensions, marts, metric contracts, tests, and lineage.
+- **Quality and automation — [#6](https://github.com/mikezhao415/adventureworks-analytics/issues/6):** Expanded validation, regression coverage, evidence, and CI.
+- **Business intelligence — [#7](https://github.com/mikezhao415/adventureworks-analytics/issues/7):** Useful sales dashboards and insights.
+- **Publication — [#8](https://github.com/mikezhao415/adventureworks-analytics/issues/8):** Reproduction guide and business/technical portfolio narrative.
 
-**Phase B — Lightweight vertical slice:** Deterministic synthetic orders and lines; tenant labels explicitly simulated; Python loader; DuckDB; minimal dbt staging, fact, and monthly mart; independent Python controls; both success and deliberate-corruption tests.
+Ship each issue through focused, reviewable PRs with explicit acceptance tests. Never conflate a successful synthetic run with a full-source implementation.
 
-**Phase C — Full-source extraction:** Document optional SQL Server setup and AdventureWorks acquisition; use read-only credentials; snapshot headers/details and required dimensions; manifests, checksums, row counts, orphan/duplicate checks, financial controls, and replay instructions.
-
-**Phase D — Analytical modeling:** Explicit business definitions, source grain, surrogate/composite keys where justified, referential tests, model contracts, and lineage documentation.
-
-**Phase E — Controlled comparisons:** Same business question across transactional and analytical approaches; measured source cost, latency, resource utilization where measurable, data freshness, and experimental caveats.
-
-**Phase F — Tenant simulation and publication:** Deterministic synthetic assignments; scoped results and explicit authorization limitations; controlled aggregate metrics; published evidence and dual-audience narrative.
-
-Deliver phases in small PRs; do not combine future phases merely to fill an empty repository.
-
-## Proposed structure (create directories only as needed)
+## Proposed repository structure (only create when needed)
 
 ```text
-.github/workflows/  # lightweight CI and optional manual full validation
-config/             # non-secret configuration and examples
-dbt/                # dbt project, models, sources, schema tests, singular tests
-docs/               # architecture, data contracts, methodology, evidence
-experiments/        # benchmark definitions and controlled experiment runners
-src/                # extraction, snapshots, validation, orchestration
-tests/              # deterministic Python fixtures and regression tests
+.github/workflows/  # lightweight CI, optional manual full-source validation
+config/             # safe non-secret configuration examples
+dbt/                # sources, staging, dimensions, facts, marts, tests
+docs/               # architecture, contracts, provenance, evidence, case study
+src/                # extraction, snapshotting, validation, orchestration
+tests/              # deterministic fixtures and regression tests
 README.md
 AGENTS.md
-pyproject.toml      # when Python package tooling is introduced
 ```
 
-Prefer straightforward, explicit modules. Avoid speculative abstractions and unnecessary dependencies.
+## Metric and data contracts
 
-## Data contracts and financial correctness
-
-- Document every source's grain, primary/composite key, and expected cardinality.
-- Orders and lines have different grains; prevent fan-out and accidental double counting.
-- Define which date drives monthly aggregation and its timezone/calendar convention.
-- Distinguish line amount, order subtotal, tax, freight, and total due.
-- Use decimal-safe arithmetic for monetary calculations and explicit rounding/tolerance rules.
-- Define eligibility of statuses, returns, and missing data before finalizing KPIs.
-- If adding tenant identifiers, document them as a **synthetic modeling construct** and test that scopes cannot leak across tenants; do not claim SQL filters alone enforce access control.
-- Validate source counts and totals independently of the transformation under test; never simply compare a query to itself.
+- Declare grain, keys, source lineage, eligibility, and cardinality for every model.
+- Prevent header/line fan-out and double counting.
+- Define the calendar and date/time convention for reporting.
+- Distinguish line amount, subtotal, tax, freight, and total due.
+- Use decimal-safe arithmetic, explicit rounding, and justified tolerances.
+- Define statuses, returns, nulls, and relevant product/customer/territory dimensions using AdventureWorks semantics.
+- Compare independent source controls with snapshots and marts; do not validate a transformation only against itself.
+- Synthetic tenant labels remain a legacy fixture for test coverage, **not a product or reporting requirement**.
 
 ## Quality gates
 
-For each meaningful functional PR, add tests appropriate to its scope:
+For functional PRs, add appropriate:
+1. Deterministic fixtures and repeatability tests.
+2. Schema, uniqueness, not-null, relationship, and grain checks.
+3. Source-to-snapshot and snapshot-to-mart reconciliation.
+4. Specific negative-path tests that reject deliberate corruption for the expected reason.
+5. Fail-closed publication: invalid inputs never replace known-good results.
+6. Credential, licensing, generated-file, and dataset-leak review.
+7. CI, dbt, Python, lint/type checks where configured, and documented reproduction commands.
 
-1. Deterministic fixture creation and repeatability.
-2. Schema, non-null, uniqueness, and relationship checks at correct grains.
-3. Source-to-snapshot and source-to-mart reconciliation with documented numeric tolerances.
-4. Negative-path tests with *specific expected failures*, not merely any nonzero exit.
-5. Ensure invalid inputs do not overwrite/publish successful results.
-6. No secrets, large datasets, or generated outputs committed.
-7. Lint, type checks where configured, unit tests, dbt parse/build where relevant, and reproducible commands.
+Preserve machine-readable evidence with source mode, code revision, input fingerprint, environment, results, and limitations. Do not invent test outcomes or dashboard values.
 
-Use a lightweight, network-independent CI path for routine PRs. Reserve SQL Server/Docker and large-source validations for optional/manual workflows. A passing CI job must accurately identify which mode it exercised.
+## Security, licensing, and public claims
 
-## Benchmark discipline
+Use least-privilege read-only database credentials and ignored local environment variables or approved secret stores. Never commit secrets, backups, large Parquet outputs, or non-redistributable data. Verify AdventureWorks redistribution terms before publishing source or derived datasets. Review dependency and code licenses independently.
 
-Pre-register the question, hypothesis, source/data size, query equivalence, hardware/OS/software versions, cache/warm-up protocol, run count, and measurement methods. Report distributions rather than a single fastest run. Separate source load, analytical query time, extract/refresh cost, and freshness. Do not infer causal superiority or ROI from a small synthetic demonstration. Preserve scripts and machine-readable evidence where licensing and repository-size constraints permit.
-
-## Security, provenance, and publication
-
-- Use least-privilege read-only database credentials for extraction.
-- Load secrets only from ignored local environment variables or approved secret stores.
-- Never commit credentials, database backups, sensitive identifiers, or non-redistributable content.
-- Verify Microsoft AdventureWorks licensing for the specific source and any derived redistribution; document the finding before distributing data.
-- Review generated files and dependency licenses before publication.
-- Keep public prose free of employer-specific context or claims.
-- Do not invent benchmark results, test outputs, issue links, or validation status.
+Explain the **implemented** analytical solution and its business outputs without unsupported superiority, performance, production-readiness, security, freshness, or ROI claims. Optimization within the modern stack may be measured if useful; comparative legacy benchmarking is out of scope.
 
 ## Agent workflow
 
-1. Read README.md, AGENTS.md, relevant docs, code, and current GitHub issue/PR context before editing.
-2. Identify the smallest deliverable and explicit acceptance criteria.
-3. Make focused changes on a feature branch. Never force-push, delete branches, merge, or alter repository settings without explicit authorization.
-4. Implement tests alongside behavior; update relevant docs in the same PR.
-5. Run the available validation commands and inspect failures, not just exit statuses.
-6. Review the diff for secrets, generated files, dataset licensing, scope creep, and unsupported claims.
-7. Summarize changes, exact tests run/results, limitations, and follow-ups in the PR.
-8. Do not mark work complete or merge until required gates pass and the user approves.
-
-When repository tooling does not yet exist, say so instead of fabricating commands. Prefer a plan and small implementation PR over premature scaffolding.
+1. Read README, AGENTS, relevant docs, code, and current GitHub issue/PR context.
+2. Define the smallest deliverable and acceptance criteria.
+3. Work on a feature branch; never force-push, delete branches, merge, or change settings without explicit approval.
+4. Update tests and documentation alongside implementation.
+5. Execute available checks and inspect evidence; clearly distinguish executed and unexecuted validation.
+6. Review for confidential material, generated artifacts, licensing, scope creep, and unsupported claims.
+7. Summarize changes, tests, limitations, and follow-ups in the PR.
+8. Do not merge or declare an issue done until required checks pass and the user approves.
 
 ## Definition of done
 
-A phase is done only when its scoped acceptance criteria are implemented, tests and reproducibility steps are documented, actual validations pass, public documentation accurately reflects the result, and the user has approved the merge. An experiment's conclusion must include limitations and remaining unknowns.
-
-## Writing and presentation
-
-Write for two audiences: a concise business explanation of the decision and outcome, plus a technically precise methodology. Use neutral language: **planned**, **implemented**, **tested**, **measured**. Avoid marketing claims, unverified performance promises, and confidential enterprise details. The project should stand on its own as an original public case study.
+An issue is complete when scoped acceptance criteria are implemented, actual validation evidence is available, reproducibility is documented, public claims are accurate, and the user approves the merge. Publication must serve both technical readers and business stakeholders without relying on private context.
