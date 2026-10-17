@@ -65,7 +65,7 @@ def main():
     con.executemany("insert into raw_lines values (?,?,?,?,?,?)", lines)
     con.close()
     env = dict(os.environ, SLICE_DB_PATH=str(DB))
-    command = [sys.executable, "-m", "dbt", "build", "--project-dir", str(ROOT / "dbt"), "--profiles-dir", str(ROOT / "dbt"), "--target-path", str(OUT / "dbt-target"), "--log-path", str(OUT / "dbt-logs")]
+    command = ["dbt", "build", "--project-dir", str(ROOT / "dbt"), "--profiles-dir", str(ROOT / "dbt"), "--target-path", str(OUT / "dbt-target"), "--log-path", str(OUT / "dbt-logs")]
     result = subprocess.run(command, env=env, check=False)
     if args.inject_orphan:
         path = OUT / "dbt-target" / "run_results.json"
