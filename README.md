@@ -1,112 +1,102 @@
 # AdventureWorks Analytics
 
-A reproducible analytics engineering project exploring how transactional sales data can be transformed into trustworthy, version-controlled analytical datasets.
+An end-to-end **BI-as-Code analytics engineering portfolio project** demonstrating reproducible data ingestion, dimensional modeling, automated quality assurance, and business intelligence delivery using **AdventureWorks 2022**.
 
-The project uses **AdventureWorks 2022** as a representative transactional source and will develop a read-only extraction workflow, validated snapshots, a DuckDB analytical layer, dbt models, and measurable reporting experiments. The emphasis is on **data correctness, reproducibility, explainable trade-offs, and clear business metrics**.
+The goal is to **build and demonstrate a modern analytical implementation**, not to benchmark it against a traditional reporting approach. Correctness, version control, maintainability, reproducibility, and useful business metrics are the central themes.
 
-> **Project status: Initial implementation in progress.** A synthetic vertical slice is being developed; it must pass CI and review before being treated as validated. The full AdventureWorks extraction, benchmarks, and production capabilities are not implemented.
+> **Current status:** The deterministic synthetic vertical slice is implemented, validated in GitHub Actions, and merged ([Issue #1](https://github.com/mikezhao415/adventureworks-analytics/issues/1), [PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2)). The AdventureWorks SQL Server extraction, expanded models, dashboards, and public case study are planned—not yet implemented.
 
-## Questions this project explores
+## What this project demonstrates
 
-- How can transactional sales records become consistent, documented business metrics?
-- How do automated tests and independent reconciliation prevent incorrect reports?
-- What changes when reporting queries use an analytical layer instead of querying a transactional system directly?
-- How can tenant-scoped reporting and cross-tenant aggregation be simulated safely and evaluated?
-- What are the measurable costs, freshness constraints, and operational trade-offs of this design?
+- **Ingestion:** Repeatable, read-only extraction from SQL Server to fingerprinted Parquet snapshots.
+- **Modeling:** Version-controlled DuckDB and dbt staging, facts, dimensions, and business-ready marts.
+- **Quality:** Independent source reconciliation, data contracts, referential checks, regression tests, and fail-closed publication.
+- **Automation:** Repeatable local execution and appropriately scoped GitHub Actions validation.
+- **Business intelligence:** Useful sales KPIs, trends, and customer, product, and regional reporting.
+- **Communication:** A reproducible technical implementation and accessible business-facing case study.
 
-## Planned architecture
+## Architecture
 
 ```text
-AdventureWorks 2022 / SQL Server (transactional source)
-             |
-             | read-only, repeatable extraction
-             v
-     Immutable Parquet snapshots
-             |
-             | manifests + source reconciliation
-             v
-       DuckDB analytical store
-             |
-             | dbt: staging -> facts/dimensions -> marts
-             v
-   Tested business metrics and reports
-             |
-             | independent validation + evidence
-             v
-       Documented experiments
+AdventureWorks 2022 / SQL Server
+          |
+          | read-only, repeatable extraction (planned)
+          v
+  Validated Parquet snapshots + manifests
+          |
+          v
+      DuckDB analytical layer
+          |
+          | dbt staging -> facts/dimensions -> marts
+          v
+  Tested, documented sales metrics
+          |
+          v
+  Business intelligence reports / dashboards
+          |
+          v
+  Public BI-as-Code case study
 ```
 
-**Source isolation:** The analytical layer is separate from the transactional source. The project will measure, rather than assume, differences in workload and performance. Snapshot-based reporting has a freshness trade-off.
+SQL Server ingestion and dashboard delivery are **planned**. The completed synthetic mode currently exercises a smaller DuckDB/dbt pipeline without SQL Server or Parquet extraction.
 
-## Planned technology
+## Technology
 
-| Component | Choice | Purpose |
+| Component | Technology | Purpose |
 | --- | --- | --- |
-| Transactional source | SQL Server 2022 + AdventureWorks 2022 | Representative relational OLTP dataset |
-| Extraction | Python, read-only database account | Repeatable bounded source reads |
-| Snapshot format | Parquet + manifest | Portable, auditable input |
-| Analytical engine | DuckDB | Local analytical querying |
-| Transformations | dbt Core + dbt-duckdb | Version-controlled models and tests |
-| Quality checks | SQL/dbt + independent Python | Integrity and financial reconciliation |
-| Automation | GitHub Actions | Lightweight automated gates |
-| Reproduction | Local optional SQL Server/Docker setup | Full source-to-output demonstration |
+| Source | SQL Server 2022 + AdventureWorks 2022 | Representative transactional sales database (planned ingestion) |
+| Extraction | Python with read-only credentials | Repeatable source reads (planned) |
+| Snapshots | Parquet and manifests | Validated, traceable inputs (planned) |
+| Analytical engine | DuckDB | Analytical storage and queries |
+| Transformations | dbt Core + dbt-duckdb | SQL modeling, tests, and documentation |
+| Validation | Python, SQL, dbt | Independent data and financial controls |
+| Automation | GitHub Actions | Lightweight CI; optional local full-source validation |
+| Reporting | To be selected | Business-ready dashboard and insights |
 
-Versions will be pinned when the implementation is introduced.
+## Execution modes
 
-## Execution modes (planned)
+**Synthetic validation — implemented:** Deterministic orders and lines for two **simulated tenant labels** exercise composite-key correctness, decimal-safe financial reconciliation, dbt tests, and deliberate corruption checks. These labels are retained as a **test fixture only**; multi-tenant modeling and authorization are not project objectives. Synthetic CI needs no SQL Server, Docker, credentials, or external dataset.
 
-**Lightweight validation:** Deterministic synthetic fixtures exercise models, reconciliation, and failure paths in CI. It must not require SQL Server, Docker, external credentials, or large data downloads.
+**Full AdventureWorks reproduction — planned:** An opt-in local workflow acquires the permitted AdventureWorks database, performs read-only extraction, validates Parquet snapshots, builds models, and produces reports. Lightweight CI does not imply that this full-source workflow has been tested.
 
-**Full reproduction:** An opt-in local or manually triggered workflow starts from a legitimately obtained AdventureWorks database, extracts source data, produces snapshots, and validates analytical outputs. Full-source results must not be represented as covered by lightweight CI.
+## Initial sales metric contracts
 
-## Metric contracts (initial proposal)
-
-The first domain is **sales**. Before implementing models, document exact source fields, grain, filters, and calculation rules for:
-
-- Order count: distinct sales order identifiers at the intended scope.
-- Units sold: sum of eligible order-line quantities.
-- Line sales: sum of eligible line amounts, with decimal precision preserved.
-- Monthly sales: defined calendar-month aggregation and explicit date/time convention.
-- Order totals: distinguish line subtotal, tax, freight, and total due; never silently treat these as interchangeable.
-
-Returns, cancellations, currency assumptions, and null-handling must be defined from the source schema before publishing metrics. Any synthetic multi-tenant extension must be explicitly labeled as simulated and must not be mistaken for a native AdventureWorks feature.
-
-## Validation philosophy
-
-Each dataset and model must have a declared grain and key. Planned controls include uniqueness, non-null and relationship checks, source-to-snapshot counts, financial reconciliation with explicit tolerances, and negative tests that prove invalid input is rejected. A failed build must not publish a successful report or replace a known-good snapshot. Evidence must identify its source mode, code revision, input fingerprint, test results, and limitations.
+Before publishing AdventureWorks KPIs, document source fields, grain, eligibility, and calculation rules for order count, units sold, line sales, monthly sales, and order totals. Preserve decimal precision. Distinguish line subtotal, tax, freight, and total due. Define date conventions, statuses, returns, null handling, and relevant dimensions using the actual source schema.
 
 ## Roadmap
 
-1. **Foundation:** Define project scope, contribution rules, source/license review, architecture, and acceptance criteria.
-2. **Synthetic vertical slice:** Implement deterministic fixtures, DuckDB loading, dbt models, reconciliation, and negative-case CI.
-3. **AdventureWorks extraction:** Add opt-in SQL Server setup, read-only extraction, Parquet snapshots, and independent source checks.
-4. **Analytics model expansion:** Formalize sales facts, dimensions, marts, tests, and documentation.
-5. **Comparative experiments:** Establish fair direct-query versus analytical-query measurements, including query timing, source load, and freshness.
-6. **Multi-tenant simulation:** Introduce documented synthetic tenant assignments, isolation tests, and controlled aggregate reporting.
-7. **Publication:** Present methodology, evidence, results, limitations, and business/technical explanations.
+1. **Foundation and architecture — established; scope alignment in [#3](https://github.com/mikezhao415/adventureworks-analytics/issues/3).** Maintain project identity, reproducibility principles, architecture, and engineering guidance.
+2. **Synthetic BI-as-Code proof of concept — complete ([#1](https://github.com/mikezhao415/adventureworks-analytics/issues/1), [PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2)).** Validated fixtures, DuckDB/dbt models, reconciliation, negative tests, and CI.
+3. **[AdventureWorks ingestion and snapshots — #4](https://github.com/mikezhao415/adventureworks-analytics/issues/4).** Read-only SQL Server extraction, Parquet manifests, and independent controls.
+4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5).** Staging, facts, dimensions, sales marts, contracts, and lineage.
+5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Expand quality gates, regression coverage, repeatability, and evidence.
+6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7).** Deliver validated sales reporting and insights.
+7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8).** Technical and business reading paths, public evidence, and portfolio integration.
 
-These are planned phases, not completion claims. Each phase should ship through a focused pull request with its own acceptance tests.
+Phases may overlap where practical, but each issue must state its own acceptance evidence. **Neither direct-query comparisons nor multi-tenant simulation is required.**
 
-## Reproducing the work
+## Reproduce the implemented synthetic slice
 
-The initial synthetic execution instructions are in [docs/synthetic-slice.md](docs/synthetic-slice.md). They require Python 3.13 and the pinned packages in requirements.txt. Full AdventureWorks reproduction remains a separate future milestone. Avoid interpreting a passing synthetic test as proof that the SQL Server extraction path works.
+Python 3.13 is required. From the repository root:
+
+```bash
+python -m venv .venv
+# Activate the environment for your shell
+python -m pip install -r requirements.lock
+python -m unittest discover -s tests -v
+python src/run.py
+```
+
+See [docs/synthetic-slice.md](docs/synthetic-slice.md) for negative tests, evidence, and limitations. `requirements.txt` documents direct dependencies; `requirements.lock` pins the tested dependency resolution.
 
 ## Data provenance and licensing
 
-AdventureWorks is a Microsoft sample database. Before adding downloads, dataset files, or derived data to this repository, verify the applicable license and redistribution terms for the exact source and artifacts. Prefer documented acquisition instructions to committing a database backup. Do not commit proprietary datasets, secrets, connection strings with credentials, or personal information. Generated snapshots, database files, compiled dbt outputs, and reports are not automatically appropriate for version control.
+AdventureWorks is a Microsoft sample database. Verify applicable licensing and redistribution terms for the exact files and derived artifacts before publishing them. Prefer documented acquisition over committing a database backup. Never commit secrets, sensitive records, large snapshots, generated DuckDB files, or unreviewed output artifacts. Code licensing and data licensing are separate decisions; the repository-wide license is **not yet selected**.
 
 ## Evidence and limitations
 
-Every published experiment should include the question, hypotheses, hardware/software environment, dataset and sample size, query definitions, warm-up and run protocol, measured outputs, repeatability notes, and limitations. No claim of production performance, security enforcement, equal freshness, ROI, or causal superiority is warranted without a study designed to support it.
+Published claims must identify the input source, revision, environment, metric definition, validation performed, and limitations. Do not present synthetic results as real AdventureWorks findings, claim a full-source run based on lightweight CI, or imply production security, performance, freshness, or ROI has been demonstrated.
 
-## Development and contribution
+## Development and portfolio
 
-See [AGENTS.md](AGENTS.md) for repository conventions, quality gates, agent operating rules, and phased implementation guidance. Until a contribution guide and automated checks are added, propose changes through small, reviewable pull requests and document validation performed.
-
-## Portfolio context
-
-This repository is the technical implementation and evidence base for a broader analytics engineering case study. Public explanations should be understandable to both technical readers and business stakeholders, without disclosing any employer-specific systems, customers, or internal information.
-
-## License
-
-**To be decided.** No repository-wide license is granted by this README. Review code licensing and dataset licensing separately before selecting a license or redistributing artifacts.
+See [AGENTS.md](AGENTS.md) for implementation rules and quality gates. This repository is the independent technical evidence base for a public case study aimed at both business and technical readers. Do not include unrelated repositories, employer-specific infrastructure, customer information, or confidential details.
