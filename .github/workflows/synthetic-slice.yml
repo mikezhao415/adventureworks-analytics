@@ -15,7 +15,12 @@ jobs:
           python-version: '3.13'
           cache: pip
       - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+        run: python -m pip install -r requirements.lock
+      - name: Verify exact dependency resolution
+        run: |
+          python -m pip freeze --exclude-editable > /tmp/installed.txt
+          grep -v '^#' requirements.lock | sed '/^$/d' > /tmp/locked.txt
+          diff -u /tmp/locked.txt /tmp/installed.txt
       - name: Fixture and publication unit tests
         run: python -m unittest discover -s tests -v
       - name: Positive end-to-end pipeline
