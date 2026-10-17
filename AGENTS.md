@@ -4,7 +4,7 @@
 
 Build a **standalone, publicly reproducible analytics engineering case study** using AdventureWorks 2022 to explore transactional-to-analytical modernization. Favor credible engineering evidence over feature breadth. Treat this repository as a project beginning from its own stated requirements.
 
-Do not reference unrelated repositories, private experiments, employer systems, proprietary schemas, customers, or internal infrastructure in public code, documentation, issues, commits, or pull requests. Do not copy confidential material into this project. Do not invent a project history or imply capabilities exist before they are implemented.
+Do not reference unrelated repositories, employer systems, proprietary schemas, customers, or internal infrastructure in public code, documentation, issues, commits, or pull requests. Do not copy confidential material into this project. Do not invent a project history or imply capabilities exist before they are implemented.
 
 ## Source of truth and status discipline
 
