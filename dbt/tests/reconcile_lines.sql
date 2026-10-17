@@ -1,0 +1,1 @@
+with raw as (select count(*) as n, sum(amount)::decimal(18,4) as sales, sum(quantity) as units from {{ ref('stg_lines') }}), fact as (select count(*) as n, sum(amount)::decimal(18,4) as sales, sum(quantity) as units from {{ ref('fct_sales_lines') }}) select * from raw cross join fact where raw.n <> fact.n or raw.sales <> fact.sales or raw.units <> fact.units
