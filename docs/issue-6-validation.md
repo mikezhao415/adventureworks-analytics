@@ -7,6 +7,9 @@ No source database access, configuration changes or new extraction were required
 
 ## Executed checks
 
+- Final offline suite: **21 methods passed**, zero failures/errors/skips, against
+  clean implementation commit `324f8de683484f86d514f99d424a218544a7cb75`. It also
+  retained six actual analytical rejection reasons and their selected dbt failures.
 - Initial offline suite: 18 methods passed; subsequent evidence-runner suite:
   19 methods passed, including separate-process lock contention. Targeted final
   extraction suite: nine methods passed, including actual atomic replace failure.
@@ -55,6 +58,8 @@ Python 3.13.15, DuckDB 1.5.6, dbt Core 1.12.5, dbt-duckdb 1.11.0 and PyArrow
 `working_tree_dirty=true`: those runs tested the in-progress changes and must not
 be described as tests of unchanged main. Inspect each generated evidence file
 for its actual revision/state, rather than inferring it from this document.
+The final offline run records the clean implementation commit above; this later
+documentation-only update does not change tested Python, SQL, fixtures or CI.
 
 ## CI and limitations
 
