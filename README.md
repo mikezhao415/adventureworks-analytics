@@ -4,7 +4,7 @@ An end-to-end **BI-as-Code analytics engineering portfolio project** demonstrati
 
 The goal is to **build and demonstrate a modern analytical implementation**, not to benchmark it against a traditional reporting approach. Correctness, version control, maintainability, reproducibility, and useful business metrics are the central themes.
 
-> **Current status:** The deterministic synthetic vertical slice is implemented, validated in GitHub Actions, and merged ([Issue #1](https://github.com/mikezhao415/adventureworks-analytics/issues/1), [PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2)). The AdventureWorks SQL Server extraction, expanded models, dashboards, and public case study are planned—not yet implemented.
+> **Current status:** The deterministic synthetic vertical slice is merged and validated in GitHub Actions ([Issue #1](https://github.com/mikezhao415/adventureworks-analytics/issues/1), [PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2)). Opt-in AdventureWorks extraction and validated local Parquet snapshots are implemented for review under [Issue #4](https://github.com/mikezhao415/adventureworks-analytics/issues/4); see the [local reproduction guide](docs/adventureworks-extraction.md). Real-source dimensional models, dashboards, and the public case study remain future work.
 
 ## What this project demonstrates
 
@@ -20,7 +20,7 @@ The goal is to **build and demonstrate a modern analytical implementation**, not
 ```text
 AdventureWorks 2022 / SQL Server
           |
-          | read-only, repeatable extraction (planned)
+          | read-only, repeatable extraction (local/manual)
           v
   Validated Parquet snapshots + manifests
           |
@@ -38,15 +38,15 @@ AdventureWorks 2022 / SQL Server
   Public BI-as-Code case study
 ```
 
-SQL Server ingestion and dashboard delivery are **planned**. The completed synthetic mode currently exercises a smaller DuckDB/dbt pipeline without SQL Server or Parquet extraction.
+SQL Server ingestion publishes validated local Parquet snapshots. The completed synthetic mode exercises a separate smaller DuckDB/dbt pipeline. Real-source dbt modeling and dashboard delivery are **planned**.
 
 ## Technology
 
 | Component | Technology | Purpose |
 | --- | --- | --- |
-| Source | SQL Server 2022 + AdventureWorks 2022 | Representative transactional sales database (planned ingestion) |
-| Extraction | Python with read-only credentials | Repeatable source reads (planned) |
-| Snapshots | Parquet and manifests | Validated, traceable inputs (planned) |
+| Source | SQL Server 2022 + AdventureWorks 2022 | Existing local transactional sales database |
+| Extraction | Python + Docker/sqlcmd with read-only credentials | Serializable source reads |
+| Snapshots | Parquet and manifests | Validated, traceable local inputs |
 | Analytical engine | DuckDB | Analytical storage and queries |
 | Transformations | dbt Core + dbt-duckdb | SQL modeling, tests, and documentation |
 | Validation | Python, SQL, dbt | Independent data and financial controls |
@@ -57,7 +57,7 @@ SQL Server ingestion and dashboard delivery are **planned**. The completed synth
 
 **Synthetic validation — implemented:** Deterministic orders and lines for two **simulated tenant labels** exercise composite-key correctness, decimal-safe financial reconciliation, dbt tests, and deliberate corruption checks. These labels are retained as a **test fixture only**; multi-tenant modeling and authorization are not project objectives. Synthetic CI needs no SQL Server, Docker, credentials, or external dataset.
 
-**Full AdventureWorks reproduction — planned:** An opt-in local workflow acquires the permitted AdventureWorks database, performs read-only extraction, validates Parquet snapshots, builds models, and produces reports. Lightweight CI does not imply that this full-source workflow has been tested.
+**AdventureWorks ingestion — local/manual:** After manually obtaining/restoring the permitted database, the opt-in workflow reads nine contracted tables from an existing SQL Server container, reconciles Parquet snapshots independently against source controls, and publishes an immutable snapshot plus a current pointer. See [setup, execution, and limitations](docs/adventureworks-extraction.md). It does not yet build real-source dbt marts or reports. Lightweight CI runs offline regressions and the synthetic slice; real-source integration evidence is separate.
 
 ## Initial sales metric contracts
 
@@ -67,7 +67,7 @@ Before publishing AdventureWorks KPIs, document source fields, grain, eligibilit
 
 1. **Foundation and architecture — established; scope alignment in [#3](https://github.com/mikezhao415/adventureworks-analytics/issues/3).** Maintain project identity, reproducibility principles, architecture, and engineering guidance.
 2. **Synthetic BI-as-Code proof of concept — complete ([#1](https://github.com/mikezhao415/adventureworks-analytics/issues/1), [PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2)).** Validated fixtures, DuckDB/dbt models, reconciliation, negative tests, and CI.
-3. **[AdventureWorks ingestion and snapshots — #4](https://github.com/mikezhao415/adventureworks-analytics/issues/4).** Read-only SQL Server extraction, Parquet manifests, and independent controls.
+3. **[AdventureWorks ingestion and snapshots — #4](https://github.com/mikezhao415/adventureworks-analytics/issues/4) — implemented for review.** Read-only SQL Server extraction, Parquet manifests, and independent controls; merge approval remains pending.
 4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5).** Staging, facts, dimensions, sales marts, contracts, and lineage.
 5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Expand quality gates, regression coverage, repeatability, and evidence.
 6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7).** Deliver validated sales reporting and insights.
