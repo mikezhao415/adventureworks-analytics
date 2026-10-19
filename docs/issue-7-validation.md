@@ -5,6 +5,15 @@ Local validation: October 19, 2026 (America/Los_Angeles). The starting main was
 merged before branch `codex/issue-7-sales-dashboard` was created. Issue #7 remains
 open pending review and merge approval. The app has not been deployed.
 
+Final clean implementation validation used commit
+`ed73f6c0a718c6de77579939a9e5a6325115e91c`: **22 Python tests, 15 frontend tests,
+and six browser tests passed**, plus the four independent real-data HTTP scenarios.
+Web, Python and real-data evidence all record `working_tree_dirty=false`. The
+following commit updates this record and regenerates only fixture provenance;
+the fictional logical content hash and input fingerprint remain unchanged.
+The final browser rerun completed normally in 30.1 seconds. Fixture regeneration
+again passed the full 23-model/97-test pipeline from that clean implementation.
+
 ## Data boundary and actual checks
 
 - Built the fictional dashboard fixture through the existing snapshot and dbt
