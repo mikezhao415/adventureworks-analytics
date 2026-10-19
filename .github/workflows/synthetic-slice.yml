@@ -26,6 +26,8 @@ jobs:
         run: python -m pip check
       - name: Offline contracts, dbt regressions and publication tests
         run: python -m src.quality_check
+      - name: Verify reproducible public dashboard fixture
+        run: python scripts/build_dashboard_fixture.py --check
       - name: Positive end-to-end pipeline
         run: python src/run.py
       - name: Preserve positive test evidence and dependency resolution

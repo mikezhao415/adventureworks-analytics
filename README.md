@@ -4,7 +4,7 @@ An end-to-end **BI-as-Code analytics engineering portfolio project** demonstrati
 
 The goal is to **build and demonstrate a modern analytical implementation**, not to benchmark it against a traditional reporting approach. Correctness, version control, maintainability, reproducibility, and useful business metrics are the central themes.
 
-> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are merged in [PR #11](https://github.com/mikezhao415/adventureworks-analytics/pull/11); see the [snapshot-to-mart guide](docs/dimensional-modeling.md). Dashboards and the public case study remain future work.
+> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are merged in [PR #11](https://github.com/mikezhao415/adventureworks-analytics/pull/11); see the [snapshot-to-mart guide](docs/dimensional-modeling.md). The local sales dashboard is implemented for Issue #7 review; the public case study and hosting remain future work.
 
 ## What this project demonstrates
 
@@ -38,7 +38,7 @@ AdventureWorks 2022 / SQL Server
   Public BI-as-Code case study
 ```
 
-SQL Server ingestion publishes validated local Parquet snapshots. A separate real-source dbt project builds 23 staging, dimensional, fact and mart models with independent Python reconciliation. The synthetic mode retains its original smaller pipeline. Dashboard delivery remains **planned**.
+SQL Server ingestion publishes validated local Parquet snapshots. A separate real-source dbt project builds 23 staging, dimensional, fact and mart models with independent Python reconciliation. The synthetic mode retains its original smaller pipeline. The local Next.js sales dashboard consumes a reconciled versioned export; see the [dashboard guide](docs/sales-dashboard.md).
 
 ## Technology
 
@@ -51,7 +51,7 @@ SQL Server ingestion publishes validated local Parquet snapshots. A separate rea
 | Transformations | dbt Core + dbt-duckdb | SQL modeling, tests, and documentation |
 | Validation | Python, SQL, dbt | Independent data and financial controls |
 | Automation | GitHub Actions | Lightweight CI; optional local full-source validation |
-| Reporting | To be selected | Business-ready dashboard and insights |
+| Reporting | Next.js / React / TypeScript / Recharts | Local sales dashboard with exact, scoped filters |
 
 ## Execution modes
 
@@ -66,6 +66,22 @@ python -m src.analytics
 python -m src.analytics_check
 ```
 
+## Launch the local sales dashboard
+
+Use Node.js 22. No SQL Server, credentials or private data are needed for the
+clearly labeled fictional demo:
+
+```bash
+cd apps/web
+npm ci
+npm run dev
+```
+
+Open the printed loopback URL. See [dashboard architecture, metrics, filters,
+local real-source setup and tests](docs/sales-dashboard.md). Real-derived data
+remains ignored and local; no application deployment or dataset publication is
+part of this milestone. Quality automation is merged in PR #12.
+
 ## Initial sales metric contracts
 
 The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) defines shipped-order eligibility, order counts, units, six-decimal net line sales, four-decimal header amounts and AOV, calendar months, and customer/product/category/order-territory groups. Facts preserve all statuses. Header money is never allocated to product lines; product/category order counts overlap and are not additive. Amounts retain source monetary units without currency conversion or a recognized-revenue claim.
@@ -76,8 +92,8 @@ The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) 
 2. **Synthetic BI-as-Code proof of concept — complete ([#1](https://github.com/mikezhao415/adventureworks-analytics/issues/1), [PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2)).** Validated fixtures, DuckDB/dbt models, reconciliation, negative tests, and CI.
 3. **[AdventureWorks ingestion and snapshots — #4](https://github.com/mikezhao415/adventureworks-analytics/issues/4) — merged ([PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)).** Read-only SQL Server extraction, Parquet manifests, and independent controls.
 4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) — merged in PR #11.** Staging, facts, dimensions, sales marts, contracts, tests, and lineage.
-5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Expand quality gates, regression coverage, repeatability, and evidence.
-6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7).** Deliver validated sales reporting and insights.
+5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Merged in PR #12: quality gates, regression coverage, repeatability, and evidence.
+6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7).** Implemented for review: local dashboard, validated exports and deterministic demo.
 7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8).** Technical and business reading paths, public evidence, and portfolio integration.
 
 Phases may overlap where practical, but each issue must state its own acceptance evidence. **Neither direct-query comparisons nor multi-tenant simulation is required.**
