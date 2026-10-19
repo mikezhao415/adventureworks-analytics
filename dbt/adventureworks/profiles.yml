@@ -1,0 +1,7 @@
+adventureworks:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      path: "{{ env_var('AW_ANALYTICS_DB') }}"
+      threads: 1
