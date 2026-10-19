@@ -12,7 +12,7 @@ Do not reference unrelated repositories, employer systems, proprietary schemas, 
 - AGENTS.md defines engineering and agent behavior.
 - Code, tests, CI, and observed logs establish what is implemented and validated.
 - Issues and plans are proposals until acceptance evidence exists.
-- Keep status accurate: the synthetic vertical slice is merged and validated; opt-in AdventureWorks extraction and local snapshots are implemented for Issue #4 review. Real-source expanded models, dashboards, and publication remain future work. Do not call Issue #4 complete before validation and merge approval.
+- Keep status accurate: the synthetic vertical slice and Issue #4 extraction are merged and validated. Issue #5 dimensional models and local sales marts are implemented for review; do not call Issue #5 complete before validation and merge approval. Dashboards and publication remain future work.
 - Synthetic fixtures use two tenant labels solely to exercise scoped composite keys. **Do not expand multi-tenant simulation into a required project deliverable.**
 - **Do not add legacy-vs-modern benchmarks or direct transactional-query comparisons** without an explicit change of scope.
 

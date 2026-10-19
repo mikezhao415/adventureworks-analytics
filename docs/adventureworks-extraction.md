@@ -2,8 +2,9 @@
 
 Issue #4 implements an opt-in local ingestion workflow. It reads the existing
 SQL Server 2022 / AdventureWorks2022 database and publishes validated local
-Parquet snapshots. Real-source dimensional dbt models and dashboards remain
-future work. The existing dbt project still processes its synthetic fixture.
+Parquet snapshots. A separate [Issue #5 analytical project](dimensional-modeling.md)
+now consumes these snapshots; dashboards remain future work. The original dbt
+project still processes its synthetic fixture.
 
 ## Prerequisites and acquisition
 

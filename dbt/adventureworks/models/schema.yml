@@ -1,0 +1,1208 @@
+version: 2
+sources:
+- name: snapshot
+  schema: raw
+  tables:
+  - name: sales_order_header
+    description: 'Sales.SalesOrderHeader; validated Issue #4 snapshot, selected columns
+      only.'
+    data_tests:
+    - grain:
+        arguments:
+          keys:
+          - SalesOrderID
+    columns:
+    - name: SalesOrderID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: OrderDate
+      data_type: timestamp
+    - name: DueDate
+      data_type: timestamp
+    - name: ShipDate
+      data_type: timestamp
+    - name: Status
+      data_type: integer
+    - name: OnlineOrderFlag
+      data_type: boolean
+    - name: CustomerID
+      data_type: integer
+    - name: TerritoryID
+      data_type: integer
+    - name: SubTotal
+      data_type: decimal(19,4)
+    - name: TaxAmt
+      data_type: decimal(19,4)
+    - name: Freight
+      data_type: decimal(19,4)
+    - name: TotalDue
+      data_type: decimal(19,4)
+    - name: ModifiedDate
+      data_type: timestamp
+  - name: sales_order_detail
+    description: 'Sales.SalesOrderDetail; validated Issue #4 snapshot, selected columns
+      only.'
+    data_tests:
+    - grain:
+        arguments:
+          keys:
+          - SalesOrderID
+          - SalesOrderDetailID
+    columns:
+    - name: SalesOrderID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: SalesOrderDetailID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: OrderQty
+      data_type: integer
+    - name: ProductID
+      data_type: integer
+    - name: SpecialOfferID
+      data_type: integer
+    - name: UnitPrice
+      data_type: decimal(19,4)
+    - name: UnitPriceDiscount
+      data_type: decimal(19,4)
+    - name: LineTotal
+      data_type: decimal(38,6)
+    - name: ModifiedDate
+      data_type: timestamp
+  - name: customer
+    description: 'Sales.Customer; validated Issue #4 snapshot, selected columns only.'
+    data_tests:
+    - grain:
+        arguments:
+          keys:
+          - CustomerID
+    columns:
+    - name: CustomerID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: PersonID
+      data_type: integer
+    - name: StoreID
+      data_type: integer
+    - name: TerritoryID
+      data_type: integer
+    - name: ModifiedDate
+      data_type: timestamp
+  - name: sales_territory
+    description: 'Sales.SalesTerritory; validated Issue #4 snapshot, selected columns
+      only.'
+    data_tests:
+    - grain:
+        arguments:
+          keys:
+          - TerritoryID
+    columns:
+    - name: TerritoryID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: Name
+      data_type: varchar
+    - name: CountryRegionCode
+      data_type: varchar
+    - name: Group
+      data_type: varchar
+    - name: ModifiedDate
+      data_type: timestamp
+  - name: product
+    description: 'Production.Product; validated Issue #4 snapshot, selected columns
+      only.'
+    data_tests:
+    - grain:
+        arguments:
+          keys:
+          - ProductID
+    columns:
+    - name: ProductID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: Name
+      data_type: varchar
+    - name: ProductNumber
+      data_type: varchar
+    - name: Color
+      data_type: varchar
+    - name: ProductSubcategoryID
+      data_type: integer
+    - name: StandardCost
+      data_type: decimal(19,4)
+    - name: ListPrice
+      data_type: decimal(19,4)
+    - name: SellStartDate
+      data_type: timestamp
+    - name: SellEndDate
+      data_type: timestamp
+    - name: DiscontinuedDate
+      data_type: timestamp
+    - name: ModifiedDate
+      data_type: timestamp
+  - name: product_subcategory
+    description: 'Production.ProductSubcategory; validated Issue #4 snapshot, selected
+      columns only.'
+    data_tests:
+    - grain:
+        arguments:
+          keys:
+          - ProductSubcategoryID
+    columns:
+    - name: ProductSubcategoryID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: ProductCategoryID
+      data_type: integer
+    - name: Name
+      data_type: varchar
+    - name: ModifiedDate
+      data_type: timestamp
+  - name: product_category
+    description: 'Production.ProductCategory; validated Issue #4 snapshot, selected
+      columns only.'
+    data_tests:
+    - grain:
+        arguments:
+          keys:
+          - ProductCategoryID
+    columns:
+    - name: ProductCategoryID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: Name
+      data_type: varchar
+    - name: ModifiedDate
+      data_type: timestamp
+  - name: special_offer
+    description: 'Sales.SpecialOffer; validated Issue #4 snapshot, selected columns
+      only.'
+    data_tests:
+    - grain:
+        arguments:
+          keys:
+          - SpecialOfferID
+    columns:
+    - name: SpecialOfferID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: Description
+      data_type: varchar
+    - name: DiscountPct
+      data_type: decimal(19,4)
+    - name: Type
+      data_type: varchar
+    - name: Category
+      data_type: varchar
+    - name: StartDate
+      data_type: timestamp
+    - name: EndDate
+      data_type: timestamp
+    - name: MinQty
+      data_type: integer
+    - name: MaxQty
+      data_type: integer
+    - name: ModifiedDate
+      data_type: timestamp
+  - name: special_offer_product
+    description: 'Sales.SpecialOfferProduct; validated Issue #4 snapshot, selected
+      columns only.'
+    data_tests:
+    - grain:
+        arguments:
+          keys:
+          - SpecialOfferID
+          - ProductID
+    columns:
+    - name: SpecialOfferID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: ProductID
+      data_type: integer
+      data_tests:
+      - not_null
+    - name: ModifiedDate
+      data_type: timestamp
+models:
+- name: stg_sales_order_header
+  description: Selected source columns, all source rows and statuses; no business
+    filtering. Source timestamps have no timezone.
+  config:
+    meta:
+      grain_keys: &id001
+      - sales_order_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id001
+  columns:
+  - name: sales_order_id
+    data_type: integer
+    description: Source Sales.SalesOrderHeader.SalesOrderID; required.
+    data_tests:
+    - not_null
+  - name: order_date
+    data_type: timestamp
+    description: Source Sales.SalesOrderHeader.OrderDate; required.
+  - name: due_date
+    data_type: timestamp
+    description: Source Sales.SalesOrderHeader.DueDate; required.
+  - name: ship_date
+    data_type: timestamp
+    description: Source Sales.SalesOrderHeader.ShipDate; nullable.
+  - name: status
+    data_type: integer
+    description: Source Sales.SalesOrderHeader.Status; required.
+  - name: online_order_flag
+    data_type: boolean
+    description: Source Sales.SalesOrderHeader.OnlineOrderFlag; required.
+  - name: customer_id
+    data_type: integer
+    description: Source Sales.SalesOrderHeader.CustomerID; required.
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('stg_customer')
+          field: customer_id
+  - name: territory_id
+    data_type: integer
+    description: Source Sales.SalesOrderHeader.TerritoryID; nullable.
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('stg_sales_territory')
+          field: territory_id
+  - name: sub_total
+    data_type: decimal(19,4)
+    description: Source Sales.SalesOrderHeader.SubTotal; required.
+  - name: tax_amt
+    data_type: decimal(19,4)
+    description: Source Sales.SalesOrderHeader.TaxAmt; required.
+  - name: freight
+    data_type: decimal(19,4)
+    description: Source Sales.SalesOrderHeader.Freight; required.
+  - name: total_due
+    data_type: decimal(19,4)
+    description: Source Sales.SalesOrderHeader.TotalDue; required.
+  - name: modified_date
+    data_type: timestamp
+    description: Source Sales.SalesOrderHeader.ModifiedDate; required.
+- name: stg_sales_order_detail
+  description: Selected source columns, all source rows and statuses; no business
+    filtering. Source timestamps have no timezone.
+  config:
+    meta:
+      grain_keys: &id002
+      - sales_order_id
+      - sales_order_detail_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id002
+  columns:
+  - name: sales_order_id
+    data_type: integer
+    description: Source Sales.SalesOrderDetail.SalesOrderID; required.
+    data_tests:
+    - not_null
+  - name: sales_order_detail_id
+    data_type: integer
+    description: Source Sales.SalesOrderDetail.SalesOrderDetailID; required.
+    data_tests:
+    - not_null
+  - name: order_qty
+    data_type: integer
+    description: Source Sales.SalesOrderDetail.OrderQty; required.
+  - name: product_id
+    data_type: integer
+    description: Source Sales.SalesOrderDetail.ProductID; required.
+  - name: special_offer_id
+    data_type: integer
+    description: Source Sales.SalesOrderDetail.SpecialOfferID; required.
+  - name: unit_price
+    data_type: decimal(19,4)
+    description: Source Sales.SalesOrderDetail.UnitPrice; required.
+  - name: unit_price_discount
+    data_type: decimal(19,4)
+    description: Source Sales.SalesOrderDetail.UnitPriceDiscount; required.
+  - name: line_total
+    data_type: decimal(38,6)
+    description: Source Sales.SalesOrderDetail.LineTotal; required.
+  - name: modified_date
+    data_type: timestamp
+    description: Source Sales.SalesOrderDetail.ModifiedDate; required.
+- name: stg_customer
+  description: Selected source columns, all source rows and statuses; no business
+    filtering. Source timestamps have no timezone.
+  config:
+    meta:
+      grain_keys: &id003
+      - customer_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id003
+  columns:
+  - name: customer_id
+    data_type: integer
+    description: Source Sales.Customer.CustomerID; required.
+    data_tests:
+    - not_null
+  - name: person_id
+    data_type: integer
+    description: Source Sales.Customer.PersonID; nullable.
+  - name: store_id
+    data_type: integer
+    description: Source Sales.Customer.StoreID; nullable.
+  - name: territory_id
+    data_type: integer
+    description: Source Sales.Customer.TerritoryID; nullable.
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('stg_sales_territory')
+          field: territory_id
+  - name: modified_date
+    data_type: timestamp
+    description: Source Sales.Customer.ModifiedDate; required.
+- name: stg_sales_territory
+  description: Selected source columns, all source rows and statuses; no business
+    filtering. Source timestamps have no timezone.
+  config:
+    meta:
+      grain_keys: &id004
+      - territory_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id004
+  columns:
+  - name: territory_id
+    data_type: integer
+    description: Source Sales.SalesTerritory.TerritoryID; required.
+    data_tests:
+    - not_null
+  - name: name
+    data_type: varchar
+    description: Source Sales.SalesTerritory.Name; required.
+  - name: country_region_code
+    data_type: varchar
+    description: Source Sales.SalesTerritory.CountryRegionCode; required.
+  - name: territory_group
+    data_type: varchar
+    description: Source Sales.SalesTerritory.Group; required.
+  - name: modified_date
+    data_type: timestamp
+    description: Source Sales.SalesTerritory.ModifiedDate; required.
+- name: stg_product
+  description: Selected source columns, all source rows and statuses; no business
+    filtering. Source timestamps have no timezone.
+  config:
+    meta:
+      grain_keys: &id005
+      - product_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id005
+  columns:
+  - name: product_id
+    data_type: integer
+    description: Source Production.Product.ProductID; required.
+    data_tests:
+    - not_null
+  - name: name
+    data_type: varchar
+    description: Source Production.Product.Name; required.
+  - name: product_number
+    data_type: varchar
+    description: Source Production.Product.ProductNumber; required.
+  - name: color
+    data_type: varchar
+    description: Source Production.Product.Color; nullable.
+  - name: product_subcategory_id
+    data_type: integer
+    description: Source Production.Product.ProductSubcategoryID; nullable.
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('stg_product_subcategory')
+          field: product_subcategory_id
+  - name: standard_cost
+    data_type: decimal(19,4)
+    description: Source Production.Product.StandardCost; required.
+  - name: list_price
+    data_type: decimal(19,4)
+    description: Source Production.Product.ListPrice; required.
+  - name: sell_start_date
+    data_type: timestamp
+    description: Source Production.Product.SellStartDate; required.
+  - name: sell_end_date
+    data_type: timestamp
+    description: Source Production.Product.SellEndDate; nullable.
+  - name: discontinued_date
+    data_type: timestamp
+    description: Source Production.Product.DiscontinuedDate; nullable.
+  - name: modified_date
+    data_type: timestamp
+    description: Source Production.Product.ModifiedDate; required.
+- name: stg_product_subcategory
+  description: Selected source columns, all source rows and statuses; no business
+    filtering. Source timestamps have no timezone.
+  config:
+    meta:
+      grain_keys: &id006
+      - product_subcategory_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id006
+  columns:
+  - name: product_subcategory_id
+    data_type: integer
+    description: Source Production.ProductSubcategory.ProductSubcategoryID; required.
+    data_tests:
+    - not_null
+  - name: product_category_id
+    data_type: integer
+    description: Source Production.ProductSubcategory.ProductCategoryID; required.
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('stg_product_category')
+          field: product_category_id
+  - name: name
+    data_type: varchar
+    description: Source Production.ProductSubcategory.Name; required.
+  - name: modified_date
+    data_type: timestamp
+    description: Source Production.ProductSubcategory.ModifiedDate; required.
+- name: stg_product_category
+  description: Selected source columns, all source rows and statuses; no business
+    filtering. Source timestamps have no timezone.
+  config:
+    meta:
+      grain_keys: &id007
+      - product_category_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id007
+  columns:
+  - name: product_category_id
+    data_type: integer
+    description: Source Production.ProductCategory.ProductCategoryID; required.
+    data_tests:
+    - not_null
+  - name: name
+    data_type: varchar
+    description: Source Production.ProductCategory.Name; required.
+  - name: modified_date
+    data_type: timestamp
+    description: Source Production.ProductCategory.ModifiedDate; required.
+- name: stg_special_offer
+  description: Selected source columns, all source rows and statuses; no business
+    filtering. Source timestamps have no timezone.
+  config:
+    meta:
+      grain_keys: &id008
+      - special_offer_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id008
+  columns:
+  - name: special_offer_id
+    data_type: integer
+    description: Source Sales.SpecialOffer.SpecialOfferID; required.
+    data_tests:
+    - not_null
+  - name: description
+    data_type: varchar
+    description: Source Sales.SpecialOffer.Description; required.
+  - name: discount_pct
+    data_type: decimal(19,4)
+    description: Source Sales.SpecialOffer.DiscountPct; required.
+  - name: type
+    data_type: varchar
+    description: Source Sales.SpecialOffer.Type; required.
+  - name: category
+    data_type: varchar
+    description: Source Sales.SpecialOffer.Category; required.
+  - name: start_date
+    data_type: timestamp
+    description: Source Sales.SpecialOffer.StartDate; required.
+  - name: end_date
+    data_type: timestamp
+    description: Source Sales.SpecialOffer.EndDate; required.
+  - name: min_qty
+    data_type: integer
+    description: Source Sales.SpecialOffer.MinQty; required.
+  - name: max_qty
+    data_type: integer
+    description: Source Sales.SpecialOffer.MaxQty; nullable.
+  - name: modified_date
+    data_type: timestamp
+    description: Source Sales.SpecialOffer.ModifiedDate; required.
+- name: stg_special_offer_product
+  description: Selected source columns, all source rows and statuses; no business
+    filtering. Source timestamps have no timezone.
+  config:
+    meta:
+      grain_keys: &id009
+      - special_offer_id
+      - product_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id009
+  columns:
+  - name: special_offer_id
+    data_type: integer
+    description: Source Sales.SpecialOfferProduct.SpecialOfferID; required.
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('stg_special_offer')
+          field: special_offer_id
+  - name: product_id
+    data_type: integer
+    description: Source Sales.SpecialOfferProduct.ProductID; required.
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('stg_product')
+          field: product_id
+  - name: modified_date
+    data_type: timestamp
+    description: Source Sales.SpecialOfferProduct.ModifiedDate; required.
+- name: dim_customer
+  description: One row per source CustomerID; current snapshot attributes, no SCD
+    or inferred customer names.
+  config:
+    meta:
+      grain_keys: &id010
+      - customer_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id010
+  columns:
+  - name: customer_key
+    data_type: integer
+    description: customer key
+    data_tests:
+    - not_null
+  - name: person_id
+    data_type: integer
+    description: person id
+  - name: store_id
+    data_type: integer
+    description: store id
+  - name: current_territory_key
+    data_type: integer
+    description: current territory key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_territory')
+          field: territory_key
+  - name: customer_type
+    data_type: varchar
+    description: customer type
+  - name: source_modified_at
+    data_type: timestamp
+    description: source modified at
+- name: dim_territory
+  description: One row per TerritoryID plus -1 for absent source territory. Order
+    territory and current customer territory remain distinct.
+  config:
+    meta:
+      grain_keys: &id011
+      - territory_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id011
+  columns:
+  - name: territory_key
+    data_type: integer
+    description: territory key
+    data_tests:
+    - not_null
+  - name: territory_name
+    data_type: varchar
+    description: territory name
+  - name: country_region_code
+    data_type: varchar
+    description: country region code
+  - name: territory_group
+    data_type: varchar
+    description: territory group
+  - name: source_modified_at
+    data_type: timestamp
+    description: source modified at
+- name: dim_product_category
+  description: One row per ProductCategoryID plus -1 for products without a subcategory.
+    Current snapshot taxonomy.
+  config:
+    meta:
+      grain_keys: &id012
+      - category_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id012
+  columns:
+  - name: category_key
+    data_type: integer
+    description: category key
+    data_tests:
+    - not_null
+  - name: category_name
+    data_type: varchar
+    description: category name
+  - name: source_modified_at
+    data_type: timestamp
+    description: source modified at
+- name: dim_product
+  description: One row per ProductID; flattened current subcategory/category. Current
+    costs are not historical sales costs.
+  config:
+    meta:
+      grain_keys: &id013
+      - product_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id013
+  columns:
+  - name: product_key
+    data_type: integer
+    description: product key
+    data_tests:
+    - not_null
+  - name: product_name
+    data_type: varchar
+    description: product name
+  - name: product_number
+    data_type: varchar
+    description: product number
+  - name: color
+    data_type: varchar
+    description: color
+  - name: subcategory_id
+    data_type: integer
+    description: subcategory id
+  - name: subcategory_name
+    data_type: varchar
+    description: subcategory name
+  - name: category_key
+    data_type: integer
+    description: category key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_product_category')
+          field: category_key
+  - name: current_standard_cost
+    data_type: decimal(19,4)
+    description: current standard cost
+  - name: current_list_price
+    data_type: decimal(19,4)
+    description: current list price
+  - name: sell_start_date
+    data_type: timestamp
+    description: sell start date
+  - name: sell_end_date
+    data_type: timestamp
+    description: sell end date
+  - name: discontinued_date
+    data_type: timestamp
+    description: discontinued date
+  - name: source_modified_at
+    data_type: timestamp
+    description: source modified at
+- name: dim_promotion
+  description: One row per SpecialOfferID, including source no-discount offer; no
+    invented unknown promotion.
+  config:
+    meta:
+      grain_keys: &id014
+      - promotion_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id014
+  columns:
+  - name: promotion_key
+    data_type: integer
+    description: promotion key
+    data_tests:
+    - not_null
+  - name: description
+    data_type: varchar
+    description: description
+  - name: discount_pct
+    data_type: decimal(19,4)
+    description: discount pct
+  - name: promotion_type
+    data_type: varchar
+    description: promotion type
+  - name: promotion_category
+    data_type: varchar
+    description: promotion category
+  - name: start_date
+    data_type: timestamp
+    description: start date
+  - name: end_date
+    data_type: timestamp
+    description: end date
+  - name: min_qty
+    data_type: integer
+    description: min qty
+  - name: max_qty
+    data_type: integer
+    description: max qty
+  - name: source_modified_at
+    data_type: timestamp
+    description: source modified at
+- name: dim_date
+  description: One row per calendar day spanning order dates, inclusive. Gregorian
+    calendar; ISO Monday=1; no fiscal calendar/timezone conversion.
+  config:
+    meta:
+      grain_keys: &id015
+      - date_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id015
+  columns:
+  - name: date_key
+    data_type: integer
+    description: date key
+    data_tests:
+    - not_null
+  - name: calendar_date
+    data_type: date
+    description: calendar date
+  - name: calendar_year
+    data_type: integer
+    description: calendar year
+  - name: calendar_quarter
+    data_type: integer
+    description: calendar quarter
+  - name: month_number
+    data_type: integer
+    description: month number
+  - name: sales_month
+    data_type: date
+    description: sales month
+  - name: iso_day_of_week
+    data_type: integer
+    description: iso day of week
+- name: fct_sales_orders
+  description: One row per SalesOrderID, all statuses. Header money appears only here;
+    metrics include status 5 (shipped).
+  config:
+    meta:
+      grain_keys: &id016
+      - sales_order_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id016
+  columns:
+  - name: sales_order_id
+    data_type: integer
+    description: sales order id
+    data_tests:
+    - not_null
+  - name: customer_key
+    data_type: integer
+    description: customer key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_customer')
+          field: customer_key
+  - name: territory_key
+    data_type: integer
+    description: territory key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_territory')
+          field: territory_key
+  - name: order_date_key
+    data_type: integer
+    description: order date key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_date')
+          field: date_key
+  - name: ordered_at
+    data_type: timestamp
+    description: ordered at
+  - name: due_at
+    data_type: timestamp
+    description: due at
+  - name: shipped_at
+    data_type: timestamp
+    description: shipped at
+  - name: status
+    data_type: integer
+    description: status
+  - name: online_order_flag
+    data_type: boolean
+    description: online order flag
+  - name: is_sales_eligible
+    data_type: boolean
+    description: is sales eligible
+  - name: subtotal
+    data_type: decimal(19,4)
+    description: subtotal
+  - name: tax
+    data_type: decimal(19,4)
+    description: tax
+  - name: freight
+    data_type: decimal(19,4)
+    description: freight
+  - name: total_due
+    data_type: decimal(19,4)
+    description: total due
+  - name: source_modified_at
+    data_type: timestamp
+    description: source modified at
+- name: fct_sales_order_lines
+  description: One row per (SalesOrderID,SalesOrderDetailID), all statuses. Carries
+    header dimension keys and eligibility, never header monetary amounts.
+  config:
+    meta:
+      grain_keys: &id017
+      - sales_order_id
+      - sales_order_detail_id
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id017
+  columns:
+  - name: sales_order_id
+    data_type: integer
+    description: sales order id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('fct_sales_orders')
+          field: sales_order_id
+  - name: sales_order_detail_id
+    data_type: integer
+    description: sales order detail id
+    data_tests:
+    - not_null
+  - name: customer_key
+    data_type: integer
+    description: customer key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_customer')
+          field: customer_key
+  - name: territory_key
+    data_type: integer
+    description: territory key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_territory')
+          field: territory_key
+  - name: order_date_key
+    data_type: integer
+    description: order date key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_date')
+          field: date_key
+  - name: product_key
+    data_type: integer
+    description: product key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_product')
+          field: product_key
+  - name: promotion_key
+    data_type: integer
+    description: promotion key
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_promotion')
+          field: promotion_key
+  - name: quantity
+    data_type: integer
+    description: quantity
+  - name: unit_price
+    data_type: decimal(19,4)
+    description: unit price
+  - name: unit_price_discount
+    data_type: decimal(19,4)
+    description: unit price discount
+  - name: net_line_sales
+    data_type: decimal(38,6)
+    description: net line sales
+  - name: is_sales_eligible
+    data_type: boolean
+    description: is sales eligible
+  - name: source_modified_at
+    data_type: timestamp
+    description: source modified at
+- name: mart_sales_summary
+  description: One row for all eligible sales. Header and line amounts are aggregated
+    separately before joining. AOV uses header subtotal/order count.
+  config:
+    meta:
+      grain_keys: &id018
+      - summary_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id018
+  columns:
+  - name: summary_key
+    data_type: integer
+    description: summary key
+    data_tests:
+    - not_null
+  - name: order_count
+    data_type: bigint
+    description: order count
+  - name: units_sold
+    data_type: bigint
+    description: units sold
+  - name: net_line_sales
+    data_type: decimal(38,6)
+    description: net line sales
+  - name: header_subtotal
+    data_type: decimal(38,4)
+    description: header subtotal
+  - name: tax
+    data_type: decimal(38,4)
+    description: tax
+  - name: freight
+    data_type: decimal(38,4)
+    description: freight
+  - name: total_due
+    data_type: decimal(38,4)
+    description: total due
+  - name: average_order_value
+    data_type: decimal(38,4)
+    description: average order value
+- name: mart_sales_monthly
+  description: One row per eligible order calendar month. Header and line amounts
+    are aggregated separately before joining. AOV uses header subtotal/order count.
+  config:
+    meta:
+      grain_keys: &id019
+      - sales_month
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id019
+  columns:
+  - name: sales_month
+    data_type: date
+    description: sales month
+    data_tests:
+    - not_null
+  - name: order_count
+    data_type: bigint
+    description: order count
+  - name: units_sold
+    data_type: bigint
+    description: units sold
+  - name: net_line_sales
+    data_type: decimal(38,6)
+    description: net line sales
+  - name: header_subtotal
+    data_type: decimal(38,4)
+    description: header subtotal
+  - name: tax
+    data_type: decimal(38,4)
+    description: tax
+  - name: freight
+    data_type: decimal(38,4)
+    description: freight
+  - name: total_due
+    data_type: decimal(38,4)
+    description: total due
+  - name: average_order_value
+    data_type: decimal(38,4)
+    description: average order value
+- name: mart_sales_customer
+  description: One row per customer with eligible sales. Header and line amounts are
+    aggregated separately before joining. AOV uses header subtotal/order count.
+  config:
+    meta:
+      grain_keys: &id020
+      - customer_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id020
+  columns:
+  - name: customer_key
+    data_type: integer
+    description: customer key
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_customer')
+          field: customer_key
+  - name: order_count
+    data_type: bigint
+    description: order count
+  - name: units_sold
+    data_type: bigint
+    description: units sold
+  - name: net_line_sales
+    data_type: decimal(38,6)
+    description: net line sales
+  - name: header_subtotal
+    data_type: decimal(38,4)
+    description: header subtotal
+  - name: tax
+    data_type: decimal(38,4)
+    description: tax
+  - name: freight
+    data_type: decimal(38,4)
+    description: freight
+  - name: total_due
+    data_type: decimal(38,4)
+    description: total due
+  - name: average_order_value
+    data_type: decimal(38,4)
+    description: average order value
+- name: mart_sales_territory
+  description: One row per order territory with eligible sales, including unknown
+    when present. Header and line amounts are aggregated separately before joining.
+    AOV uses header subtotal/order count.
+  config:
+    meta:
+      grain_keys: &id021
+      - territory_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id021
+  columns:
+  - name: territory_key
+    data_type: integer
+    description: territory key
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_territory')
+          field: territory_key
+  - name: order_count
+    data_type: bigint
+    description: order count
+  - name: units_sold
+    data_type: bigint
+    description: units sold
+  - name: net_line_sales
+    data_type: decimal(38,6)
+    description: net line sales
+  - name: header_subtotal
+    data_type: decimal(38,4)
+    description: header subtotal
+  - name: tax
+    data_type: decimal(38,4)
+    description: tax
+  - name: freight
+    data_type: decimal(38,4)
+    description: freight
+  - name: total_due
+    data_type: decimal(38,4)
+    description: total due
+  - name: average_order_value
+    data_type: decimal(38,4)
+    description: average order value
+- name: mart_sales_product
+  description: One row per product with eligible sales. Order count is distinct within
+    group and not additive across groups; header money is not allocated to lines.
+  config:
+    meta:
+      grain_keys: &id022
+      - product_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id022
+  columns:
+  - name: product_key
+    data_type: integer
+    description: product key
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_product')
+          field: product_key
+  - name: order_count
+    data_type: bigint
+    description: order count
+  - name: units_sold
+    data_type: bigint
+    description: units sold
+  - name: net_line_sales
+    data_type: decimal(38,6)
+    description: net line sales
+- name: mart_sales_category
+  description: One row per category with eligible sales. Order count is distinct within
+    group and not additive across groups; header money is not allocated to lines.
+  config:
+    meta:
+      grain_keys: &id023
+      - category_key
+  data_tests:
+  - grain:
+      arguments:
+        keys: *id023
+  columns:
+  - name: category_key
+    data_type: integer
+    description: category key
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_product_category')
+          field: category_key
+  - name: order_count
+    data_type: bigint
+    description: order count
+  - name: units_sold
+    data_type: bigint
+    description: units sold
+  - name: net_line_sales
+    data_type: decimal(38,6)
+    description: net line sales
