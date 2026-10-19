@@ -206,7 +206,7 @@ DuckDB files, dbt manifests and analytical evidence remain ignored and local.
 Existing acquisition, dataset licensing/provenance and publication restrictions
 from [Issue #4](adventureworks-extraction.md#licensing-and-redistribution) still apply.
 
-Issue #6 can expand regression coverage, evidence retention and automation; #7 can
+See [Issue #6 quality coverage](quality-automation.md) for regression additions, evidence retention and recovery; #7 can
 select/report business requirements and deliver dashboards over these contracts;
 #8 can publish the reproducible technical/business narrative. This milestone does
 not implement dashboard delivery, historical dimensions, margin, revenue recognition,

@@ -58,7 +58,8 @@ def fixture(seed=416, per_tenant=50):
 
 
 def run_dbt(action, env, selection=None):
-    command = ["dbt", action, "--project-dir", str(ROOT / "dbt"),
+    executable = Path(sys.executable).parent / ("dbt.exe" if os.name == "nt" else "dbt")
+    command = [str(executable), action, "--project-dir", str(ROOT / "dbt"),
                "--profiles-dir", str(ROOT / "dbt"), "--target-path", str(OUT / "dbt-target"),
                "--log-path", str(OUT / "dbt-logs")]
     if selection:

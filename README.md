@@ -4,7 +4,7 @@ An end-to-end **BI-as-Code analytics engineering portfolio project** demonstrati
 
 The goal is to **build and demonstrate a modern analytical implementation**, not to benchmark it against a traditional reporting approach. Correctness, version control, maintainability, reproducibility, and useful business metrics are the central themes.
 
-> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are implemented for [Issue #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) review; see the [snapshot-to-mart guide](docs/dimensional-modeling.md). Dashboards and the public case study remain future work.
+> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are merged in [PR #11](https://github.com/mikezhao415/adventureworks-analytics/pull/11); see the [snapshot-to-mart guide](docs/dimensional-modeling.md). Dashboards and the public case study remain future work.
 
 ## What this project demonstrates
 
@@ -75,7 +75,7 @@ The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) 
 1. **Foundation and architecture — established; scope alignment in [#3](https://github.com/mikezhao415/adventureworks-analytics/issues/3).** Maintain project identity, reproducibility principles, architecture, and engineering guidance.
 2. **Synthetic BI-as-Code proof of concept — complete ([#1](https://github.com/mikezhao415/adventureworks-analytics/issues/1), [PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2)).** Validated fixtures, DuckDB/dbt models, reconciliation, negative tests, and CI.
 3. **[AdventureWorks ingestion and snapshots — #4](https://github.com/mikezhao415/adventureworks-analytics/issues/4) — merged ([PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)).** Read-only SQL Server extraction, Parquet manifests, and independent controls.
-4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) — implemented for review.** Staging, facts, dimensions, sales marts, contracts, tests, and lineage; merge approval remains pending.
+4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) — merged in PR #11.** Staging, facts, dimensions, sales marts, contracts, tests, and lineage.
 5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Expand quality gates, regression coverage, repeatability, and evidence.
 6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7).** Deliver validated sales reporting and insights.
 7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8).** Technical and business reading paths, public evidence, and portfolio integration.
@@ -90,9 +90,11 @@ Python 3.13 is required. From the repository root:
 python -m venv .venv
 # Activate the environment for your shell
 python -m pip install -r requirements.lock
-python -m unittest discover -s tests -v
+python -m src.quality_check
 python src/run.py
 ```
+
+See the [quality coverage and recovery guide](docs/quality-automation.md) for offline/real-source boundaries, evidence, dependency refresh and failure recovery.
 
 See [docs/synthetic-slice.md](docs/synthetic-slice.md) for negative tests, evidence, and limitations. `requirements.txt` documents direct dependencies; `requirements.lock` pins the tested dependency resolution.
 

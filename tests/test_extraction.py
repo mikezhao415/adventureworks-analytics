@@ -5,13 +5,15 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
 import pyarrow as pa
 
 from src.contracts import TABLES, RELATIONSHIPS
-from src.extract import extract, validate_snapshot, ValidationError, publication_lock
+from src.extract import extract, validate_snapshot, ValidationError, publication_lock, atomic_json
 from src.sql_source import read_records, sqlcmd, SourceError
 
 
@@ -71,7 +73,7 @@ class ExtractionTests(unittest.TestCase):
 
     def run_snapshot(self, data=None):
         data = records() if data is None else data
-        return extract(self.root, provider=lambda *_: data)
+        return extract(self.root, validation_mode='offline_fixture',provider=lambda *_: data)
 
     def test_rounding_unicode_and_repeated_content(self):
         first, a = self.run_snapshot()
@@ -152,6 +154,77 @@ class ExtractionTests(unittest.TestCase):
         self.assertEqual(validate_snapshot(path)['result'], 'pass')
         with publication_lock(self.root), self.assertRaisesRegex(ValidationError, 'publication lock'):
             self.run_snapshot()
+
+    def test_atomic_json_replace_failure_preserves_bytes(self):
+        pointer = self.root/'current.json'
+        atomic_json(pointer,{'known_good':True})
+        before = pointer.read_bytes()
+        with patch('src.extract.os.replace',side_effect=OSError('injected replace failure')):
+            with self.assertRaisesRegex(OSError,'injected replace failure'):
+                atomic_json(pointer,{'invalid':True})
+        self.assertEqual(pointer.read_bytes(),before)
+        self.assertEqual(list(self.root.iterdir()),[pointer])
+
+    def test_contract_and_fingerprint_rejections(self):
+        cases = []
+        for operation in ('missing', 'unexpected', 'precision', 'type', 'nullable'):
+            data = records()
+            row = next(r for r in data if r['kind']=='row' and r['table_name']=='Sales.Customer')
+            expected = 'Column set differs'
+            if operation == 'missing':
+                del row['CustomerID']
+            elif operation == 'unexpected':
+                row['ExtraColumn'] = 1
+            elif operation == 'precision':
+                row = next(r for r in data if r['kind']=='row' and r['table_name']=='Sales.SalesOrderDetail')
+                row['UnitPrice'] = Decimal('1.00001')
+                expected = 'Decimal scale would lose precision: UnitPrice'
+            else:
+                schema = next(r for r in data if r['kind']=='schema' and r['name']=='CustomerID')
+                if operation == 'type':
+                    schema['base_type'] = 'nvarchar'
+                    expected = 'Source type drift: CustomerID'
+                else:
+                    schema['is_nullable'] = True
+                    expected = 'Source nullability/column drift: CustomerID'
+            cases.append((operation,data,expected))
+        path,_ = self.run_snapshot()
+        before = (self.root/'current.json').read_bytes()
+        for name,data,reason in cases:
+            with self.subTest(scenario=name), self.assertRaisesRegex(ValidationError,reason):
+                self.run_snapshot(data)
+            self.assertEqual((self.root/'current.json').read_bytes(),before)
+        for field,reason in (('input_fingerprint','Input fingerprint differs'),):
+            manifest = json.loads((path/'manifest.json').read_text())
+            manifest[field] = '0'*64
+            (path/'manifest.json').write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValidationError,reason):
+                validate_snapshot(path)
+
+    def test_separate_process_cannot_acquire_held_lock(self):
+        code = ("from pathlib import Path; from src.extract import publication_lock; "
+                "import sys; "
+                "\nwith publication_lock(Path(sys.argv[1])): pass")
+        with publication_lock(self.root):
+            result = subprocess.run([sys.executable,'-c',code,str(self.root)],
+                                    capture_output=True,text=True)
+            self.assertNotEqual(result.returncode,0)
+            self.assertIn('Another extraction holds the publication lock',result.stderr)
+            self.assertTrue((self.root/'.publish.lock').exists())
+        self.assertFalse((self.root/'.publish.lock').exists())
+
+    def test_cooperative_interruption_retains_diagnostics(self):
+        self.run_snapshot()
+        before = (self.root/'current.json').read_bytes()
+        def interrupted(*_):
+            raise KeyboardInterrupt()
+        with self.assertRaises(KeyboardInterrupt):
+            extract(self.root,provider=interrupted,validation_mode='offline_fixture')
+        self.assertEqual((self.root/'current.json').read_bytes(),before)
+        failures = [json.loads(p.read_text()) for p in self.root.glob('failure-*.json')]
+        self.assertEqual(failures[-1]['error_type'],'KeyboardInterrupt')
+        self.assertFalse(list(self.root.glob('.staging-*')))
+        self.assertFalse((self.root/'.publish.lock').exists())
 
     def test_transport_requires_commit_marker_and_preserves_credential_bytes(self):
         with patch('src.sql_source.sqlcmd', return_value='{"kind":"source"}\n'):

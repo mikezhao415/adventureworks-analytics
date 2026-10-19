@@ -1,4 +1,4 @@
-name: Synthetic BI vertical slice
+name: BI quality and reproducibility
 on:
   pull_request:
   workflow_dispatch:
@@ -14,6 +14,7 @@ jobs:
         with:
           python-version: '3.13'
           cache: pip
+          cache-dependency-path: requirements.lock
       - name: Install dependencies
         run: python -m pip install -r requirements.lock
       - name: Verify exact dependency resolution
@@ -21,8 +22,10 @@ jobs:
           python -m pip freeze --exclude-editable > /tmp/installed.txt
           grep -v '^#' requirements.lock | sed '/^$/d' > /tmp/locked.txt
           diff -u /tmp/locked.txt /tmp/installed.txt
-      - name: Fixture and publication unit tests
-        run: python -m unittest discover -s tests -v
+      - name: Check dependency compatibility
+        run: python -m pip check
+      - name: Offline contracts, dbt regressions and publication tests
+        run: python -m src.quality_check
       - name: Positive end-to-end pipeline
         run: python src/run.py
       - name: Preserve positive test evidence and dependency resolution
@@ -67,7 +70,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: synthetic-slice-evidence
-          path: output/evidence/
+          name: bi-quality-evidence
+          path: |
+            output/evidence/
+            output/quality/
           if-no-files-found: warn
           retention-days: 7
