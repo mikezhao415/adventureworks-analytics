@@ -2,8 +2,12 @@ __pycache__/
 .pytest_cache/
 .venv/
 .env
+.env.*
+*.bak
+*.parquet
 *.duckdb
 *.duckdb.wal
 output/
 dbt/target/
 dbt/logs/
+dbt/.user.yml
