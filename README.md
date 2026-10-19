@@ -4,7 +4,7 @@ An end-to-end **BI-as-Code analytics engineering portfolio project** demonstrati
 
 The goal is to **build and demonstrate a modern analytical implementation**, not to benchmark it against a traditional reporting approach. Correctness, version control, maintainability, reproducibility, and useful business metrics are the central themes.
 
-> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are implemented for [Issue #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) review; see the [snapshot-to-mart guide](docs/dimensional-modeling.md). Dashboards and the public case study remain future work.
+> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are merged in [PR #11](https://github.com/mikezhao415/adventureworks-analytics/pull/11); see the [snapshot-to-mart guide](docs/dimensional-modeling.md). Dashboards and the public case study remain future work.
 
 ## What this project demonstrates
 
@@ -90,9 +90,11 @@ Python 3.13 is required. From the repository root:
 python -m venv .venv
 # Activate the environment for your shell
 python -m pip install -r requirements.lock
-python -m unittest discover -s tests -v
+python -m src.quality_check
 python src/run.py
 ```
+
+See the [quality coverage and recovery guide](docs/quality-automation.md) for offline/real-source boundaries, evidence, dependency refresh and failure recovery.
 
 See [docs/synthetic-slice.md](docs/synthetic-slice.md) for negative tests, evidence, and limitations. `requirements.txt` documents direct dependencies; `requirements.lock` pins the tested dependency resolution.
 

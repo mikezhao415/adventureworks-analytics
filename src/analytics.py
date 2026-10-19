@@ -100,6 +100,8 @@ def build(snapshot_root=ROOT/'output'/'adventureworks', output_root=ROOT/'output
             dbt_results = json.loads((stage/'dbt-target'/'run_results.json').read_text(encoding='utf-8'))
             evidence = {'mode':'adventureworks_analytics','result':'pass','snapshot':pointer,
                         'code_revision':revision,'working_tree_dirty':dirty,
+                        'validation_mode':json.loads((snapshot/'manifest.json').read_text(encoding='utf-8')).get(
+                            'validation_mode','real_adventureworks'),
                         'environment':{'python':platform.python_version(),'platform':platform.system(),
                             **{name:importlib.metadata.version(name) for name in ('duckdb','dbt-core','dbt-duckdb','pyarrow')}},
                         'dbt_results':{status:sum(r['status']==status for r in dbt_results['results'])
@@ -113,7 +115,7 @@ def build(snapshot_root=ROOT/'output'/'adventureworks', output_root=ROOT/'output
             atomic_json(output_root/'current.json',{'run_id':run_id,'evidence_sha256':digest(final/'evidence.json'),
                         'database_sha256':digest(final/'analytics.duckdb'),'snapshot_id':pointer['snapshot_id']})
             return final,evidence
-        except Exception as error:
+        except BaseException as error:
             # Failure diagnostics remain local and contain no credentials. Keep
             # dbt logs/results for review, but never publish an invalid database.
             failed = output_root/('failed-'+run_id)
@@ -123,7 +125,8 @@ def build(snapshot_root=ROOT/'output'/'adventureworks', output_root=ROOT/'output
                     shutil.copyfile(stage/file,failed/file)
             if (stage/'dbt-target'/'run_results.json').exists():
                 shutil.copyfile(stage/'dbt-target'/'run_results.json',failed/'run_results.json')
-            atomic_json(failed/'failure.json',{'result':'fail','error_type':type(error).__name__})
+            atomic_json(failed/'failure.json',{'result':'fail','run_id':run_id,
+                        'snapshot':pointer,'error_type':type(error).__name__})
             raise
         finally:
             if stage.exists():

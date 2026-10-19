@@ -334,7 +334,9 @@ def finalize_directory(stage, final):
             time.sleep(0.1 * (2 ** attempt))
 
 
-def extract(root, provider=read_records):
+def extract(root, provider=read_records, *, validation_mode='real_adventureworks'):
+    if validation_mode not in ('real_adventureworks', 'offline_fixture'):
+        raise ValueError('Unsupported validation mode')
     root = Path(root)
     with publication_lock(root):
         run_id = dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ-') + uuid.uuid4().hex
@@ -354,6 +356,7 @@ def extract(root, provider=read_records):
             dirty = bool(subprocess.run(['git','status','--porcelain'], capture_output=True, text=True, check=True).stdout.strip())
             manifest = {'contract_version': VERSION, 'mode': 'adventureworks', 'snapshot_id': run_id,
                         'code_revision': revision, 'working_tree_dirty': dirty, 'source': source,
+                        'validation_mode': validation_mode,
                         'isolation': 'SERIALIZABLE', 'tables': entries, 'source_controls': controls,
                         'input_fingerprint': fingerprint,
                         'environment': {'python': platform.python_version(), 'platform': platform.system(),
@@ -370,10 +373,13 @@ def extract(root, provider=read_records):
             atomic_json(root / 'current.json', {'snapshot_id': run_id,
                         'manifest_sha256': digest(final / 'manifest.json'), 'input_fingerprint': fingerprint})
             return final, result
-        except Exception as error:
+        except BaseException as error:
+            # Also record a cooperative interruption; abrupt process termination
+            # can still leave staging and a stale lock for manual investigation.
             # Store categories only, never credentials, SQL output or source records.
             atomic_json(root / ('failure-' + run_id + '.json'),
-                        {'mode': 'adventureworks', 'result': 'fail', 'error_type': type(error).__name__})
+                        {'mode': 'adventureworks', 'validation_mode': validation_mode,
+                         'run_id': run_id, 'result': 'fail', 'error_type': type(error).__name__})
             raise
         finally:
             if stage.exists():

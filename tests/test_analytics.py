@@ -16,7 +16,7 @@ import yaml
 from test_extraction import records
 from src.analytics import build, dbt, resolve_snapshot, PROJECT
 from src.analytics_validation import reconcile
-from src.extract import extract, ValidationError
+from src.extract import extract, ValidationError, publication_lock, atomic_json
 
 
 def dimensional_records(no_eligible=False):
@@ -76,8 +76,10 @@ class AnalyticsTests(unittest.TestCase):
         cls.temp = tempfile.TemporaryDirectory()
         cls.root = Path(cls.temp.name)
         with patch.dict(os.environ,AW_SQL_USER='offline',AW_SQL_PASSWORD='offline'):
-            extract(cls.root/'snapshots',provider=lambda *_:dimensional_records())
+            extract(cls.root/'snapshots',validation_mode='offline_fixture',provider=lambda *_:dimensional_records())
         cls.path,cls.evidence = build(cls.root/'snapshots',cls.root/'analytics')
+        if os.environ.get('AW_QUALITY_EVIDENCE'):
+            atomic_json(Path(os.environ['AW_QUALITY_EVIDENCE'])/'offline-analytics.json',cls.evidence)
         cls.specifications = yaml.safe_load((PROJECT/'models'/'schema.yml').read_text())['models']
 
     @classmethod
@@ -92,6 +94,7 @@ class AnalyticsTests(unittest.TestCase):
         self.assertEqual(totals['header_subtotal'],Decimal('2.0001'))
         self.assertEqual(totals['average_order_value'],Decimal('1.0001'))
         self.assertEqual(len(self.evidence['models']),23)
+        self.assertEqual(self.evidence['validation_mode'],'offline_fixture')
         con = duckdb.connect(str(self.path/'analytics.duckdb'),read_only=True)
         try:
             self.assertEqual(con.execute('select order_count from mart_sales_territory where territory_key=-1').fetchone(),(1,))
@@ -112,8 +115,10 @@ class AnalyticsTests(unittest.TestCase):
             ('wrong_line','update fct_sales_order_lines set net_line_sales=net_line_sales+.000001 where sales_order_detail_id=1','aw_financial_reconciliation'),
             ('fanout_dimension','insert into dim_product select * from dim_product limit 1','aw_dimension_grain'),
             ('wrong_mart','update mart_sales_summary set header_subtotal=header_subtotal+1','aw_mart_reconciliation'),
+            ('wrong_eligibility','update fct_sales_orders set is_sales_eligible=true where sales_order_id=3','aw_financial_reconciliation'),
         ]
         snapshot,_ = resolve_snapshot(self.root/'snapshots')
+        negative_evidence = []
         for name,sql,test in scenarios:
             with self.subTest(scenario=name):
                 stage = self.root/name
@@ -121,7 +126,15 @@ class AnalyticsTests(unittest.TestCase):
                 shutil.copyfile(self.path/'analytics.duckdb',stage/'analytics.duckdb')
                 con = duckdb.connect(str(stage/'analytics.duckdb'))
                 con.execute(sql)
-                with self.assertRaises(ValidationError):
+                with self.assertRaisesRegex(ValidationError,
+                        {
+                            'duplicate_fact':'Independent grain validation failed: fct_sales_order_lines',
+                            'missing_dimension':'Independent row/metric reconciliation failed: dim_customer',
+                            'wrong_line':'Independent row/metric reconciliation failed: fct_sales_order_lines',
+                            'fanout_dimension':'Independent grain validation failed: dim_product',
+                            'wrong_mart':'Independent row/metric reconciliation failed: mart_sales_summary',
+                            'wrong_eligibility':'Independent row/metric reconciliation failed: fct_sales_orders',
+                        }[name]) as rejection:
                     reconcile(con,snapshot,self.specifications)
                 con.close()
                 self.assertNotEqual(dbt(stage,'test',test),0)
@@ -129,6 +142,12 @@ class AnalyticsTests(unittest.TestCase):
                 self.assertEqual(len(results),1)
                 self.assertEqual(results[0]['unique_id'].split('.')[-1],test)
                 self.assertEqual(results[0]['status'],'fail')
+                negative_evidence.append({'scenario':name,'independent_rejection':str(rejection.exception),
+                                          'dbt_test':test,'dbt_status':results[0]['status'],
+                                          'expected_rejection':'pass'})
+        if os.environ.get('AW_QUALITY_EVIDENCE'):
+            atomic_json(Path(os.environ['AW_QUALITY_EVIDENCE'])/'offline-negative.json',
+                        {'mode':'offline_fixture','result':'pass','scenarios':negative_evidence})
 
     def test_snapshot_tampering_and_failed_build_preserve_current(self):
         before = (self.root/'analytics'/'current.json').read_bytes()
@@ -144,9 +163,47 @@ class AnalyticsTests(unittest.TestCase):
             build(copied,self.root/'analytics')
         self.assertEqual((self.root/'analytics'/'current.json').read_bytes(),before)
 
+    def test_staging_schema_drift_is_rejected(self):
+        database = self.root/'schema-drift.duckdb'
+        shutil.copyfile(self.path/'analytics.duckdb',database)
+        snapshot,_ = resolve_snapshot(self.root/'snapshots')
+        con = duckdb.connect(str(database))
+        try:
+            con.execute('alter table stg_customer alter column customer_id type bigint')
+            with self.assertRaisesRegex(ValidationError,'Analytical schema differs: stg_customer'):
+                reconcile(con,snapshot,self.specifications)
+        finally:
+            con.close()
+
+    def test_publication_failures_and_lock_preserve_current(self):
+        import src.analytics as module
+        before = (self.root/'analytics'/'current.json').read_bytes()
+        original = module.atomic_json
+        def fail_pointer(file, value):
+            if file.name == 'current.json':
+                raise OSError('injected pointer replacement failure')
+            return original(file, value)
+        with patch('src.analytics.atomic_json',side_effect=fail_pointer):
+            with self.assertRaisesRegex(OSError,'injected pointer'):
+                build(self.root/'snapshots',self.root/'analytics')
+        self.assertEqual((self.root/'analytics'/'current.json').read_bytes(),before)
+        for target,error in (('finalize_directory',OSError('injected finalization')),
+                             ('load_raw',KeyboardInterrupt())):
+            with self.subTest(error=type(error).__name__):
+                with patch('src.analytics.'+target,side_effect=error):
+                    with self.assertRaises(type(error)):
+                        build(self.root/'snapshots',self.root/'analytics')
+                self.assertEqual((self.root/'analytics'/'current.json').read_bytes(),before)
+        with publication_lock(self.root/'analytics'):
+            with self.assertRaisesRegex(ValidationError,'publication lock'):
+                build(self.root/'snapshots',self.root/'analytics')
+        self.assertFalse(list((self.root/'analytics').glob('.staging-*')))
+        failures = [json.loads(p.read_text()) for p in (self.root/'analytics').glob('failed-*/failure.json')]
+        self.assertTrue(any(f['error_type']=='KeyboardInterrupt' for f in failures))
+
     def test_no_eligible_orders(self):
         with patch.dict(os.environ,AW_SQL_USER='offline',AW_SQL_PASSWORD='offline'):
-            extract(self.root/'no-eligible',provider=lambda *_:dimensional_records(True))
+            extract(self.root/'no-eligible',validation_mode='offline_fixture',provider=lambda *_:dimensional_records(True))
         _,evidence = build(self.root/'no-eligible',self.root/'no-eligible-analytics')
         self.assertEqual(evidence['eligible_totals']['order_count'],0)
         self.assertIsNone(evidence['eligible_totals']['average_order_value'])
