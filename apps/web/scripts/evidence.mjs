@@ -16,15 +16,28 @@ const [unit, browser, demo, pkg, lock] = await Promise.all([
   readJson("package.json"),
   readFile("package-lock.json"),
 ]);
-const completed = unit !== null && browser !== null;
+const selected =
+  process.env.AW_E2E_SAMPLE === "1"
+    ? await readJson("data/adventureworks2022.json")
+    : demo;
+const requestedMode =
+  process.env.AW_E2E_SAMPLE === "1" ? "real_adventureworks" : "offline_fixture";
+const reportedMode = browser?.config?.metadata?.data_mode;
+const completed =
+  unit !== null &&
+  browser !== null &&
+  selected !== null &&
+  reportedMode === requestedMode;
 const pass =
   completed &&
   unit.success === true &&
   browser.stats.unexpected === 0 &&
   browser.stats.skipped === 0;
 const evidence = {
-  mode: "offline_fixture",
+  mode: requestedMode,
+  reported_browser_mode: reportedMode ?? "unverified",
   result: !completed ? "incomplete" : pass ? "pass" : "fail",
+  report_mode_matches: reportedMode === requestedMode,
   execution_context:
     process.env.GITHUB_ACTIONS === "true" ? "github_actions" : "local",
   code_revision: execFileSync("git", ["rev-parse", "HEAD"], {
@@ -40,8 +53,8 @@ const evidence = {
     devDependencies: pkg.devDependencies,
   },
   package_lock_sha256: createHash("sha256").update(lock).digest("hex"),
-  input_fingerprint: demo.provenance.input_fingerprint,
-  content_sha256: demo.content_sha256,
+  input_fingerprint: selected?.provenance.input_fingerprint,
+  content_sha256: selected?.content_sha256,
   vitest: unit
     ? {
         tests: unit.numTotalTests,
@@ -51,7 +64,9 @@ const evidence = {
     : null,
   playwright: browser?.stats ?? null,
   limitations: [
-    "Deterministic fictional fixtures; real-source HTTP validation is local and separate.",
+    process.env.AW_E2E_SAMPLE === "1"
+      ? "Production sample E2E; unit policy tests use small fictional documents."
+      : "Fictional development E2E; production policy is unit tested separately.",
     "Chromium desktop and mobile emulation, not every browser or physical device.",
     "Automated accessibility checks do not establish complete accessibility compliance.",
   ],

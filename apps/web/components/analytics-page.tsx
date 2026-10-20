@@ -9,6 +9,7 @@ import {
   type View,
   type PageSearchParams,
 } from "../lib/navigation";
+import { projectPageData } from "../lib/page-data";
 import { Dashboard } from "./dashboard";
 export async function AnalyticsPage({
   view,
@@ -29,7 +30,8 @@ export async function AnalyticsPage({
           No fallback data has been substituted.
         </p>
         <p>
-          Check the local export and AW_DASHBOARD_DATA setting, then reload.
+          The dashboard data package must pass integrity checks before reporting
+          is available.
         </p>
       </section>
     );
@@ -53,7 +55,7 @@ export async function AnalyticsPage({
     } catch {
       throw new FilterError("Duplicate filter values are not allowed.");
     }
-    data = dashboard(doc, filters);
+    data = projectPageData(dashboard(doc, filters), view);
   } catch (e) {
     if (!(e instanceof FilterError)) throw e;
     error = e.message;

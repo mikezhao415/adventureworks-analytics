@@ -15,19 +15,19 @@ export function Disclosure({ context }: { context: DataContext }) {
         <strong>
           {demo
             ? "Fictional demonstration data"
-            : "Historical AdventureWorks snapshot"}
+            : "AdventureWorks 2022 Sample Data"}
         </strong>
         <span>
           {demo
             ? "Deterministic fixtures — not actual AdventureWorks results."
-            : "Validated local data — not a live sales feed."}{" "}
+            : "Microsoft fictional historical sample business — not a live sales feed."}{" "}
           Source period {context.period.start || "empty"} to{" "}
           {context.period.end || "empty"}. Amounts shown in USD; no currency
           conversion applied.
         </span>
       </p>
       <span className="context-tag">
-        {demo ? "DEMO MODE" : "LOCAL SNAPSHOT"}
+        {demo ? "DEMO MODE" : "HISTORICAL SAMPLE"}
       </span>
     </div>
   );

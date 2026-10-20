@@ -139,13 +139,30 @@ export default async function Definitions() {
         aria-labelledby="provenance-heading"
       >
         <h2 id="provenance-heading">Data provenance and limitations</h2>
+        {doc.provenance.mode === "real_adventureworks" ? (
+          <p>
+            Sample content &copy; Microsoft Corporation. Derived from the{" "}
+            <a href="https://github.com/microsoft/sql-server-samples/releases/tag/adventureworks">
+              official AdventureWorks release
+            </a>
+            . Distributed under the upstream{" "}
+            <a href="/notices/microsoft-sql-server-samples.txt">MIT notice</a>,
+            subject to the documented sample-data licensing assessment. No
+            Microsoft endorsement is implied.
+          </p>
+        ) : (
+          <p>
+            This demonstration uses project-created fictional fixtures, not
+            Microsoft sample records.
+          </p>
+        )}
         <dl>
           <div>
             <dt>Source mode</dt>
             <dd>
               {doc.provenance.mode === "offline_fixture"
                 ? "Fictional deterministic demo; not actual AdventureWorks results."
-                : "Real AdventureWorks-derived local export; not a live data feed."}
+                : "Microsoft AdventureWorks 2022 fictional historical sample data; not actual business performance or a live feed."}
             </dd>
           </div>
           <div>
@@ -188,10 +205,10 @@ export default async function Definitions() {
             <dd>
               All six mart controls passed at export after independent
               source/model reconciliation. Exact composition uses scaled
-              integers on the server. Real-derived data stays local and ignored;
-              dataset redistribution provenance remains unresolved. Input hashes
-              detect accidental corruption, not a malicious local writer.
-              Refresh requires an explicit validated export and page reload.
+              integers on the server. Only the specifically reviewed static
+              aggregate artifact is eligible for publication after approval.
+              Pinned file and content hashes bind production to the reviewed
+              artifact. Refresh requires a new reviewed artifact and release.
               This app establishes no production security, crash durability, or
               serving-scale guarantee.
             </dd>

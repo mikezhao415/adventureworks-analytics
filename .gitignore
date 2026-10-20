@@ -23,3 +23,7 @@ apps/web/test-results/
 apps/web/playwright-report/
 apps/web/*.tsbuildinfo
 apps/web/data/local*.json
+
+
+# Chromium can emit this generated log on Windows during local browser checks.
+apps/web/debug.log

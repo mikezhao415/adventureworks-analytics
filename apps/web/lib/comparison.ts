@@ -1,5 +1,12 @@
 import type { DashboardData } from "./data";
-export type Customer = DashboardData["customers"][number];
+export type Customer = Pick<
+  DashboardData["customers"][number],
+  | "key"
+  | "order_count"
+  | "net_line_sales"
+  | "average_order_value"
+  | "contribution"
+>;
 export const CUSTOMER_SCALES = {
   order_count: 0,
   net_line_sales: 6,

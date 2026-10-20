@@ -62,24 +62,65 @@ export function validateDocument(input: unknown): DashboardDocument {
       throw new Error("Missing product category");
   return doc;
 }
-export async function loadDocument(): Promise<DashboardDocument> {
-  // Public production must never load a developer-supplied source export.
-  const demoFile = path.join(process.cwd(), "data", "demo.json");
-  let file = demoFile;
-  if (process.env.NODE_ENV !== "production") {
-    file = process.env.AW_DASHBOARD_DATA || demoFile;
+/** Release identity is code-reviewed; runtime paths cannot select production data. */
+export const PUBLIC_ARTIFACT = {
+  file: "adventureworks2022.json",
+  bytes: 16136806,
+  sha256: "b4b22c99becf5b7e26a53c8b3d04280b99db3fd28b2dccf9d16c01c682e80040",
+  content_sha256:
+    "2204bd6a695c0657692e28e9848b5eb1628b50e3dfb463683d322487824938dd",
+  snapshot_id: "20261019T001836Z-ee2547d8e90749b68133c76a806f9e6f",
+} as const;
+export function validatePublicArtifact(raw: Buffer): DashboardDocument {
+  if (
+    raw.length !== PUBLIC_ARTIFACT.bytes ||
+    createHash("sha256").update(raw).digest("hex") !== PUBLIC_ARTIFACT.sha256
+  )
+    throw new Error("Unapproved dashboard file checksum");
+  const doc = validateDocument(JSON.parse(raw.toString("utf8")));
+  if (doc.provenance.mode !== "real_adventureworks")
+    throw new Error("Production dashboard requires AdventureWorks sample data");
+  if (doc.provenance.snapshot_id !== PUBLIC_ARTIFACT.snapshot_id)
+    throw new Error("Unapproved dashboard snapshot");
+  if (doc.content_sha256 !== PUBLIC_ARTIFACT.content_sha256)
+    throw new Error("Unapproved dashboard content checksum");
+  return doc;
+}
+// Only successful immutable release content is reused. Recheck bytes on every read
+// so a missing/replaced file still fails closed in a warm process.
+let validatedRelease:
+  { sha256: string; document: DashboardDocument } | undefined;
+function freezeRelease(document: DashboardDocument): DashboardDocument {
+  const pending: object[] = [document];
+  while (pending.length) {
+    const value = pending.pop()!;
+    Object.freeze(value);
+    for (const child of Object.values(value))
+      if (child !== null && typeof child === "object") pending.push(child);
   }
-  const doc = validateDocument(
+  return document;
+}
+export async function loadDocument(): Promise<DashboardDocument> {
+  if (process.env.NODE_ENV === "production") {
+    const file = path.join(process.cwd(), "data", PUBLIC_ARTIFACT.file);
+    const raw = await readFile(/* turbopackIgnore: true */ file);
+    if (
+      raw.length !== PUBLIC_ARTIFACT.bytes ||
+      createHash("sha256").update(raw).digest("hex") !== PUBLIC_ARTIFACT.sha256
+    )
+      throw new Error("Unapproved dashboard file checksum");
+    if (validatedRelease?.sha256 === PUBLIC_ARTIFACT.sha256)
+      return validatedRelease.document;
+    const document = freezeRelease(validatePublicArtifact(raw));
+    validatedRelease = { sha256: PUBLIC_ARTIFACT.sha256, document };
+    return document;
+  }
+  const file =
+    process.env.AW_DASHBOARD_DATA ||
+    path.join(process.cwd(), "data", "demo.json");
+  return validateDocument(
     JSON.parse(await readFile(/* turbopackIgnore: true */ file, "utf8")),
   );
-  if (process.env.NODE_ENV === "production") {
-    if (doc.provenance.mode !== "offline_fixture") {
-      throw new Error(
-        "Production dashboard requires fictional demonstration data",
-      );
-    }
-  }
-  return doc;
 }
 function validSelection(value: string, options: { key: number }[]) {
   const keys = value.split(",");

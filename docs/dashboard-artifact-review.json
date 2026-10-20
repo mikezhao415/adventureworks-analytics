@@ -1,0 +1,532 @@
+{
+  "review_status": "approved_for_repository_draft_pr_not_deployment",
+  "reviewed_on": "2026-10-20",
+  "candidate_path": "apps/web/data/adventureworks2022.json",
+  "bytes": 16136806,
+  "sha256": "b4b22c99becf5b7e26a53c8b3d04280b99db3fd28b2dccf9d16c01c682e80040",
+  "content_sha256": "2204bd6a695c0657692e28e9848b5eb1628b50e3dfb463683d322487824938dd",
+  "provenance": {
+    "analytics_revision": "a62763ff7f867e859819ceff3f541641bb943143",
+    "export_revision": "9b2e711b4ab495540324a8d4e36e1142321b96e8",
+    "input_fingerprint": "97213a5b66b6cacb8229182a65442bf8bf66c6eb9430120f01afedb8ac5cfe89",
+    "mode": "real_adventureworks",
+    "reconciliation": {
+      "mart_sales_category": {
+        "result": "pass",
+        "rows": 4
+      },
+      "mart_sales_customer": {
+        "result": "pass",
+        "rows": 19119
+      },
+      "mart_sales_monthly": {
+        "result": "pass",
+        "rows": 38
+      },
+      "mart_sales_product": {
+        "result": "pass",
+        "rows": 266
+      },
+      "mart_sales_summary": {
+        "result": "pass",
+        "rows": 1
+      },
+      "mart_sales_territory": {
+        "result": "pass",
+        "rows": 10
+      }
+    },
+    "snapshot_id": "20261019T001836Z-ee2547d8e90749b68133c76a806f9e6f",
+    "source_extracted_at": "2026-10-19T00:18:36.9517880",
+    "working_tree_dirty": false
+  },
+  "period": {
+    "end": "2014-06-30",
+    "start": "2011-05-31"
+  },
+  "cells": {
+    "customers": 31406,
+    "products": 68520,
+    "categories": 11330
+  },
+  "dimensions": {
+    "categories": 5,
+    "products": 504,
+    "territories": 11
+  },
+  "upstream_release": "https://github.com/microsoft/sql-server-samples/releases/tag/adventureworks",
+  "acquisition": {
+    "approximate_date": "2026-10-09",
+    "exact_download_url_verified": false,
+    "exact_download_url": null,
+    "backup_sha256": null
+  },
+  "notice": "apps/web/public/notices/microsoft-sql-server-samples.txt",
+  "limitations": [
+    "Conditional licensing assessment, not legal clearance",
+    "Sample identifiers retained; no anonymization claim",
+    "Repository draft-PR publication approved; merge, deployment and production configuration changes remain unauthorized"
+  ],
+  "local_validation": {
+    "code_revision": "9b2e711b4ab495540324a8d4e36e1142321b96e8",
+    "working_tree_dirty": true,
+    "environment": {
+      "node": "22.23.2",
+      "python": "3.13.15",
+      "platform": "Windows"
+    },
+    "unit_tests": {
+      "passed": 33,
+      "failed": 0
+    },
+    "python_quality_tests": {
+      "passed": 22,
+      "failed": 0,
+      "rerun_in_final_serialization_review": false
+    },
+    "playwright_sample": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    "playwright_fixture": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    },
+    "http_sql_scenarios": {
+      "passed": 6,
+      "failed": 0
+    },
+    "format": "pass",
+    "typecheck": "pass",
+    "build": "pass",
+    "fixture_reproduction": "pass",
+    "lint": "not configured",
+    "limitations": [
+      "Windows managed-server teardown hung; final browser reports use controlled loopback servers and the same projects/tests through an ignored external-server config",
+      "No CI, Vercel deployment or hosted smoke test executed",
+      "SQL Server not accessed; HTTP independent SQL uses existing validated DuckDB facts"
+    ]
+  },
+  "final_prepublication_review": {
+    "status": "local_review_passed_repository_publication_approved_deployment_not_approved",
+    "root_cause": "Complete composed DashboardData crossed the client boundary on every analytics route; raw daily artifact stayed server-side",
+    "solution": "Typed per-view projection; complete customer display values in named tuples; full API and artifact unchanged",
+    "customer_records_retained": 19119,
+    "api_byte_identical": true,
+    "api_bytes": 3592604,
+    "api_sha256": "32ffa68941c06e7b4d299cfb02b71a45f1107c74c371b7936588195efd7d6efd",
+    "payloads_before": [
+      {
+        "route": "/",
+        "kind": "html",
+        "bytes": 4152260,
+        "gzip_bytes": 236599,
+        "ms": 2684.9579000000003
+      },
+      {
+        "route": "/",
+        "kind": "rsc",
+        "bytes": 3596605,
+        "gzip_bytes": 229892,
+        "ms": 644.0976
+      },
+      {
+        "route": "/trends",
+        "kind": "html",
+        "bytes": 4155392,
+        "gzip_bytes": 237293,
+        "ms": 659.9491000000007
+      },
+      {
+        "route": "/trends",
+        "kind": "rsc",
+        "bytes": 3597012,
+        "gzip_bytes": 229924,
+        "ms": 554.3492000000006
+      },
+      {
+        "route": "/products",
+        "kind": "html",
+        "bytes": 4154512,
+        "gzip_bytes": 236933,
+        "ms": 672.1162999999997
+      },
+      {
+        "route": "/products",
+        "kind": "rsc",
+        "bytes": 3597027,
+        "gzip_bytes": 229934,
+        "ms": 531.2313000000004
+      },
+      {
+        "route": "/customers",
+        "kind": "html",
+        "bytes": 4160256,
+        "gzip_bytes": 237401,
+        "ms": 636.0127000000011
+      },
+      {
+        "route": "/customers",
+        "kind": "rsc",
+        "bytes": 3597018,
+        "gzip_bytes": 229910,
+        "ms": 491.4974999999995
+      },
+      {
+        "route": "/territories",
+        "kind": "html",
+        "bytes": 4161685,
+        "gzip_bytes": 237213,
+        "ms": 638.8894999999993
+      },
+      {
+        "route": "/territories",
+        "kind": "rsc",
+        "bytes": 3597036,
+        "gzip_bytes": 229932,
+        "ms": 526.0150000000012
+      },
+      {
+        "route": "/filters",
+        "kind": "html",
+        "bytes": 4152363,
+        "gzip_bytes": 236272,
+        "ms": 598.4715000000015
+      },
+      {
+        "route": "/filters",
+        "kind": "rsc",
+        "bytes": 3597010,
+        "gzip_bytes": 229915,
+        "ms": 543.7781999999988
+      },
+      {
+        "route": "/definitions",
+        "kind": "html",
+        "bytes": 28112,
+        "gzip_bytes": 7190,
+        "ms": 82.41880000000128
+      },
+      {
+        "route": "/definitions",
+        "kind": "rsc",
+        "bytes": 12411,
+        "gzip_bytes": 4384,
+        "ms": 88.27139999999963
+      }
+    ],
+    "payloads_after": [
+      {
+        "route": "/",
+        "kind": "html",
+        "bytes": 18231,
+        "gzip_bytes": 5708,
+        "ms": 2491.7733999999996
+      },
+      {
+        "route": "/",
+        "kind": "rsc",
+        "bytes": 5408,
+        "gzip_bytes": 2212,
+        "ms": 444.1153999999997
+      },
+      {
+        "route": "/trends",
+        "kind": "html",
+        "bytes": 27866,
+        "gzip_bytes": 7617,
+        "ms": 458.95889999999963
+      },
+      {
+        "route": "/trends",
+        "kind": "rsc",
+        "bytes": 11582,
+        "gzip_bytes": 3505,
+        "ms": 497.53789999999935
+      },
+      {
+        "route": "/products",
+        "kind": "html",
+        "bytes": 73071,
+        "gzip_bytes": 13322,
+        "ms": 440.8922999999995
+      },
+      {
+        "route": "/products",
+        "kind": "rsc",
+        "bytes": 51946,
+        "gzip_bytes": 8784,
+        "ms": 476.79119999999966
+      },
+      {
+        "route": "/customers",
+        "kind": "html",
+        "bytes": 1362995,
+        "gzip_bytes": 182007,
+        "ms": 714.1755000000003
+      },
+      {
+        "route": "/customers",
+        "kind": "rsc",
+        "bytes": 1151423,
+        "gzip_bytes": 174089,
+        "ms": 494.3115999999991
+      },
+      {
+        "route": "/territories",
+        "kind": "html",
+        "bytes": 29380,
+        "gzip_bytes": 6570,
+        "ms": 435.5041999999994
+      },
+      {
+        "route": "/territories",
+        "kind": "rsc",
+        "bytes": 7347,
+        "gzip_bytes": 2608,
+        "ms": 430.46790000000146
+      },
+      {
+        "route": "/filters",
+        "kind": "html",
+        "bytes": 18092,
+        "gzip_bytes": 5307,
+        "ms": 414.45430000000124
+      },
+      {
+        "route": "/filters",
+        "kind": "rsc",
+        "bytes": 5597,
+        "gzip_bytes": 2135,
+        "ms": 449.1298000000006
+      },
+      {
+        "route": "/definitions",
+        "kind": "html",
+        "bytes": 28112,
+        "gzip_bytes": 7192,
+        "ms": 80.69590000000062
+      },
+      {
+        "route": "/definitions",
+        "kind": "rsc",
+        "bytes": 12411,
+        "gzip_bytes": 4388,
+        "ms": 76.19549999999981
+      }
+    ],
+    "benchmark": {
+      "mode": "real_adventureworks",
+      "code_revision": "9b2e711b4ab495540324a8d4e36e1142321b96e8",
+      "working_tree_dirty": true,
+      "node": "v22.23.2",
+      "platform": "win32",
+      "artifact": {
+        "file": "adventureworks2022.json",
+        "bytes": 16136806,
+        "sha256": "b4b22c99becf5b7e26a53c8b3d04280b99db3fd28b2dccf9d16c01c682e80040",
+        "content_sha256": "2204bd6a695c0657692e28e9848b5eb1628b50e3dfb463683d322487824938dd",
+        "snapshot_id": "20261019T001836Z-ee2547d8e90749b68133c76a806f9e6f"
+      },
+      "input_fingerprint": "97213a5b66b6cacb8229182a65442bf8bf66c6eb9430120f01afedb8ac5cfe89",
+      "traced_files": 122,
+      "traced_bytes": 18064954,
+      "samples": [
+        {
+          "load_validate_ms": 2783.8986999999997,
+          "compose_serialize_ms": 483.2515000000003,
+          "response_bytes": 3592604,
+          "response_gzip_bytes": 227833,
+          "rss_bytes": 266903552
+        },
+        {
+          "load_validate_ms": 100.9351999999999,
+          "compose_serialize_ms": 554.3095000000003,
+          "response_bytes": 3592604,
+          "response_gzip_bytes": 227833,
+          "rss_bytes": 284315648
+        },
+        {
+          "load_validate_ms": 61.51919999999973,
+          "compose_serialize_ms": 584.5951999999997,
+          "response_bytes": 3592604,
+          "response_gzip_bytes": 227833,
+          "rss_bytes": 301899776
+        },
+        {
+          "load_validate_ms": 79.57189999999991,
+          "compose_serialize_ms": 694.2746999999999,
+          "response_bytes": 3592604,
+          "response_gzip_bytes": 227833,
+          "rss_bytes": 318705664
+        },
+        {
+          "load_validate_ms": 73.29719999999998,
+          "compose_serialize_ms": 611.1695,
+          "response_bytes": 3592604,
+          "response_gzip_bytes": 227833,
+          "rss_bytes": 336576512
+        }
+      ],
+      "peak_rss_bytes": 336982016,
+      "limitations": [
+        "Local Windows Node/Vite module harness, not a serverless benchmark",
+        "Sequential, all-data responses; first iteration cold module data, OS cache uncontrolled",
+        "Vite harness contributes memory overhead; process peak includes validation transient allocations",
+        "No concurrency or hosted cold-start guarantee"
+      ]
+    },
+    "artifact_audit": {
+      "result": "pass",
+      "mode": "real_adventureworks",
+      "code_revision": "9b2e711b4ab495540324a8d4e36e1142321b96e8",
+      "working_tree_dirty": true,
+      "environment": {
+        "node": "v22.23.2",
+        "platform": "win32"
+      },
+      "artifact_sha256": "b4b22c99becf5b7e26a53c8b3d04280b99db3fd28b2dccf9d16c01c682e80040",
+      "content_sha256": "2204bd6a695c0657692e28e9848b5eb1628b50e3dfb463683d322487824938dd",
+      "snapshot_id": "20261019T001836Z-ee2547d8e90749b68133c76a806f9e6f",
+      "manifest_identity": "match",
+      "unexpected_fields": 0,
+      "suspicious_string_matches": 0,
+      "fixture_unchanged": true,
+      "candidate_unchanged": true,
+      "production_route_statuses": {
+        "exact": 200,
+        "altered_after_warm_load": 503,
+        "absent_after_warm_load": 503,
+        "restored": 200
+      },
+      "altered_sha256": "dd81c8f83b1a5397782f0dcb7a44ee3c111101e56edb24a7387051f244d19c1b",
+      "altered_bytes": 16136806,
+      "limitations": [
+        "Schema allowlist and string-pattern checks are content review aids, not anonymization or legal clearance",
+        "Production route/loader executed through local Vite harness in isolated directory; not a hosted deployment"
+      ]
+    },
+    "hosted_validation_executed": false,
+    "staging_list": "docs/issue-16-staging.txt",
+    "checks": {
+      "unit_tests": 33,
+      "production_browser_tests": 12,
+      "fixture_browser_tests": 12,
+      "http_sql_scenarios": 6,
+      "fixture_reproduction": "pass",
+      "format": "pass",
+      "typecheck": "pass",
+      "build": "pass",
+      "artifact_audit": "pass",
+      "git_artifact_text_attribute": "unset; filtered and unfiltered blob hashes match",
+      "stale_or_mismatched_mode_evidence": "incomplete, verified"
+    },
+    "browser_reports": {
+      "sample": {
+        "mode": "real_adventureworks",
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0,
+        "start_time": "2026-10-20T23:13:20.170Z",
+        "duration_ms": 95547.526,
+        "evidence": "pass"
+      },
+      "fixture": {
+        "mode": "offline_fixture",
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0,
+        "start_time": "2026-10-20T23:15:25.095Z",
+        "duration_ms": 67104.858,
+        "evidence": "pass"
+      }
+    },
+    "limitations": [
+      "Local controlled servers; Linux CI and hosted validation unexecuted",
+      "Prior 22-test Python/dbt suite retained as earlier evidence, not rerun for this UI-only review",
+      "First fixture attempt encountered development reload churn; restarted server and completed all 12 tests successfully",
+      "Temporary external config initially redirected report output into a nested folder; absolute reporter paths and explicit data-mode verification fixed it; both suites rerun and current raw reports verified"
+    ]
+  },
+  "proposed_staging": {
+    "approval_required": false,
+    "files": [
+      ".gitattributes",
+      ".gitignore",
+      "AGENTS.md",
+      "README.md",
+      "apps/web/AGENTS.md",
+      "apps/web/app/definitions/page.tsx",
+      "apps/web/components/analytics-page.tsx",
+      "apps/web/components/customers.tsx",
+      "apps/web/components/dashboard.tsx",
+      "apps/web/components/disclosure.tsx",
+      "apps/web/components/views.tsx",
+      "apps/web/data/adventureworks2022.json",
+      "apps/web/e2e/dashboard.spec.ts",
+      "apps/web/lib/comparison.ts",
+      "apps/web/lib/data.ts",
+      "apps/web/lib/page-data.ts",
+      "apps/web/next.config.ts",
+      "apps/web/playwright.config.ts",
+      "apps/web/public/notices/microsoft-sql-server-samples.txt",
+      "apps/web/scripts/benchmark-artifact.mjs",
+      "apps/web/scripts/evidence.mjs",
+      "apps/web/scripts/measure-page-payloads.mjs",
+      "apps/web/scripts/review-artifact.mjs",
+      "apps/web/tests/dashboard.test.tsx",
+      "apps/web/tests/data.test.ts",
+      "apps/web/tests/page-data.test.ts",
+      "docs/dashboard-artifact-review.json",
+      "docs/dashboard-artifact-review.md",
+      "docs/dashboard-publication.md",
+      "docs/data-redistribution.md",
+      "docs/issue-16-staging.txt",
+      "docs/sales-dashboard.md"
+    ],
+    "conditional_real_derived_file": "apps/web/data/adventureworks2022.json; exact bytes explicitly approved for repository draft PR",
+    "excluded": "All output/, temporary test reports/configuration, .next/, node_modules/, snapshots, backups, databases, credentials and screenshots; generated apps/web/debug.log"
+  },
+  "licensing": {
+    "assessment": "conditional; not legal clearance",
+    "upstream_notice_url": "https://github.com/microsoft/sql-server-samples/blob/master/license.txt",
+    "overview_url": "https://learn.microsoft.com/en-us/sql/samples/sql-samples-where-are",
+    "sources_rechecked_on": "2026-10-20",
+    "notice_sha256_normalized_lf": "4071597c1942e5d45dfc8aced070b8930f038022183a376edd6af266f9dc450e",
+    "asset_specific_data_grant_located": false,
+    "original_project_code_license": "not selected"
+  },
+  "artifact_git_attributes": {
+    "file": ".gitattributes",
+    "rule": "apps/web/data/adventureworks2022.json -text whitespace=cr-at-eol",
+    "verified_text_attribute": "unset",
+    "purpose": "Preserve exact approved CRLF bytes and treat CR at end of line as intentional for whitespace checks"
+  },
+  "repository_publication_approval": {
+    "date": "2026-10-20",
+    "authority": "Explicit user authorization in Codex chat",
+    "artifact_path": "apps/web/data/adventureworks2022.json",
+    "bytes": 16136806,
+    "sha256": "b4b22c99becf5b7e26a53c8b3d04280b99db3fd28b2dccf9d16c01c682e80040",
+    "scope": [
+      "Stage exactly the 32 paths in docs/issue-16-staging.txt",
+      "Commit and push feature/16-adventureworks-dashboard-publication",
+      "Open a public-repository draft PR targeting main and run CI"
+    ],
+    "acknowledged": [
+      "Numeric customer identifiers",
+      "Conditional Microsoft sample-data licensing assessment",
+      "Unverified original acquisition URL",
+      "Included Microsoft notice"
+    ],
+    "not_authorized": [
+      "Merge",
+      "Mark ready for review",
+      "Any Vercel deployment",
+      "Close Issue #16",
+      "Change production configuration"
+    ]
+  }
+}

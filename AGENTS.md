@@ -62,7 +62,7 @@ AGENTS.md
 - Keep data access/composition separate from presentation. Exact amounts cross JSON as decimal strings; compose financial values with scaled integers, never floating point.
 - Date and order territory affect all views. Category filters affect product/category views only; do not allocate header money or sum overlapping product/category order counts.
 - Dashboard USD presentation follows the reviewed `docs/currency-interpretation.md`: native sample amounts, no FX conversion; preserve exact calculations and source precision.
-- Only explicitly fictional fixtures/screenshots may be tracked. Real-derived exports remain under ignored `output/`, selected by server-only `AW_DASHBOARD_DATA`.
+- Project-created fictional fixtures/screenshots remain available for tests and rollback. Real-derived exports remain ignored under `output/`; only an explicitly approved exact static aggregate artifact may be added for publication, with pinned full-file/content hashes, snapshot identity, review manifest, Microsoft notice and a path-specific Git `-text` attribute to preserve exact bytes. Never stage that artifact before explicit redistribution approval. `AW_DASHBOARD_DATA` is development-only; production loads the fixed reviewed artifact and fails closed.
 - Use `npm ci`, formatting, typecheck, Vitest, a production build and Playwright for web changes. Preserve Python/dbt gates and fixture-content reproduction checks.
 - Do not deploy, add authentication/persistence, dashboard builders or future product scope without a separate user request.
 

@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import type { DashboardData } from "../lib/data";
+import type { PageDataByView } from "../lib/page-data";
 import { comparisonWidths, type ComparisonMetric } from "../lib/comparison";
 import { count, money, displayAmount } from "../lib/format";
 import { Panel, Empty } from "./panels";
@@ -33,15 +33,33 @@ export function ComparisonValue({
     </span>
   );
 }
-export function CustomersView({ data }: { data: DashboardData }) {
+export function CustomersView({ data }: { data: PageDataByView["customers"] }) {
+  const customers = useMemo(
+    () =>
+      data.customerValues.map(
+        ([
+          key,
+          name,
+          order_count,
+          net_line_sales,
+          contribution,
+          average_order_value,
+        ]) => ({
+          key,
+          name,
+          order_count,
+          net_line_sales,
+          contribution,
+          average_order_value,
+        }),
+      ),
+    [data.customerValues],
+  );
   const [search, setSearch] = useState(""),
     [sort, setSort] = useState("sales"),
     [page, setPage] = useState(0);
-  const widths = useMemo(
-    () => comparisonWidths(data.customers),
-    [data.customers],
-  );
-  const visible = data.customers
+  const widths = useMemo(() => comparisonWidths(customers), [customers]);
+  const visible = customers
     .filter((r) => r.name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) =>
       sort === "orders"
@@ -66,13 +84,13 @@ export function CustomersView({ data }: { data: DashboardData }) {
       subtitle="Sales and order frequency in the selected period · all categories"
       action={
         <span className="panel-badge">
-          {count(data.customers.length)} customers with sales
+          {count(customers.length)} customers with sales
         </span>
       }
     >
       <p className="comparison-note">
         Relative comparisons: each column runs from its own observed minimum to
-        maximum across all {count(data.customers.length)} customers matching the
+        maximum across all {count(customers.length)} customers matching the
         applied date and territory. Search and pagination do not rescale bars.
         Bar lengths are not shares of a total. Identical positive values fill
         the bar; zeros stay empty.

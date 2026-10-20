@@ -7,6 +7,8 @@ import demo from "../data/demo.json";
 import {
   dashboard,
   loadDocument,
+  PUBLIC_ARTIFACT,
+  validatePublicArtifact,
   validateDocument,
   validateFilter,
   stableJson,
@@ -278,8 +280,58 @@ describe("URL boundary and multi-selection", () => {
   });
 });
 
-describe("production publication fixture boundary", () => {
+describe("production publication artifact boundary", () => {
+  const pins = { ...PUBLIC_ARTIFACT };
+  // Small fictional content exercises each policy branch without a source dataset in CI.
+  function candidate() {
+    const doc = structuredClone(demo);
+    doc.provenance.mode = "real_adventureworks";
+    doc.provenance.snapshot_id = pins.snapshot_id;
+    return doc;
+  }
+  function pin(raw: Buffer) {
+    Object.assign(PUBLIC_ARTIFACT, {
+      bytes: raw.length,
+      sha256: createHash("sha256").update(raw).digest("hex"),
+      content_sha256: demo.content_sha256,
+    });
+  }
+  it("accepts exact pinned bytes and rejects byte tampering", () => {
+    const raw = Buffer.from(JSON.stringify(candidate()));
+    pin(raw);
+    expect(validatePublicArtifact(raw).provenance.mode).toBe(
+      "real_adventureworks",
+    );
+    expect(() =>
+      validatePublicArtifact(Buffer.concat([raw, Buffer.from(" ")])),
+    ).toThrow("file checksum");
+    const corrupt = Buffer.from(raw);
+    corrupt[0] = 32;
+    expect(() => validatePublicArtifact(corrupt)).toThrow("file checksum");
+  });
+  it.each(["mode", "snapshot", "content", "internal"])(
+    "rejects wrong %s even with matching file pin",
+    (field) => {
+      const doc = candidate();
+      if (field === "mode") doc.provenance.mode = "offline_fixture";
+      if (field === "snapshot") doc.provenance.snapshot_id = "unexpected";
+      if (field === "internal")
+        doc.data.customers[0].net_line_sales = "0.000000";
+      const raw = Buffer.from(JSON.stringify(doc));
+      pin(raw);
+      if (field === "content")
+        Object.assign(PUBLIC_ARTIFACT, { content_sha256: "0".repeat(64) });
+      expect(() => validatePublicArtifact(raw)).toThrow(
+        field === "mode"
+          ? "requires AdventureWorks"
+          : field === "snapshot"
+            ? "snapshot"
+            : "checksum",
+      );
+    },
+  );
   afterEach(() => {
+    Object.assign(PUBLIC_ARTIFACT, pins);
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
   });
@@ -291,14 +343,45 @@ describe("production publication fixture boundary", () => {
       await writeFile(externalFile, "{ invalid JSON", "utf8");
       vi.stubEnv("NODE_ENV", "production");
       vi.stubEnv("AW_DASHBOARD_DATA", externalFile);
+      const raw = Buffer.from(JSON.stringify(candidate()));
+      pin(raw);
+      await mkdir(path.join(directory, "data"));
+      await writeFile(path.join(directory, "data", PUBLIC_ARTIFACT.file), raw);
+      vi.spyOn(process, "cwd").mockReturnValue(directory);
       const document = await loadDocument();
-      expect(document.provenance.mode).toBe("offline_fixture");
+      expect(document.provenance.mode).toBe("real_adventureworks");
       expect(document.content_sha256).toBe(demo.content_sha256);
+      expect(Object.isFrozen(document.data.customers[0])).toBe(true);
+      expect(() => {
+        document.data.customers[0].net_line_sales = "0.000000";
+      }).toThrow();
+      // Cached validation must never conceal changed or missing packaged bytes.
+      await writeFile(
+        path.join(directory, "data", PUBLIC_ARTIFACT.file),
+        "tampered",
+      );
+      await expect(loadDocument()).rejects.toThrow("file checksum");
+      await rm(path.join(directory, "data", PUBLIC_ARTIFACT.file));
+      await expect(loadDocument()).rejects.toThrow();
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
   });
 
+  it("fails closed when the fixed production file is absent", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "aw-missing-"));
+    try {
+      vi.spyOn(process, "cwd").mockReturnValue(directory);
+      vi.stubEnv("NODE_ENV", "production");
+      const external = path.join(directory, "external.json");
+      await writeFile(external, JSON.stringify(demo));
+      vi.stubEnv("AW_DASHBOARD_DATA", external);
+      await expect(loadDocument()).rejects.toThrow();
+    } finally {
+      vi.restoreAllMocks();
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
   it("retains explicit local fixture override for development", async () => {
     const directory = await mkdtemp(path.join(tmpdir(), "aw-dashboard-"));
     const externalFile = path.join(directory, "external.json");
@@ -318,7 +401,7 @@ describe("production publication fixture boundary", () => {
     }
   });
 
-  it("rejects otherwise valid non-fixture provenance at the production fixture path", async () => {
+  it("rejects unapproved bytes at the production artifact path", async () => {
     const directory = await mkdtemp(path.join(tmpdir(), "aw-dashboard-"));
     try {
       const mislabeled = structuredClone(demo);
@@ -329,13 +412,13 @@ describe("production publication fixture boundary", () => {
       );
       await mkdir(path.join(directory, "data"));
       await writeFile(
-        path.join(directory, "data", "demo.json"),
+        path.join(directory, "data", PUBLIC_ARTIFACT.file),
         JSON.stringify(mislabeled),
       );
       vi.spyOn(process, "cwd").mockReturnValue(directory);
       vi.stubEnv("NODE_ENV", "production");
       await expect(loadDocument()).rejects.toThrow(
-        "Production dashboard requires fictional demonstration data",
+        "Unapproved dashboard file checksum",
       );
     } finally {
       vi.restoreAllMocks();

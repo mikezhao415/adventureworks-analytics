@@ -12,8 +12,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 - Follow repository-root AGENTS.md and docs/sales-dashboard.md.
 - This is one local sales dashboard, not a configurable BI platform. No deployment is authorized.
-- Keep filesystem/data parsing and exact metric composition in lib/data.ts on the server; components consume typed view data.
-- The tracked data/demo.json is explicitly fictional. Real source exports must remain ignored under repository output/ and selected by AW_DASHBOARD_DATA.
+- Keep filesystem/data parsing and exact metric composition in lib/data.ts on the server; components consume typed view data. Project only the selected view's required props before the client boundary; do not serialize unrelated full row sets into HTML/RSC. Preserve all records required for interactive search/sort/pagination.
+- The tracked data/demo.json is explicitly fictional and must remain available. Real source exports stay ignored under output/. The fixed data/adventureworks2022.json artifact has explicit repository-publication approval; replacement bytes need fresh review/approval. Production accepts only its pinned bytes, content hash and snapshot. AW_DASHBOARD_DATA works only outside production.
 - Date and territory filter all views; category filters product/category views only. Make scope visible.
-- Run npm run format:check, npm run typecheck, npm test, npm run build, npm run test:e2e. Run npm run evidence after tests.
+- Run npm run format:check, npm run typecheck, npm test, npm run build, npm run test:e2e. Run npm run evidence after tests. Default Playwright uses the fictional development server; AW_E2E_SAMPLE=1 runs the same suite against the production sample build and must never capture tracked screenshots.
 - Screenshots committed to docs/screenshots must use the fictional fixture and show the demo disclosure. Never capture real data for public artifacts.

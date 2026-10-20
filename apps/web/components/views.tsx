@@ -1,6 +1,6 @@
 "use client";
 import { Globe2 } from "lucide-react";
-import type { DashboardData } from "../lib/data";
+import type { PageDataByView } from "../lib/page-data";
 import {
   count,
   money,
@@ -12,7 +12,7 @@ import { Kpi } from "./kpi";
 import { SalesTrend, CategoryChart } from "./charts";
 import { Panel, Empty, ExactTable } from "./panels";
 
-export function OverviewView({ data }: { data: DashboardData }) {
+export function OverviewView({ data }: { data: PageDataByView["overview"] }) {
   return (
     <>
       <div className="kpi-grid">
@@ -58,16 +58,16 @@ export function OverviewView({ data }: { data: DashboardData }) {
           </div>
           <div>
             <dt>Months with shipped sales</dt>
-            <dd>{count(data.monthly.length)}</dd>
+            <dd>{count(data.counts.months)}</dd>
           </div>
           <div>
             <dt>Customers with shipped sales</dt>
-            <dd>{count(data.customers.length)}</dd>
+            <dd>{count(data.counts.customers)}</dd>
           </div>
           <div>
             <dt>Territories with shipped sales</dt>
             <dd>
-              {count(data.territories.length)}
+              {count(data.counts.territories)}
               <small>Based on order territory, across all categories.</small>
             </dd>
           </div>
@@ -81,7 +81,7 @@ export function OverviewView({ data }: { data: DashboardData }) {
     </>
   );
 }
-export function TrendsView({ data }: { data: DashboardData }) {
+export function TrendsView({ data }: { data: PageDataByView["trends"] }) {
   return (
     <Panel
       id="trends"
@@ -128,7 +128,7 @@ export function TrendsView({ data }: { data: DashboardData }) {
     </Panel>
   );
 }
-export function ProductsView({ data }: { data: DashboardData }) {
+export function ProductsView({ data }: { data: PageDataByView["products"] }) {
   const selectedCategory =
     data.filters.category !== "all"
       ? data.options.categories
@@ -240,7 +240,11 @@ export function ProductsView({ data }: { data: DashboardData }) {
     </div>
   );
 }
-export function TerritoriesView({ data }: { data: DashboardData }) {
+export function TerritoriesView({
+  data,
+}: {
+  data: PageDataByView["territories"];
+}) {
   return (
     <Panel
       id="territories"
