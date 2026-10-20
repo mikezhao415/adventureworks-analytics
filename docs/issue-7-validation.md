@@ -292,3 +292,14 @@ territory/category multi-selection remain unchanged. The Playwright date-filter
 scenario was updated to cover custom date application, invalid range rejection
 and reset. This refinement requires fresh CI verification on the new commit;
 prior passing test runs do not validate these changes.
+
+
+## Mobile acceptance adjustments - October 20, 2026
+
+At user request, Configure Filters is right-aligned below the applied filter
+summary on narrow screens. All KPI information icons and interactive popovers
+were removed on desktop and mobile due to unreliable mobile interaction.
+Accessible noninteractive KPI descriptions and the Data & Definitions navigation
+remain. Frontend and browser assertions now check the absence of KPI information
+controls; mobile browser coverage also checks filter-action right alignment.
+Fresh CI is required for this revision; prior results do not validate it.
