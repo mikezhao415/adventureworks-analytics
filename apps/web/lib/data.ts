@@ -72,7 +72,10 @@ export async function loadDocument(): Promise<DashboardDocument> {
   const doc = validateDocument(
     JSON.parse(await readFile(/* turbopackIgnore: true */ file, "utf8")),
   );
-  if (process.env.NODE_ENV === "production" && doc.provenance.mode !== "offline_fixture")
+  if (
+    process.env.NODE_ENV === "production" &&
+    doc.provenance.mode !== "offline_fixture"
+  )
     throw new Error("Production dashboard requires fictional demonstration data");
   return doc;
 }
