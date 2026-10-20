@@ -1,8 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { writeFile, mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { createHash } from "node:crypto";
 import demo from "../data/demo.json";
 import {
   dashboard,
+  loadDocument,
   validateDocument,
   validateFilter,
   stableJson,
@@ -271,5 +275,39 @@ describe("URL boundary and multi-selection", () => {
         category: "all",
       }),
     ).toContain("territory=1%2C2");
+  });
+});
+
+describe("production publication fixture boundary", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("ignores an external data override in production", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "aw-dashboard-"));
+    const externalFile = path.join(directory, "external.json");
+    try {
+      await writeFile(externalFile, "{ invalid JSON", "utf8");
+      vi.stubEnv("NODE_ENV", "production");
+      vi.stubEnv("AW_DASHBOARD_DATA", externalFile);
+      const document = await loadDocument();
+      expect(document.provenance.mode).toBe("offline_fixture");
+      expect(document.content_sha256).toBe(demo.content_sha256);
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("retains explicit local fixture override for development", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "aw-dashboard-"));
+    const externalFile = path.join(directory, "external.json");
+    try {
+      await writeFile(externalFile, "{ invalid JSON", "utf8");
+      vi.stubEnv("NODE_ENV", "test");
+      vi.stubEnv("AW_DASHBOARD_DATA", externalFile);
+      await expect(loadDocument()).rejects.toThrow();
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 });
