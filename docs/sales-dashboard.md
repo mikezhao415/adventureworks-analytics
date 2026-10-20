@@ -37,6 +37,9 @@ npm run start
 ```
 
 Both scripts bind to `127.0.0.1`. This issue does not deploy the application.
+Production builds always use the checked-in fictional fixture, ignore
+`AW_DASHBOARD_DATA`, and reject non-`offline_fixture` provenance. Local export
+overrides are supported only outside production; use `npm run dev` for them.
 Do not run a build while a test or production server is using that same `.next`
 output; stop that owned process first. The dev server uses `.next/dev`.
 
@@ -264,7 +267,7 @@ remain local or in the seven-day CI artifact. Playwright artifacts have a separa
 subdirectory so they do not erase the preceding Vitest report. Missing reports
 are labeled incomplete; a partial run is not passing evidence.
 
-For an existing **real local export**, start a production server with that input,
+For an existing **real local export**, start a development server with that input,
 then run `scripts/check_dashboard_api.py --base-url http://127.0.0.1:PORT` from the
 repository root. It compares six complete HTTP filter scenarios against fresh
 read-only SQL over the published facts: all data, combined date/territory/category,

@@ -12,7 +12,11 @@ export default defineConfig({
   ],
   use: { baseURL: "http://127.0.0.1:3100", trace: "retain-on-failure" },
   webServer: {
-    env: { AW_DASHBOARD_DATA: "", NEXT_TELEMETRY_DISABLED: "1" },
+    // A missing external export must never affect the production server.
+    env: {
+      AW_DASHBOARD_DATA: "publication-override-must-not-load.json",
+      NEXT_TELEMETRY_DISABLED: "1",
+    },
     command: "npm run start -- --port 3100",
     url: "http://127.0.0.1:3100",
     reuseExistingServer: false,

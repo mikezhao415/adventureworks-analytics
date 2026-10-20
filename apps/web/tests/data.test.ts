@@ -1,8 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { writeFile, mkdtemp, mkdir, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { createHash } from "node:crypto";
 import demo from "../data/demo.json";
 import {
   dashboard,
+  loadDocument,
   validateDocument,
   validateFilter,
   stableJson,
@@ -271,5 +275,71 @@ describe("URL boundary and multi-selection", () => {
         category: "all",
       }),
     ).toContain("territory=1%2C2");
+  });
+});
+
+describe("production publication fixture boundary", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+  });
+
+  it("ignores an external data override in production", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "aw-dashboard-"));
+    const externalFile = path.join(directory, "external.json");
+    try {
+      await writeFile(externalFile, "{ invalid JSON", "utf8");
+      vi.stubEnv("NODE_ENV", "production");
+      vi.stubEnv("AW_DASHBOARD_DATA", externalFile);
+      const document = await loadDocument();
+      expect(document.provenance.mode).toBe("offline_fixture");
+      expect(document.content_sha256).toBe(demo.content_sha256);
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("retains explicit local fixture override for development", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "aw-dashboard-"));
+    const externalFile = path.join(directory, "external.json");
+    try {
+      await writeFile(externalFile, "{ invalid JSON", "utf8");
+      vi.stubEnv("NODE_ENV", "development");
+      vi.stubEnv("AW_DASHBOARD_DATA", externalFile);
+      await expect(loadDocument()).rejects.toThrow(SyntaxError);
+      const local = structuredClone(demo);
+      local.provenance.snapshot_id = "fictional-development-override";
+      await writeFile(externalFile, JSON.stringify(local), "utf8");
+      expect((await loadDocument()).provenance.snapshot_id).toBe(
+        "fictional-development-override",
+      );
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects otherwise valid non-fixture provenance at the production fixture path", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "aw-dashboard-"));
+    try {
+      const mislabeled = structuredClone(demo);
+      // Fictional content only: exercise the provenance guard without real data.
+      mislabeled.provenance.mode = "real_adventureworks";
+      expect(validateDocument(mislabeled).provenance.mode).toBe(
+        "real_adventureworks",
+      );
+      await mkdir(path.join(directory, "data"));
+      await writeFile(
+        path.join(directory, "data", "demo.json"),
+        JSON.stringify(mislabeled),
+      );
+      vi.spyOn(process, "cwd").mockReturnValue(directory);
+      vi.stubEnv("NODE_ENV", "production");
+      await expect(loadDocument()).rejects.toThrow(
+        "Production dashboard requires fictional demonstration data",
+      );
+    } finally {
+      vi.restoreAllMocks();
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 });

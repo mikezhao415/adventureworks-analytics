@@ -1,6 +1,30 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { PAGES } from "../lib/navigation";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+test("production API uses the fictional fixture and traces it for deployment", async ({
+  request,
+}) => {
+  const response = await request.get("/api/dashboard");
+  expect(response.status()).toBe(200);
+  const body = await response.json();
+  const demo = JSON.parse(await readFile("data/demo.json", "utf8"));
+  expect(body.provenance.mode).toBe("offline_fixture");
+  expect(body.provenance.input_fingerprint).toBe(
+    demo.provenance.input_fingerprint,
+  );
+  const tracePath = path.resolve(
+    ".next/server/app/api/dashboard/route.js.nft.json",
+  );
+  const trace = JSON.parse(await readFile(tracePath, "utf8"));
+  expect(
+    trace.files.map((file: string) =>
+      path.resolve(path.dirname(tracePath), file),
+    ),
+  ).toContain(path.resolve("data/demo.json"));
+});
 test("drafts, unions, persistence, browser history and reset", async ({
   page,
 }) => {
