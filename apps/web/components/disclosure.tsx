@@ -22,8 +22,8 @@ export function Disclosure({ context }: { context: DataContext }) {
             ? "Deterministic fixtures — not actual AdventureWorks results."
             : "Validated local data — not a live sales feed."}{" "}
           Source period {context.period.start || "empty"} to{" "}
-          {context.period.end || "empty"}. Amounts use source monetary units;
-          currency is unverified.
+          {context.period.end || "empty"}. Amounts shown in USD; no currency
+          conversion applied.
         </span>
       </p>
       <span className="context-tag">

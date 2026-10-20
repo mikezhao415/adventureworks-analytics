@@ -80,12 +80,17 @@ export default async function Definitions() {
           <div>
             <dt>Display amounts and currency</dt>
             <dd>
-              Headline and ranking amounts use en-US grouping with zero fraction
-              digits, rounding only after exact aggregation. Detailed data
-              retains the original decimal strings. The nine-table source
-              contract does not establish an independently verified currency
-              denomination: values remain source monetary units, not a USD
-              conversion or verified USD label.
+              USD — native AdventureWorks sample amounts; no currency conversion
+              applied. Headline sales and AOV use en-US USD currency formatting
+              with zero fraction digits, rounding only after exact aggregation.
+              Detailed data retains the original decimal strings. This
+              interpretation is supported by SQL Server currency-rate
+              relationships (all referenced rates originate in USD) and matching
+              native prices across rate groups, including orders without a rate.
+              Microsoft's OLTP schema does not explicitly label every monetary
+              column as USD or define NULL rate IDs as USD. The reviewed
+              interpretation applies to this inspected sample; fictional demo
+              amounts use the same presentation convention.
             </dd>
           </div>
           <div>

@@ -32,7 +32,7 @@ const props = {
 describe("page presentation and filter navigation", () => {
   it("renders only the selected page and source disclosure", () => {
     render(<Dashboard {...props} />);
-    expect(screen.getByTestId("sales-kpi")).toHaveTextContent("953,544");
+    expect(screen.getByTestId("sales-kpi")).toHaveTextContent("$953,544");
     expect(
       screen.getByText("Fictional demonstration data"),
     ).toBeInTheDocument();
@@ -135,9 +135,12 @@ describe("page presentation and filter navigation", () => {
   });
   it("rounds exact large amounts without Number precision loss and rejects repeated URL keys", () => {
     expect(displayAmount("9007199254740993.500000")).toBe(
-      "9,007,199,254,740,994",
+      "$9,007,199,254,740,994",
     );
     expect(displayAmount(null)).toBe("—");
+    expect(displayAmount("1234567.499999")).toBe("$1,234,567");
+    expect(displayAmount("2449.5000")).toBe("$2,450");
+    expect(displayAmount("0.000000")).toBe("$0");
     expect(() => scalarFilters({ territory: ["1", "2"] })).toThrow();
   });
 });

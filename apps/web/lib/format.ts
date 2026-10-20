@@ -37,10 +37,13 @@ export function money(value: string | null, places?: number): string {
 export function count(value: number): string {
   return value.toLocaleString("en-US");
 }
-export function compact(value: number): string {
+export function compactUSD(value: number): string {
   return new Intl.NumberFormat("en-US", {
     notation: "compact",
-    maximumFractionDigits: 1,
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(value);
 }
 export function shortMonth(value: string): string {
@@ -50,11 +53,13 @@ export function shortMonth(value: string): string {
   );
 }
 
-/** Display-only integer rounding, after aggregation. No verified currency denomination. */
+/** Approved native-USD presentation only; exact rounding after aggregation, without FX. */
 export function displayAmount(value: string | null): string {
   if (value === null) return "—";
   const rounded = BigInt(money(value, 0).replaceAll(",", ""));
   return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(rounded);

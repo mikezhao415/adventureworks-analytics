@@ -20,7 +20,7 @@ export function OverviewView({ data }: { data: DashboardData }) {
           label={METRICS.sales.label}
           value={displayAmount(data.summary.net_line_sales)}
           detail="Excludes tax & freight · all categories"
-          description={`${METRICS.sales.description} Exact: ${money(data.summary.net_line_sales)}`}
+          description={`${METRICS.sales.description} Exact USD: ${money(data.summary.net_line_sales)}`}
           accent
         />
         <Kpi
@@ -33,7 +33,7 @@ export function OverviewView({ data }: { data: DashboardData }) {
           label={METRICS.aov.label}
           value={displayAmount(data.summary.average_order_value)}
           detail="Header subtotal per order"
-          description={`${METRICS.aov.description} Exact: ${money(data.summary.average_order_value)}`}
+          description={`${METRICS.aov.description} Exact USD: ${money(data.summary.average_order_value)}`}
         />
         <Kpi
           label={METRICS.units.label}
@@ -53,7 +53,7 @@ export function OverviewView({ data }: { data: DashboardData }) {
             <dt>Header subtotal</dt>
             <dd>
               {displayAmount(data.summary.header_subtotal)}
-              <small>Exact: {money(data.summary.header_subtotal)}</small>
+              <small>Exact USD: {money(data.summary.header_subtotal)}</small>
             </dd>
           </div>
           <div>

@@ -135,11 +135,11 @@ min/max scales over every date/territory-filtered customer, before search or
 pagination. Exact decimal values remain alongside the display amounts. Empty,
 identical positive, zero and unavailable comparisons have explicit behavior.
 
-Currency decision remains pending manual acceptance: the source contract does
+At the initial visual refinement, the currency decision was pending: the source contract does
 not independently establish USD. The issue was flagged before changing the
 label. Zero-decimal en-US formatting is implemented with exact post-aggregation
-rounding, while source-unit labeling is retained. No conversion or verified USD
-claim is introduced. Using a USD display assumption requires an explicit decision.
+rounding, while source-unit labeling was retained. This was superseded by the reviewed
+USD interpretation below; financial calculations were not changed.
 
 Executed refinement checks on the modified branch based on `39d6b95`:
 
@@ -158,5 +158,56 @@ Local evidence reports the actual base revision and modified working tree; it
 must not be described as clean-head validation. The analytical exporter and API
 contract are unchanged. Earlier real-source checks above remain historical
 validation, not a claim of a new full-source or HTTP rerun for this refinement.
-PR #13 stays draft; visual acceptance, currency decision and merge approval
-remain with the user. Issue #7 is not complete and nothing has been deployed.
+PR #13 stays draft; visual acceptance and merge approval remain with the user. Issue #7 is not complete and nothing has been deployed.
+
+
+## Reviewed USD presentation and final visual refinement
+
+On October 19, 2026 the user accepted native USD presentation based on the
+read-only source investigation. The durable [currency interpretation](currency-interpretation.md)
+records the complete rate-group distribution, controlled price comparisons,
+Microsoft schema evidence, NULL-rate caveat and reproducible SQL. It includes
+findings, not raw local extracts or credentials. This supersedes the earlier
+pending currency decision.
+
+Headline/ranking sales and AOV now use en-US USD currency formatting with zero
+fraction digits, rounded only after exact aggregation. Exact decimal evidence
+remains available; no FX conversion, metric calculation, export contract, dbt
+model or API arithmetic changed. The definitions page includes the approved
+wording and explains that Microsoft's OLTP schema does not explicitly label
+every monetary column USD. The fictional demo uses the same display convention.
+All six pages, shared URL filters, independent customer bar scales and responsive
+navigation from the prior refinement are retained.
+
+Executed on the modified branch based on `e243a9e`:
+
+- `npm ci`, formatting, TypeScript, 15 unit/component tests and production build passed.
+- Six Playwright tests passed (35.0 seconds), covering desktop/Pixel 7 routes,
+  correct active links, applied query persistence, draft/apply/reset/history,
+  category scope, invalid/empty selections, USD presentation/definition caveat,
+  keyboard access, exact tables, no document-wide overflow and all-page axe checks.
+- 22 Python quality/regression tests passed (317.792 seconds).
+- Fictional fixture regeneration reproduced the unchanged logical content hash
+  `06b51c1b98d7a08baa7acae946142718e5d1ef362199c890c69126573d2de380`
+  through the 23-model/97-test pipeline.
+- Real local export revalidated the existing snapshot, independently reconciled
+  all 23 models and passed all six dashboard mart controls.
+- Four real-export HTTP filter scenarios independently matched read-only DuckDB
+  SQL across every returned summary/month/customer/territory/product/category
+  row and exact AOV: full data, combined date/territory/category, boundary day,
+  and empty selection.
+- A real-export server-rendered overview check confirmed real provenance and USD
+  sales/AOV presentation without a fixture fallback. No real screenshot was taken.
+- Four fictional desktop/mobile overview/customer screenshots were regenerated
+  and visually inspected. Both owned production/test servers were stopped.
+
+Local evidence records the actual base revision and modified working tree;
+it is not clean-final-head evidence. Logs remain in ignored
+`output/issue13-usd-*.log`, with real export and HTTP evidence under
+`output/dashboard/`. Web reports remain in `apps/web/test-results/`.
+Remote CI validates the pushed commit separately.
+
+Manual visual acceptance and merge approval remain outstanding. Physical devices,
+Firefox/Safari and manual screen-reader coverage were not tested. Currency lineage
+is still omitted by extraction; a future semantic-profile gate is documented as
+unimplemented. PR #13 remains draft, Issue #7 open, and hosting is not implemented.

@@ -5,13 +5,13 @@ test("URL filters, drafts, navigation, history and reset", async ({
 }, info) => {
   await page.goto("/");
   const sales = page.getByTestId("sales-kpi");
-  await expect(sales).toHaveText("953,544");
+  await expect(sales).toHaveText("$953,544");
   await page.getByLabel("Territory", { exact: true }).selectOption("1");
-  await expect(sales).toHaveText("953,544");
+  await expect(sales).toHaveText("$953,544");
   await expect(page).toHaveURL(/\/$/);
   await page.getByRole("button", { name: "Apply filters" }).click();
   await expect(page).toHaveURL(/territory=1/);
-  await expect(sales).not.toHaveText("953,544");
+  await expect(sales).not.toHaveText("$953,544");
   const selected = await sales.textContent();
   await page.getByLabel("Product category").selectOption("3");
   await page.getByRole("button", { name: "Apply filters" }).click();
@@ -33,7 +33,7 @@ test("URL filters, drafts, navigation, history and reset", async ({
   await expect(page.getByLabel("Product category")).toHaveValue("3");
   await page.getByRole("button", { name: "Reset filters" }).click();
   await expect(page).toHaveURL(/\/$/);
-  await expect(sales).toHaveText("953,544");
+  await expect(sales).toHaveText("$953,544");
   if (process.env.CAPTURE_DASHBOARD_SCREENSHOTS === "1")
     await page.screenshot({
       path: `../../docs/screenshots/sales-dashboard-${info.project.name}.png`,
@@ -59,11 +59,18 @@ test("all pages deep link, expose active navigation and pass accessibility", asy
       "href",
       path,
     );
-    if (path === "/definitions")
+    if (path === "/definitions") {
       await expect(page.getByLabel("Territory", { exact: true })).toHaveCount(
         0,
       );
-    else
+      await expect(
+        page.getByText(
+          "USD — native AdventureWorks sample amounts; no currency conversion applied.",
+          { exact: false },
+        ),
+      ).toBeVisible();
+      await expect(page.getByText(/OLTP schema does not/)).toBeVisible();
+    } else
       await expect(
         page.getByRole("button", { name: "Apply filters" }),
       ).toBeEnabled();
@@ -120,7 +127,7 @@ test("empty selections and invalid URLs fail closed", async ({
   request,
 }) => {
   await page.goto("/?start=2020-01-01&end=2020-12-31");
-  await expect(page.getByTestId("sales-kpi")).toHaveText("0");
+  await expect(page.getByTestId("sales-kpi")).toHaveText("$0");
   await expect(
     page.getByRole("article", { name: "Average order value" }),
   ).toContainText("—");

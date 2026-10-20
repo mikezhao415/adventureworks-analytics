@@ -86,7 +86,7 @@ part of this milestone. Quality automation is merged in PR #12.
 
 ## Initial sales metric contracts
 
-The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) defines shipped-order eligibility, order counts, units, six-decimal net line sales, four-decimal header amounts and AOV, calendar months, and customer/product/category/order-territory groups. Facts preserve all statuses. Header money is never allocated to product lines; product/category order counts overlap and are not additive. Amounts retain source monetary units without currency conversion or a recognized-revenue claim.
+The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) defines shipped-order eligibility, order counts, units, six-decimal net line sales, four-decimal header amounts and AOV, calendar months, and customer/product/category/order-territory groups. Facts preserve all statuses. Header money is never allocated to product lines; product/category order counts overlap and are not additive. Amounts retain source precision. Dashboard presentation uses the reviewed [native USD interpretation](docs/currency-interpretation.md), without FX conversion or a recognized-revenue claim.
 
 ## Roadmap
 

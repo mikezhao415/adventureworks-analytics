@@ -82,9 +82,11 @@ All amounts cross JSON as decimal strings. The server sums scaled integers using
 BigInt and rounds AOV half away from zero at four decimals, matching the existing
 metric contract. UI headlines and ranked sales/AOV amounts round to zero decimals with en-US grouping;
 exact source scales remain in chart alternatives, KPI descriptions and detailed
-amount cells. Currency denomination is unverified: amounts remain labeled source
-monetary units. USD symbols await an explicit reviewed display decision; no
-currency conversion or independently verified USD claim is made. Only chart coordinates/bar lengths use approximate JavaScript
+amount cells. USD presentation follows the reviewed [currency interpretation](currency-interpretation.md):
+native AdventureWorks sample amounts, with no currency conversion applied.
+SQL Server rate relationships and matching native prices support the interpretation;
+Microsoft's OLTP schema does not explicitly label every monetary column USD.
+Only chart coordinates/bar lengths use approximate JavaScript
 numbers. Customer contribution is the customer's net line sales divided by the
 selected all-category line-sales total, rounded to two percentage decimals.
 

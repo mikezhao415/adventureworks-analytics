@@ -12,7 +12,7 @@ import {
   Bar,
   Cell,
 } from "recharts";
-import { compact, money, shortMonth } from "../lib/format";
+import { compactUSD, displayAmount, money, shortMonth } from "../lib/format";
 import type { DashboardData } from "../lib/data";
 const COLORS = ["#315f52", "#75a28e", "#b0c4b7", "#cfac73", "#8c9fa7"];
 export function chartRows(rows: DashboardData["monthly"]) {
@@ -53,7 +53,7 @@ export function SalesTrend({ rows }: { rows: DashboardData["monthly"] }) {
           />
           <YAxis
             yAxisId="sales"
-            tickFormatter={compact}
+            tickFormatter={compactUSD}
             tickLine={false}
             axisLine={false}
             width={65}
@@ -74,7 +74,8 @@ export function SalesTrend({ rows }: { rows: DashboardData["monthly"] }) {
               return active && r ? (
                 <div className="chart-tooltip">
                   <strong>{r.label}</strong>
-                  <p>Net line sales: {money(r.net_line_sales)}</p>
+                  <p>Net line sales: {displayAmount(r.net_line_sales)}</p>
+                  <small>Exact USD: {money(r.net_line_sales)}</small>
                   <p>Orders: {r.order_count}</p>
                 </div>
               ) : null;
@@ -122,7 +123,7 @@ export function CategoryChart({ rows }: { rows: DashboardData["categories"] }) {
           <CartesianGrid horizontal={false} stroke="#edf0eb" />
           <XAxis
             type="number"
-            tickFormatter={compact}
+            tickFormatter={compactUSD}
             axisLine={false}
             tickLine={false}
             tick={{ fill: "#52685c", fontSize: 14 }}
@@ -142,7 +143,8 @@ export function CategoryChart({ rows }: { rows: DashboardData["categories"] }) {
               return active && r ? (
                 <div className="chart-tooltip">
                   <strong>{r.name}</strong>
-                  <p>{money(r.net_line_sales)} net line sales</p>
+                  <p>{displayAmount(r.net_line_sales)} net line sales</p>
+                  <small>Exact USD: {money(r.net_line_sales)}</small>
                   <p>{r.units_sold} units</p>
                 </div>
               ) : null;

@@ -28,7 +28,7 @@ export function ComparisonValue({
       </span>
       <span>
         {value}
-        {exact ? <small>Exact: {exact}</small> : null}
+        {exact ? <small>Exact USD: {exact}</small> : null}
       </span>
     </span>
   );
