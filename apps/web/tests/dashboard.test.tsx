@@ -72,12 +72,18 @@ describe("page presentation and filter navigation", () => {
   });
   it("renders KPI definitions accessibly without information icons", () => {
     render(<Dashboard {...props} />);
-    expect(screen.queryByRole("button", { name: /About Net line sales/i })).not.toBeInTheDocument();
-    expect(screen.queryByText("i", { selector: ".info" })).not.toBeInTheDocument();
-    expect(screen.getByTestId("sales-kpi").closest("article")).toHaveAccessibleDescription(
-      /Exact USD:/,
-    );
-    expect(screen.getByRole("link", { name: "Data & Definitions" })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /About Net line sales/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("i", { selector: ".info" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId("sales-kpi").closest("article"),
+    ).toHaveAccessibleDescription(/Exact USD:/);
+    expect(
+      screen.getByRole("link", { name: "Data & Definitions" }),
+    ).toBeInTheDocument();
   });
 
   it("hides metrics when the URL is invalid", () => {

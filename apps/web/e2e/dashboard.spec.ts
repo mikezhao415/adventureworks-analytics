@@ -134,7 +134,9 @@ test("page titles, responsive accessibility, USD tables and icon-free KPIs", asy
     ).toEqual([]);
   }
   await page.goto("/");
-  await expect(page.getByRole("button", { name: /About Net line sales/i })).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: /About Net line sales/i }),
+  ).toHaveCount(0);
   await expect(page.locator(".metric-popover")).toHaveCount(0);
   await expect(
     page.locator("#main").getByRole("link", { name: "Data & Definitions" }),
@@ -202,7 +204,9 @@ test("custom date range, validation and clearing individual selections", async (
   await expect(page.getByLabel("Date preset")).toHaveCount(0);
   await page.getByLabel("Start date").fill("2014-02-01");
   await page.getByLabel("End date").fill("2014-02-28");
-  await expect(page.getByLabel("Applied Filters")).not.toContainText("2014-02-01");
+  await expect(page.getByLabel("Applied Filters")).not.toContainText(
+    "2014-02-01",
+  );
   await page
     .getByRole("button", { name: "Apply Filters", exact: true })
     .click();
@@ -218,7 +222,9 @@ test("custom date range, validation and clearing individual selections", async (
   );
   await expect(page.getByLabel("Applied Filters")).toContainText("2014-02-01");
   await page.getByRole("checkbox", { name: "Northwest", exact: true }).check();
-  await page.getByRole("checkbox", { name: "Northwest", exact: true }).uncheck();
+  await page
+    .getByRole("checkbox", { name: "Northwest", exact: true })
+    .uncheck();
   await expect(
     page.getByRole("checkbox", { name: "All Territories", exact: true }),
   ).toBeChecked();

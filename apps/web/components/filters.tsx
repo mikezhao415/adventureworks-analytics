@@ -94,9 +94,7 @@ export function Filters({
                 type="date"
                 required
                 value={draft.start}
-                onChange={(e) =>
-                  setDraft({ ...draft, start: e.target.value })
-                }
+                onChange={(e) => setDraft({ ...draft, start: e.target.value })}
               />
             </label>
             <label>
