@@ -83,7 +83,7 @@ test("drafts, unions, persistence, browser history and reset", async ({
     .click();
   await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
 });
-test("page titles, responsive accessibility, USD tables and KPI information", async ({
+test("page titles, responsive accessibility, USD tables and icon-free KPIs", async ({
   page,
 }) => {
   for (const item of PAGES) {
@@ -130,16 +130,19 @@ test("page titles, responsive accessibility, USD tables and KPI information", as
     ).toEqual([]);
   }
   await page.goto("/");
-  const help = page.getByRole("button", { name: "About Net line sales" });
-  await help.focus();
-  await expect(help).toHaveAttribute("aria-expanded", "true");
-  await page.keyboard.press("Escape");
-  await expect(help).toHaveAttribute("aria-expanded", "false");
-  await help.click();
-  await expect(help).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator(".metric-popover")).toContainText(
-    "Data & Definitions",
-  );
+  await expect(page.getByRole("button", { name: /About Net line sales/i })).toHaveCount(0);
+  await expect(page.locator(".metric-popover")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Data & Definitions" })).toBeVisible();
+  if (test.info().project.name === "mobile") {
+    const filters = page.getByRole("link", { name: "Configure Filters" });
+    const bounds = await filters.boundingBox();
+    const width = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(bounds).not.toBeNull();
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+    const section = await page.locator(".active-filters").boundingBox();
+    expect(section).not.toBeNull();
+    expect(bounds!.x + bounds!.width).toBeGreaterThan(section!.x + section!.width - 8);
+  }
   for (const [path, caption] of [
     ["/trends", "Exact monthly sales and orders"],
     ["/territories", "Exact territory sales"],
