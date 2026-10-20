@@ -281,3 +281,14 @@ Manual visual acceptance remains required, especially touch-device popovers,
 filter layout/spacing and draft/applied clarity. Physical devices, Safari/Firefox
 and manual screen-reader testing were not performed. PR #13 remains draft,
 Issue #7 remains open, and no merge or deployment is authorized.
+
+
+## Custom-only date filtering refinement - October 20, 2026
+
+The Filters page now uses only Start date and End date inputs. The Year,
+Quarter, Month and preset selector controls were removed at user request.
+Draft/applied separation, date validation, Reset Filters, URL persistence and
+territory/category multi-selection remain unchanged. The Playwright date-filter
+scenario was updated to cover custom date application, invalid range rejection
+and reset. This refinement requires fresh CI verification on the new commit;
+prior passing test runs do not validate these changes.
