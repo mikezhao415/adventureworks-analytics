@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpen, ArrowUpRight } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import type { DashboardData } from "../lib/data";
 import type { Filter } from "../lib/schema";
 import { PAGES, filterHref, type View } from "../lib/navigation";
@@ -54,7 +54,6 @@ export function Dashboard({
         <Link className="source-link" href={definitionHref} prefetch={false}>
           <BookOpen size={18} aria-hidden="true" />
           Data & Definitions
-          <ArrowUpRight size={16} aria-hidden="true" />
         </Link>
       </div>
       {view === "filters" ? (
@@ -69,10 +68,12 @@ export function Dashboard({
         />
       ) : (
         <div className="active-filters">
-          <FilterSummary applied={data ? applied : null} context={context} />
-          <span className="filter-explainer">
-            Category filters affect Products &amp; Categories only.
-          </span>
+          <div className="active-filter-details">
+            <FilterSummary applied={data ? applied : null} context={context} />
+            <span className="filter-explainer">
+              Category filters affect Products &amp; Categories only.
+            </span>
+          </div>
           <Link
             className="source-link"
             href={data ? filterHref("/filters", applied) : "/filters"}
