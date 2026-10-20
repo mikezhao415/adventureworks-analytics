@@ -16,6 +16,7 @@ import yaml
 from test_extraction import records
 from src.analytics import build, dbt, resolve_snapshot, PROJECT
 from src.analytics_validation import reconcile
+from src.dashboard_export import export_dashboard, make_payload, reconcile_export
 from src.extract import extract, ValidationError, publication_lock, atomic_json
 
 
@@ -162,6 +163,26 @@ class AnalyticsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValidationError,'manifest checksum'):
             build(copied,self.root/'analytics')
         self.assertEqual((self.root/'analytics'/'current.json').read_bytes(),before)
+
+    def test_dashboard_export_reconciles_and_rejects_corruption(self):
+        destination=self.root/'dashboard.json'
+        result=export_dashboard(self.root/'analytics',self.root/'snapshots',destination)
+        self.assertEqual(result['provenance']['mode'],'offline_fixture')
+        self.assertEqual(len(result['provenance']['reconciliation']),6)
+        con=duckdb.connect(str(self.path/'analytics.duckdb'),read_only=True)
+        try:
+            payload=make_payload(con)
+            self.assertEqual(len(reconcile_export(con,payload)),6)
+            payload['customers'][0]['net_line_sales']+=Decimal('.000001')
+            with self.assertRaisesRegex(ValidationError,'Dashboard export differs from mart: mart_sales_summary'):
+                reconcile_export(con,payload)
+        finally:
+            con.close()
+        before=destination.read_bytes()
+        with patch('src.dashboard_export.digest',return_value='corrupt'):
+            with self.assertRaisesRegex(ValidationError,'Analytical artifact checksum differs: evidence.json'):
+                export_dashboard(self.root/'analytics',self.root/'snapshots',destination)
+        self.assertEqual(destination.read_bytes(),before)
 
     def test_staging_schema_drift_is_rejected(self):
         database = self.root/'schema-drift.duckdb'

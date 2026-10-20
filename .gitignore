@@ -14,3 +14,12 @@ dbt/.user.yml
 dbt/**/target/
 dbt/**/logs/
 dbt/**/.user.yml
+
+# Web dependencies and local artifacts
+node_modules/
+apps/web/.next/
+apps/web/next-env.d.ts
+apps/web/test-results/
+apps/web/playwright-report/
+apps/web/*.tsbuildinfo
+apps/web/data/local*.json
