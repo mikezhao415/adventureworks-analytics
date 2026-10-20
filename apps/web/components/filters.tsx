@@ -58,11 +58,6 @@ export function Filters({
   valid?: boolean;
 }) {
   const [draft, setDraft] = useState(applied),
-    [preset, setPreset] = useState(
-      applied.start === defaults.start && applied.end === defaults.end
-        ? "Full History"
-        : "Custom Range",
-    ),
     [error, setError] = useState(""),
     [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
@@ -82,48 +77,6 @@ export function Filters({
     setError("");
     onApply(draft);
   }
-  function changePeriod(kind: string, value: string) {
-    setPreset(kind);
-    if (kind === "Full History") {
-      setDraft({ ...draft, start: defaults.start, end: defaults.end });
-      return;
-    }
-    if (kind === "Custom Range") return;
-    const [year, part] = value.split("-");
-    const month =
-      kind === "Year"
-        ? 1
-        : kind === "Quarter"
-          ? (Number(part) - 1) * 3 + 1
-          : Number(part);
-    const endMonth =
-      kind === "Year" ? 12 : kind === "Quarter" ? month + 2 : month;
-    setDraft({
-      ...draft,
-      start: `${year}-${String(month).padStart(2, "0")}-01`,
-      end: new Date(Date.UTC(Number(year), endMonth, 0))
-        .toISOString()
-        .slice(0, 10),
-    });
-  }
-  const years = Array.from(
-    {
-      length:
-        Number(defaults.end.slice(0, 4)) -
-        Number(defaults.start.slice(0, 4)) +
-        1,
-    },
-    (_, i) => String(Number(defaults.start.slice(0, 4)) + i),
-  );
-  const periods =
-    preset === "Year"
-      ? years
-      : years.flatMap((y) =>
-          Array.from(
-            { length: preset === "Quarter" ? 4 : 12 },
-            (_, i) => `${y}-${String(i + 1).padStart(2, "0")}`,
-          ),
-        );
   return (
     <form
       className="filters-layout"
@@ -134,67 +87,28 @@ export function Filters({
         <h2>Configure Filters</h2>
         <fieldset disabled={!ready || pending}>
           <legend>Date Range</legend>
-          <label>
-            Date preset
-            <select
-              value={preset}
-              onChange={(e) =>
-                changePeriod(e.target.value, defaults.start.slice(0, 4) + "-01")
-              }
-            >
-              {["Full History", "Year", "Quarter", "Month", "Custom Range"].map(
-                (p) => (
-                  <option key={p}>{p}</option>
-                ),
-              )}
-            </select>
-          </label>
-          {["Year", "Quarter", "Month"].includes(preset) ? (
+          <div className="date-inputs">
             <label>
-              {preset}
-              <select
-                aria-label={preset}
-                value={
-                  preset === "Year"
-                    ? draft.start.slice(0, 4)
-                    : preset === "Quarter"
-                      ? `${draft.start.slice(0, 4)}-${String(Math.ceil(Number(draft.start.slice(5, 7)) / 3)).padStart(2, "0")}`
-                      : draft.start.slice(0, 7)
+              Start date
+              <input
+                type="date"
+                required
+                value={draft.start}
+                onChange={(e) =>
+                  setDraft({ ...draft, start: e.target.value })
                 }
-                onChange={(e) => changePeriod(preset, e.target.value)}
-              >
-                {periods.map((p) => (
-                  <option key={p} value={p}>
-                    {preset === "Quarter" ? p.replace("-0", " Q") : p}
-                  </option>
-                ))}
-              </select>
+              />
             </label>
-          ) : null}
-          {preset === "Custom Range" ? (
-            <div className="date-inputs">
-              <label>
-                Start date
-                <input
-                  type="date"
-                  required
-                  value={draft.start}
-                  onChange={(e) =>
-                    setDraft({ ...draft, start: e.target.value })
-                  }
-                />
-              </label>
-              <label>
-                End date
-                <input
-                  type="date"
-                  required
-                  value={draft.end}
-                  onChange={(e) => setDraft({ ...draft, end: e.target.value })}
-                />
-              </label>
-            </div>
-          ) : null}
+            <label>
+              End date
+              <input
+                type="date"
+                required
+                value={draft.end}
+                onChange={(e) => setDraft({ ...draft, end: e.target.value })}
+              />
+            </label>
+          </div>
         </fieldset>
         {(["territory", "category"] as const).map((key) => {
           const options =
@@ -270,7 +184,6 @@ export function Filters({
             type="button"
             onClick={() => {
               setDraft(defaults);
-              setPreset("Full History");
               setError("");
               onReset();
             }}
