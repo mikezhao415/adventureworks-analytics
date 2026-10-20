@@ -7,7 +7,8 @@ test("drafts, unions, persistence, browser history and reset", async ({
   await page.goto("/?utm_source=chatgpt.com");
   await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
   await page
-    .getByRole("link", { name: "Configure Filters", exact: true })
+    .getByRole("navigation", { name: "Analytics pages" })
+    .getByRole("link", { name: "Filters", exact: true })
     .click();
   const applied = page.getByLabel("Applied Filters");
   await page.getByRole("checkbox", { name: "Northwest", exact: true }).check();
@@ -22,7 +23,8 @@ test("drafts, unions, persistence, browser history and reset", async ({
     .click();
   await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
   await page
-    .getByRole("link", { name: "Configure Filters", exact: true })
+    .getByRole("navigation", { name: "Analytics pages" })
+    .getByRole("link", { name: "Filters", exact: true })
     .click();
   await expect(
     page.getByRole("checkbox", { name: "Northwest", exact: true }),
@@ -56,7 +58,8 @@ test("drafts, unions, persistence, browser history and reset", async ({
     .click();
   const selected = await page.getByTestId("sales-kpi").textContent();
   await page
-    .getByRole("link", { name: "Configure Filters", exact: true })
+    .getByRole("navigation", { name: "Analytics pages" })
+    .getByRole("link", { name: "Filters", exact: true })
     .click();
   await page
     .getByRole("checkbox", { name: "All Categories", exact: true })
@@ -70,7 +73,8 @@ test("drafts, unions, persistence, browser history and reset", async ({
     .click();
   await expect(page.getByTestId("sales-kpi")).toHaveText(selected!);
   await page
-    .getByRole("link", { name: "Configure Filters", exact: true })
+    .getByRole("navigation", { name: "Analytics pages" })
+    .getByRole("link", { name: "Filters", exact: true })
     .click();
   await page
     .getByRole("button", { name: "Reset Filters", exact: true })
@@ -132,17 +136,12 @@ test("page titles, responsive accessibility, USD tables and icon-free KPIs", asy
   await page.goto("/");
   await expect(page.getByRole("button", { name: /About Net line sales/i })).toHaveCount(0);
   await expect(page.locator(".metric-popover")).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Data & Definitions" })).toBeVisible();
-  if (test.info().project.name === "mobile") {
-    const filters = page.getByRole("link", { name: "Configure Filters" });
-    const bounds = await filters.boundingBox();
-    const width = await page.evaluate(() => document.documentElement.clientWidth);
-    expect(bounds).not.toBeNull();
-    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
-    const section = await page.locator(".active-filters").boundingBox();
-    expect(section).not.toBeNull();
-    expect(bounds!.x + bounds!.width).toBeGreaterThan(section!.x + section!.width - 8);
-  }
+  await expect(
+    page.locator("#main").getByRole("link", { name: "Data & Definitions" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Configure Filters", exact: true }),
+  ).toHaveCount(0);
   for (const [path, caption] of [
     ["/trends", "Exact monthly sales and orders"],
     ["/territories", "Exact territory sales"],
