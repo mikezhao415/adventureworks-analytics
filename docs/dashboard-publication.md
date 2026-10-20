@@ -35,6 +35,18 @@ npm run test:e2e
 
 In a production-mode server, verify `/api/dashboard` returns provenance mode `offline_fixture` and the disclosure reads "Fictional demonstration data". Check that an invalid `AW_DASHBOARD_DATA` override does not redirect production to another file. Test filter inputs, error responses, mobile and desktop views, keyboard navigation, accessibility, and deployment artifact boundaries.
 
+The unit suite checks production override isolation, explicit rejection of an otherwise
+valid document with non-fixture provenance, and successful development overrides.
+The Playwright suite starts the production server with a missing override path,
+checks the API's fictional provenance against the tracked fixture, and asserts that
+the API's generated Next.js file trace includes `data/demo.json`. Existing page,
+filter, keyboard, responsive and axe checks run against that same server.
+Run `npm run evidence` after testing to record revision, environment, input hashes
+and unit/browser results under ignored `apps/web/test-results/`. CI preserves this
+evidence as a workflow artifact. These checks do not validate a hosted Vercel runtime;
+that remains a separately approved phase. Current CI uses Node 22; Node 24 hosting
+validation remains part of that later phase.
+
 Never publish `.bak`, real-source Parquet, DuckDB, credentials, or derived real-source exports. See [redistribution policy](data-redistribution.md). A passing local build does not by itself establish hosted runtime correctness.
 
 ## Approval gates

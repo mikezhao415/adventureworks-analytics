@@ -74,7 +74,9 @@ export async function loadDocument(): Promise<DashboardDocument> {
   );
   if (process.env.NODE_ENV === "production") {
     if (doc.provenance.mode !== "offline_fixture") {
-      throw new Error("Production dashboard requires fictional demonstration data");
+      throw new Error(
+        "Production dashboard requires fictional demonstration data",
+      );
     }
   }
   return doc;
