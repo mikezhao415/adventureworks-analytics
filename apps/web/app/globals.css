@@ -300,12 +300,23 @@ main {
 }
 .active-filters {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 16px;
   font-size: 13px;
   color: #4a6042;
   padding: 15px 0 0;
+}
+.active-filter-details {
+  display: flex;
+  flex: 1 1 280px;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+.active-filters > .source-link {
+  margin-left: auto;
 }
 .active-filters strong {
   font-weight: 500;
