@@ -74,12 +74,6 @@ export function Dashboard({
               Category filters affect Products &amp; Categories only.
             </span>
           </div>
-          <Link
-            className="source-link"
-            href={data ? filterHref("/filters", applied) : "/filters"}
-          >
-            Configure Filters
-          </Link>
         </div>
       )}
       {pending ? (
