@@ -4,7 +4,7 @@ An end-to-end **BI-as-Code analytics engineering portfolio project** demonstrati
 
 The goal is to **build and demonstrate a modern analytical implementation**, not to benchmark it against a traditional reporting approach. Correctness, version control, maintainability, reproducibility, and useful business metrics are the central themes.
 
-> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are merged in [PR #11](https://github.com/mikezhao415/adventureworks-analytics/pull/11); see the [snapshot-to-mart guide](docs/dimensional-modeling.md). The local sales dashboard is implemented for Issue #7 review; the public case study and hosting remain future work.
+> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are merged in [PR #11](https://github.com/mikezhao415/adventureworks-analytics/pull/11); see the [snapshot-to-mart guide](docs/dimensional-modeling.md). The sales dashboard was completed and squash-merged in [PR #13](https://github.com/mikezhao415/adventureworks-analytics/pull/13), closing [Issue #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7). Public hosting and the portfolio case study are the next publication phase ([Issue #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8)).
 
 ## What this project demonstrates
 
@@ -32,7 +32,7 @@ AdventureWorks 2022 / SQL Server
   Tested, documented sales metrics
           |
           v
-  Business intelligence reports / dashboards
+  Validated Next.js sales dashboard (local)
           |
           v
   Public BI-as-Code case study
@@ -51,7 +51,7 @@ SQL Server ingestion publishes validated local Parquet snapshots. A separate rea
 | Transformations | dbt Core + dbt-duckdb | SQL modeling, tests, and documentation |
 | Validation | Python, SQL, dbt | Independent data and financial controls |
 | Automation | GitHub Actions | Lightweight CI; optional local full-source validation |
-| Reporting | Next.js / React / TypeScript / Recharts | Local sales dashboard with exact, scoped filters |
+| Reporting | Next.js / React / TypeScript / Tailwind CSS / Recharts | Responsive sales dashboard, typed API, and validated, URL-persistent filters |
 
 ## Execution modes
 
@@ -68,7 +68,7 @@ python -m src.analytics_check
 
 ## Launch the local sales dashboard
 
-Use Node.js 22. No SQL Server, credentials or private data are needed for the
+Use Node.js 22 or newer. No SQL Server, credentials or private data are needed for the
 clearly labeled fictional demo:
 
 ```bash
@@ -77,13 +77,20 @@ npm ci
 npm run dev
 ```
 
-Open the printed loopback URL. Overview, trends, products, customers and territories
-have separate pages; applied URL filters persist across navigation. A dedicated
-Filters page provides draft/apply date presets and territory/category multi-selects.
-Data & Definitions documents metric rules and provenance. See [dashboard architecture, metrics, filters,
-local real-source setup and tests](docs/sales-dashboard.md). Real-derived data
-remains ignored and local; no application deployment or dataset publication is
-part of this milestone. Quality automation is merged in PR #12.
+Open the printed loopback URL. Sales Overview, Sales Trends, Products & Categories,
+Customers, and Territory Performance each have dedicated views. The Filters page
+supports inclusive custom start/end dates, territory/category multi-selects,
+draft/apply/reset behavior, and URL state that persists across navigation, reloads,
+and browser history. Category filters apply only to Products & Categories.
+Data & Definitions explains metric rules, provenance, and interpretation. The UI
+uses native AdventureWorks sample USD amounts for display, preserving exact
+underlying decimal precision. See the [dashboard implementation and validation guide](docs/sales-dashboard.md).
+
+The checked-in demo is explicitly **fictional**, and real-derived exports stay local
+and ignored by Git. No dashboard deployment or dataset publication has occurred.
+The dashboard was delivered by [PR #13](https://github.com/mikezhao415/adventureworks-analytics/pull/13),
+with both Sales dashboard and BI quality/reproducibility workflows passing on the
+final PR head. Quality automation was delivered in PR #12.
 
 ## Initial sales metric contracts
 
@@ -96,8 +103,8 @@ The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) 
 3. **[AdventureWorks ingestion and snapshots — #4](https://github.com/mikezhao415/adventureworks-analytics/issues/4) — merged ([PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)).** Read-only SQL Server extraction, Parquet manifests, and independent controls.
 4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) — merged in PR #11.** Staging, facts, dimensions, sales marts, contracts, tests, and lineage.
 5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Merged in PR #12: quality gates, regression coverage, repeatability, and evidence.
-6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7).** Implemented for review: local dashboard, validated exports and deterministic demo.
-7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8).** Technical and business reading paths, public evidence, and portfolio integration.
+6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7) — complete (PR #13).** Validated local dashboard, versioned export, fictional public-safe demo, responsive views, documented metric definitions, and passing browser/CI checks.
+7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) — next.** Plan a separately hosted, fictional-data-only dashboard demo and a two-audience portfolio case study; validate deployment and public evidence before linking.
 
 Phases may overlap where practical, but each issue must state its own acceptance evidence. **Neither direct-query comparisons nor multi-tenant simulation is required.**
 
