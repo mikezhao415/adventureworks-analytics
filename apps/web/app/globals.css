@@ -364,16 +364,6 @@ main {
   font-size: 15px;
   color: #435d3b;
 }
-.info {
-  display: inline-grid;
-  place-items: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 1px solid #7c946f;
-  font-size: 11px;
-  flex: none;
-}
 .kpi-value {
   font-size: 34px;
   font-weight: 600;
@@ -1000,6 +990,13 @@ tbody tr:hover {
   }
   .active-filters {
     font-size: 13px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .active-filters > .source-link {
+    align-self: flex-end;
+    margin-left: auto;
   }
   .filter-explainer {
     font-size: 13px;
@@ -1209,39 +1206,6 @@ tbody tr:hover {
 .applied-filters {
   position: sticky;
   top: 24px;
-}
-.metric-help {
-  position: relative;
-}
-.metric-help .info {
-  cursor: pointer;
-  min-width: 32px;
-  min-height: 32px;
-}
-.metric-popover {
-  position: absolute;
-  right: 0;
-  top: 32px;
-  width: 260px;
-  max-width: 70vw;
-  background: #fff;
-  color: #263c32;
-  border: 1px solid #aebbb2;
-  box-shadow: 0 8px 24px #0002;
-  border-radius: 10px;
-  padding: 16px;
-  z-index: 20;
-  font-size: 14px;
-  text-transform: none;
-  letter-spacing: normal;
-}
-.metric-popover a {
-  text-decoration: underline;
-}
-.metric-popover button {
-  display: block;
-  margin-top: 12px;
-  padding: 8px;
 }
 @media (max-width: 760px) {
   .filters-layout {
