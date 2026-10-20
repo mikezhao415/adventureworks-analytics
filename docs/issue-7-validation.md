@@ -5,7 +5,7 @@ Local validation: October 19, 2026 (America/Los_Angeles). The starting main was
 merged before branch `codex/issue-7-sales-dashboard` was created. Issue #7 remains
 open pending review and merge approval. The app has not been deployed.
 
-Final clean implementation validation used commit
+Initial clean implementation validation used commit
 `ed73f6c0a718c6de77579939a9e5a6325115e91c`: **22 Python tests, 15 frontend tests,
 and six browser tests passed**, plus the four independent real-data HTTP scenarios.
 Web, Python and real-data evidence all record `working_tree_dirty=false`. The
@@ -113,3 +113,50 @@ manual screen-reader audit, large-scale serving benchmark, public hosting,
 authentication/persistence or production readiness validation was performed.
 Axe checks do not establish complete accessibility compliance. Real dataset
 redistribution provenance and the repository-wide code license remain unresolved.
+
+
+## PR #13 visual acceptance refinement
+
+The subsequent visual refinement splits analytics into six App Router pages:
+`/`, `/trends`, `/products`, `/customers`, `/territories`, `/definitions`.
+Branding and typography were revised; the redundant breadcrumb, workspace label,
+overview eyebrow and footer branding were removed. Definitions now owns the
+full metric contract and provenance. All analytics pages share disclosure and
+filters above their content.
+
+Applied filters are URL state; controls keep drafts until Apply. Shared Next Link
+navigation preserves queries, Reset removes them, and back/forward restores each
+selection. Invalid values, duplicate keys and unknown keys fail closed without
+metrics. Pending filter transitions hide analytical values. Category affects
+only products/categories, including no category-sensitive overview counts.
+
+Customer orders, sales, contribution and validated header AOV use independent
+min/max scales over every date/territory-filtered customer, before search or
+pagination. Exact decimal values remain alongside the display amounts. Empty,
+identical positive, zero and unavailable comparisons have explicit behavior.
+
+Currency decision remains pending manual acceptance: the source contract does
+not independently establish USD. The issue was flagged before changing the
+label. Zero-decimal en-US formatting is implemented with exact post-aggregation
+rounding, while source-unit labeling is retained. No conversion or verified USD
+claim is introduced. Using a USD display assumption requires an explicit decision.
+
+Executed refinement checks on the modified branch based on `39d6b95`:
+
+- 22 Python quality/regression tests passed (`output/issue13-quality.log`).
+- Fictional fixture content reproduced unchanged through the 23-model/97-test
+  pipeline (`output/issue13-fixture.log`).
+- 15 frontend unit/component tests passed; original data-contract tests remain.
+- TypeScript and production build passed with all six dynamic pages.
+- Six Chromium desktop/Pixel 7 browser tests passed, including all-page axe checks,
+  navigation/active states, filter history/drafts/reset/category scope, invalid URLs,
+  empty selection, exact chart alternatives and keyboard table access.
+- Desktop/mobile fictional overview and customer screenshots were regenerated
+  and visually inspected. They contain no real-derived records.
+
+Local evidence reports the actual base revision and modified working tree; it
+must not be described as clean-head validation. The analytical exporter and API
+contract are unchanged. Earlier real-source checks above remain historical
+validation, not a claim of a new full-source or HTTP rerun for this refinement.
+PR #13 stays draft; visual acceptance, currency decision and merge approval
+remain with the user. Issue #7 is not complete and nothing has been deployed.

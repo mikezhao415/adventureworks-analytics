@@ -80,11 +80,32 @@ summed header subtotal and order count, never averaged from cell-level ratios.
 
 All amounts cross JSON as decimal strings. The server sums scaled integers using
 BigInt and rounds AOV half away from zero at four decimals, matching the existing
-metric contract. UI headlines and ranked sales amounts round to two decimals;
-exact source scales remain in chart alternatives, KPI descriptions and amount
-cell titles. Only chart coordinates/bar lengths use approximate JavaScript
+metric contract. UI headlines and ranked sales/AOV amounts round to zero decimals with en-US grouping;
+exact source scales remain in chart alternatives, KPI descriptions and detailed
+amount cells. Currency denomination is unverified: amounts remain labeled source
+monetary units. USD symbols await an explicit reviewed display decision; no
+currency conversion or independently verified USD claim is made. Only chart coordinates/bar lengths use approximate JavaScript
 numbers. Customer contribution is the customer's net line sales divided by the
 selected all-category line-sales total, rounded to two percentage decimals.
+
+## Pages and navigation
+
+The shared responsive layout uses Next Link navigation with the active page
+identified by `aria-current`. The disclosure and filters precede the page heading
+on each analytics route. Definitions retains navigation and provenance without
+interactive filters or duplicated methodology on the other pages.
+
+| Route | Page |
+| --- | --- |
+| `/` | Sales overview |
+| `/trends` | Sales trends |
+| `/products` | Product/category performance |
+| `/customers` | Customer insights |
+| `/territories` | Territory performance |
+| `/definitions` | Metric definitions and data provenance |
+
+![Fictional customer comparisons, desktop](screenshots/sales-dashboard-customers-desktop.png)
+![Fictional dashboard, mobile](screenshots/sales-dashboard-mobile.png)
 
 ## Questions and supported interactions
 
@@ -109,12 +130,21 @@ the active-filter chip and explained beside the controls. It does not filter
 header metrics or customer/territory views: the source contract does not allocate
 header money to categories. This avoids ambiguous category AOV and order counts.
 Apply commits a selection; Reset restores the input's full period/all dimensions.
-Controls wait for hydration, outdated requests are canceled, and failed requests
-retain the previous active selection and values with a Retry action. Empty
+Applied selections use URL search parameters as their source of truth. Draft
+controls remain local until Apply navigates to the filtered server-rendered page.
+Shared Next Link navigation preserves the query; browser back/forward restores
+the URL selection. Reset removes the query and restores full-period defaults.
+Controls wait for hydration. Pending filter transitions hide analytics; invalid
+URLs show an error without default or stale metrics. Invalid inputs can be fixed
+with the controls or Reset. Empty
 selections show zero orders/units/sales and NULL AOV (shown as an em dash).
 
 Charts have tooltips and expandable exact tables. Customer IDs can be searched,
-ranked by sales/orders/ID and paginated. Rankings are by selected-period sales,
+ranked by sales/orders/AOV/ID and paginated. Four customer bar columns use
+independent minimum-to-maximum scales over the complete date/territory-filtered
+customer dataset, before search or pagination. They are relative comparisons,
+not shares of a total. Identical positive values fill the bar; zero stays empty
+and unavailable AOV has no value. Exact amounts remain alongside the bars. Rankings are by selected-period sales,
 not retention or lifetime value. Responsive navigation, native controls, skip
 link, visible focus and chart tables support keyboard access. Automated axe
 checks complement browser checks but do not establish complete accessibility
@@ -195,7 +225,7 @@ npm run evidence
 
 The web workflow uses Node 22, `npm ci`, locked versions, formatting, TypeScript,
 Vitest/React Testing Library, an actual production build, and Chromium desktop
-and mobile emulation through Playwright. It tests all sections, filter requests,
+and mobile emulation through Playwright. It tests all six routes, active navigation, filter persistence and history,
 category scope, reset, search, exact tables, keyboard entry, empty responses,
 invalid/duplicate API filters, no document-wide horizontal overflow and axe A/AA
 checks. Python CI keeps the existing synthetic checks and adds fixture-regeneration

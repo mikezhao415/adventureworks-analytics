@@ -1,5 +1,4 @@
 import { useId } from "react";
-import { ArrowUpRight } from "lucide-react";
 export function Kpi({
   label,
   value,
@@ -33,9 +32,6 @@ export function Kpi({
         {description}
       </span>
       <p className="kpi-detail">{detail}</p>
-      {accent ? (
-        <ArrowUpRight className="kpi-arrow" size={20} aria-hidden="true" />
-      ) : null}
     </article>
   );
 }

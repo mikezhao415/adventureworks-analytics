@@ -47,8 +47,8 @@ export function SalesTrend({ rows }: { rows: DashboardData["monthly"] }) {
             dataKey="label"
             tickLine={false}
             axisLine={false}
-            minTickGap={28}
-            tick={{ fill: "#52685c", fontSize: 11 }}
+            minTickGap={40}
+            tick={{ fill: "#52685c", fontSize: 14 }}
             dy={12}
           />
           <YAxis
@@ -56,16 +56,16 @@ export function SalesTrend({ rows }: { rows: DashboardData["monthly"] }) {
             tickFormatter={compact}
             tickLine={false}
             axisLine={false}
-            width={49}
-            tick={{ fill: "#52685c", fontSize: 11 }}
+            width={65}
+            tick={{ fill: "#52685c", fontSize: 14 }}
           />
           <YAxis
             yAxisId="orders"
             orientation="right"
             tickLine={false}
             axisLine={false}
-            width={35}
-            tick={{ fill: "#806239", fontSize: 11 }}
+            width={45}
+            tick={{ fill: "#806239", fontSize: 14 }}
           />
           <Tooltip
             content={({ active, payload }) => {
@@ -125,15 +125,15 @@ export function CategoryChart({ rows }: { rows: DashboardData["categories"] }) {
             tickFormatter={compact}
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#52685c", fontSize: 11 }}
+            tick={{ fill: "#52685c", fontSize: 14 }}
           />
           <YAxis
             type="category"
             dataKey="name"
-            width={90}
+            width={120}
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#394a41", fontSize: 12 }}
+            tick={{ fill: "#394a41", fontSize: 14 }}
           />
           <Tooltip
             content={({ active, payload }) => {

@@ -4,116 +4,140 @@ import userEvent from "@testing-library/user-event";
 import demo from "../data/demo.json";
 import { dashboard, validateDocument } from "../lib/data";
 import { Dashboard } from "../components/dashboard";
-import { Kpi } from "../components/kpi";
-import { chartRows } from "../components/charts";
-vi.mock("recharts", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("recharts")>()),
+import { CustomersView } from "../components/customers";
+import { comparisonWidths } from "../lib/comparison";
+import { displayAmount } from "../lib/format";
+import { scalarFilters } from "../lib/navigation";
+const { push } = vi.hoisted(() => ({ push: vi.fn() }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+  useRouter: () => ({ push }),
+}));
+vi.mock("recharts", async (original) => ({
+  ...(await original<typeof import("recharts")>()),
   ResponsiveContainer: () => null,
 }));
-const initial = dashboard(validateDocument(demo));
-describe("dashboard presentation", () => {
-  it("renders all five sections, fixture identity, scope and KPI", () => {
-    render(<Dashboard initial={initial} />);
-    for (const title of [
-      "Sales overview",
-      "The sales trajectory",
-      "The best sellers",
-      "The customers behind the numbers",
-      "Sales across regions",
-    ])
-      expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
+vi.mock("next/link", () => ({
+  default: ({ children, href }: import("react").ComponentProps<"a">) => (
+    <a href={href}>{children}</a>
+  ),
+}));
+const data = dashboard(validateDocument(demo));
+const props = {
+  data,
+  context: data,
+  defaults: data.filters,
+  view: "overview" as const,
+};
+describe("page presentation and filter navigation", () => {
+  it("renders only the selected page and source disclosure", () => {
+    render(<Dashboard {...props} />);
+    expect(screen.getByTestId("sales-kpi")).toHaveTextContent("953,544");
     expect(
       screen.getByText("Fictional demonstration data"),
     ).toBeInTheDocument();
-    expect(screen.getByTestId("sales-kpi")).toHaveTextContent("953,544.31");
     expect(
-      screen.getByText(/Category does not filter overview/),
-    ).toBeInTheDocument();
+      screen.queryByRole("textbox", { name: "Search customers" }),
+    ).not.toBeInTheDocument();
   });
-  it("applies supported filters and resets to the initial selection", async () => {
+  it("keeps drafts local until Apply and resets through the URL", async () => {
     const user = userEvent.setup();
-    const mock = vi.fn().mockImplementation(async (url: string) => ({
-      ok: true,
-      json: async () =>
-        dashboard(
-          validateDocument(demo),
-          Object.fromEntries(new URL(url, "http://localhost").searchParams),
-        ),
-    }));
-    vi.stubGlobal("fetch", mock);
-    render(<Dashboard initial={initial} />);
+    push.mockClear();
+    render(<Dashboard {...props} />);
     await user.selectOptions(screen.getByLabelText("Territory"), "1");
+    expect(push).not.toHaveBeenCalled();
     await user.click(screen.getByRole("button", { name: "Apply filters" }));
-    await waitFor(() => expect(mock).toHaveBeenCalledOnce());
     await waitFor(() =>
-      expect(screen.getByTestId("sales-kpi")).not.toHaveTextContent(
-        "953,544.31",
+      expect(push).toHaveBeenCalledWith(
+        expect.stringContaining("territory=1"),
+        { scroll: false },
       ),
     );
     await user.click(screen.getByRole("button", { name: "Reset filters" }));
-    await waitFor(() =>
-      expect(screen.getByTestId("sales-kpi")).toHaveTextContent("953,544.31"),
-    );
-    vi.unstubAllGlobals();
+    expect(push).toHaveBeenLastCalledWith("/", { scroll: false });
   });
-  it("retains active values and shows an actionable request error", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({
-        ok: false,
-        json: async () => ({ error: "Invalid date range" }),
-      }),
-    );
-    render(<Dashboard initial={initial} />);
-    await userEvent.click(
-      screen.getByRole("button", { name: "Apply filters" }),
-    );
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Filters could not be applied",
-    );
-    expect(screen.getByTestId("sales-kpi")).toHaveTextContent("953,544.31");
-    expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument();
-    vi.unstubAllGlobals();
+  it("hides metrics when the URL is invalid", () => {
+    render(<Dashboard {...props} data={null} error="Unknown filter" />);
+    expect(screen.getByRole("alert")).toHaveTextContent("Unknown filter");
+    expect(screen.queryByTestId("analytics-content")).not.toBeInTheDocument();
   });
-  it("provides empty states and a null AOV", () => {
-    const empty = dashboard(validateDocument(demo), {
-      start: "2020-01-01",
-      end: "2020-01-02",
-    });
-    render(<Dashboard initial={empty} />);
+  it("does not rescale customer bars after search", async () => {
+    const { container } = render(<CustomersView data={data} />);
+    const first = data.customers[0];
+    const selector = `[data-customer="${first.key}"] [data-metric="net_line_sales"]`;
+    const width = container.querySelector(selector)?.getAttribute("data-width");
+    await userEvent.click(screen.getByRole("button", { name: "Next" }));
+    const next = data.customers[8];
     expect(
-      screen.getAllByText("No shipped sales match this selection.").length,
-    ).toBeGreaterThan(0);
-    expect(
-      screen.getByRole("article", { name: "Average order value" }),
-    ).toHaveTextContent("—");
-  });
-  it("searches customer identifiers", async () => {
-    render(<Dashboard initial={initial} />);
+      container
+        .querySelector(
+          `[data-customer="${next.key}"] [data-metric="net_line_sales"]`,
+        )
+        ?.getAttribute("data-width"),
+    ).toBe(
+      String(comparisonWidths(data.customers).get(next.key)?.net_line_sales),
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Previous" }));
     await userEvent.type(
       screen.getByRole("textbox", { name: "Search customers" }),
-      "00024",
+      first.name,
     );
-    expect(
-      screen.getByRole("table", { name: "Customer sales rankings" }),
-    ).toHaveTextContent("Customer 00024");
+    expect(container.querySelector(selector)?.getAttribute("data-width")).toBe(
+      width,
+    );
     expect(screen.getByText("1–1 of 1")).toBeInTheDocument();
   });
-  it("formats reusable KPIs and transforms chart coordinates without altering exact values", () => {
-    render(
-      <Kpi
-        label="Sales"
-        value="1,000.00"
-        detail="Exact source units"
-        description="No currency conversion"
-      />,
+  it("scales each metric independently with explicit zero, identical and null behavior", () => {
+    const base = data.customers[0];
+    const rows = [
+      {
+        ...base,
+        key: "a",
+        order_count: 0,
+        net_line_sales: "10.000000",
+        average_order_value: null,
+        contribution: "20.00",
+      },
+      {
+        ...base,
+        key: "b",
+        order_count: 5,
+        net_line_sales: "10.000000",
+        average_order_value: "2.0000",
+        contribution: "40.00",
+      },
+      {
+        ...base,
+        key: "c",
+        order_count: 10,
+        net_line_sales: "10.000000",
+        average_order_value: "4.0000",
+        contribution: "60.00",
+      },
+    ];
+    const widths = comparisonWidths(rows);
+    expect(widths.get("a")).toEqual({
+      order_count: 0,
+      net_line_sales: 100,
+      average_order_value: null,
+      contribution: 0,
+    });
+    expect(widths.get("b")?.order_count).toBe(50);
+    expect(widths.get("b")?.contribution).toBe(50);
+    expect(widths.get("b")?.average_order_value).toBe(0);
+    expect(widths.get("c")?.average_order_value).toBe(100);
+    expect(comparisonWidths([]).size).toBe(0);
+    expect(
+      comparisonWidths([
+        { ...rows[0], net_line_sales: "0.000000", contribution: "0.00" },
+      ]).get("a")?.net_line_sales,
+    ).toBe(0);
+  });
+  it("rounds exact large amounts without Number precision loss and rejects repeated URL keys", () => {
+    expect(displayAmount("9007199254740993.500000")).toBe(
+      "9,007,199,254,740,994",
     );
-    expect(screen.getByRole("article", { name: "Sales" })).toHaveTextContent(
-      "1,000.00",
-    );
-    const r = chartRows(initial.monthly)[0];
-    expect(r.net_line_sales).toBe(initial.monthly[0].net_line_sales);
-    expect(r.sales).toBe(Number(r.net_line_sales));
-    expect(r.label).toMatch(/Jan/);
+    expect(displayAmount(null)).toBe("—");
+    expect(() => scalarFilters({ territory: ["1", "2"] })).toThrow();
   });
 });

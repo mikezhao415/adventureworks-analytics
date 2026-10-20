@@ -49,3 +49,13 @@ export function shortMonth(value: string): string {
     { month: "short", year: "2-digit", timeZone: "UTC" },
   );
 }
+
+/** Display-only integer rounding, after aggregation. No verified currency denomination. */
+export function displayAmount(value: string | null): string {
+  if (value === null) return "—";
+  const rounded = BigInt(money(value, 0).replaceAll(",", ""));
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(rounded);
+}
