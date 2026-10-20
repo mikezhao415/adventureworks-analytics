@@ -117,7 +117,9 @@ export function TrendsView({ data }: { data: DashboardData }) {
           {data.monthly.map((r) => (
             <tr key={r.month}>
               <th scope="row">{shortMonth(r.month)}</th>
-              <td>{money(r.net_line_sales)}</td>
+              <td title={`Exact USD: ${money(r.net_line_sales)}`}>
+                {displayAmount(r.net_line_sales)}
+              </td>
               <td>{count(r.order_count)}</td>
             </tr>
           ))}
@@ -127,9 +129,15 @@ export function TrendsView({ data }: { data: DashboardData }) {
   );
 }
 export function ProductsView({ data }: { data: DashboardData }) {
-  const selectedCategory = data.options.categories.find(
-    (c) => String(c.key) === data.filters.category,
-  )?.name;
+  const selectedCategory =
+    data.filters.category !== "all"
+      ? data.options.categories
+          .filter((c) =>
+            data.filters.category.split(",").includes(String(c.key)),
+          )
+          .map((c) => c.name)
+          .join(", ")
+      : undefined;
   return (
     <div className="products-grid">
       <Panel
@@ -149,11 +157,7 @@ export function ProductsView({ data }: { data: DashboardData }) {
         )}
         <div className="category-total">
           <span>Selected category sales</span>
-          <strong>
-            {selectedCategory
-              ? displayAmount(data.categories[0]?.net_line_sales || "0.000000")
-              : displayAmount(data.summary.net_line_sales)}
-          </strong>
+          <strong>{displayAmount(data.category_net_line_sales)}</strong>
         </div>
         <ExactTable caption="Exact category sales">
           <thead>
@@ -168,7 +172,9 @@ export function ProductsView({ data }: { data: DashboardData }) {
             {data.categories.map((r) => (
               <tr key={r.key}>
                 <th scope="row">{r.name}</th>
-                <td>{money(r.net_line_sales)}</td>
+                <td title={`Exact USD: ${money(r.net_line_sales)}`}>
+                  {displayAmount(r.net_line_sales)}
+                </td>
                 <td>{r.order_count}</td>
                 <td>{r.units_sold}</td>
               </tr>
@@ -216,7 +222,7 @@ export function ProductsView({ data }: { data: DashboardData }) {
                       </span>
                     </th>
                     <td>{count(r.units_sold)}</td>
-                    <td title={money(r.net_line_sales)}>
+                    <td title={`Exact USD: ${money(r.net_line_sales)}`}>
                       {displayAmount(r.net_line_sales)}
                     </td>
                   </tr>
@@ -251,7 +257,7 @@ export function TerritoriesView({ data }: { data: DashboardData }) {
                   <Globe2 size={17} />
                 </span>
                 <strong>{r.name}</strong>
-                <span title={money(r.net_line_sales)}>
+                <span title={`Exact USD: ${money(r.net_line_sales)}`}>
                   {displayAmount(r.net_line_sales)}
                 </span>
               </div>
@@ -286,9 +292,13 @@ export function TerritoriesView({ data }: { data: DashboardData }) {
           {data.territories.map((r) => (
             <tr key={r.key}>
               <th scope="row">{r.name}</th>
-              <td>{money(r.net_line_sales)}</td>
+              <td title={`Exact USD: ${money(r.net_line_sales)}`}>
+                {displayAmount(r.net_line_sales)}
+              </td>
               <td>{r.order_count}</td>
-              <td>{money(r.average_order_value)}</td>
+              <td title={`Exact USD: ${money(r.average_order_value)}`}>
+                {displayAmount(r.average_order_value)}
+              </td>
             </tr>
           ))}
         </tbody>

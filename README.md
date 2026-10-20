@@ -78,8 +78,9 @@ npm run dev
 ```
 
 Open the printed loopback URL. Overview, trends, products, customers and territories
-have separate pages; applied URL filters persist across navigation. Metric definitions
-and provenance have a dedicated page. See [dashboard architecture, metrics, filters,
+have separate pages; applied URL filters persist across navigation. A dedicated
+Filters page provides draft/apply date presets and territory/category multi-selects.
+Data & Definitions documents metric rules and provenance. See [dashboard architecture, metrics, filters,
 local real-source setup and tests](docs/sales-dashboard.md). Real-derived data
 remains ignored and local; no application deployment or dataset publication is
 part of this milestone. Quality automation is merged in PR #12.

@@ -81,8 +81,8 @@ summed header subtotal and order count, never averaged from cell-level ratios.
 All amounts cross JSON as decimal strings. The server sums scaled integers using
 BigInt and rounds AOV half away from zero at four decimals, matching the existing
 metric contract. UI headlines and ranked sales/AOV amounts round to zero decimals with en-US grouping;
-exact source scales remain in chart alternatives, KPI descriptions and detailed
-amount cells. USD presentation follows the reviewed [currency interpretation](currency-interpretation.md):
+expanded monetary tables also use zero-decimal USD. Exact source scales remain
+in API values, KPI descriptions, chart tooltip details and amount-cell titles. USD presentation follows the reviewed [currency interpretation](currency-interpretation.md):
 native AdventureWorks sample amounts, with no currency conversion applied.
 SQL Server rate relationships and matching native prices support the interpretation;
 Microsoft's OLTP schema does not explicitly label every monetary column USD.
@@ -93,18 +93,21 @@ selected all-category line-sales total, rounded to two percentage decimals.
 ## Pages and navigation
 
 The shared responsive layout uses Next Link navigation with the active page
-identified by `aria-current`. The disclosure and filters precede the page heading
-on each analytics route. Definitions retains navigation and provenance without
-interactive filters or duplicated methodology on the other pages.
+identified by `aria-current`. All page headings, navigation labels and browser
+titles use the names below. Analytics pages show a compact applied selection
+and a Configure Filters link; the full form exists only on `/filters`.
 
 | Route | Page |
 | --- | --- |
-| `/` | Sales overview |
-| `/trends` | Sales trends |
-| `/products` | Product/category performance |
-| `/customers` | Customer insights |
-| `/territories` | Territory performance |
-| `/definitions` | Metric definitions and data provenance |
+| `/` | Sales Overview |
+| `/trends` | Sales Trends |
+| `/products` | Products & Categories |
+| `/customers` | Customers |
+| `/territories` | Territory Performance |
+| `/definitions` | Data & Definitions |
+| `/filters` | Filters |
+
+![Fictional Filters page, desktop](screenshots/sales-dashboard-filters-desktop.png)
 
 ![Fictional customer comparisons, desktop](screenshots/sales-dashboard-customers-desktop.png)
 ![Fictional dashboard, mobile](screenshots/sales-dashboard-mobile.png)
@@ -127,21 +130,39 @@ separately. Unknown territory and Uncategorized members preserve nullable source
 relationships. Invalid non-null keys are rejected upstream. Product and category
 filters use the snapshot's current taxonomy, not historical category changes.
 
-Category selection is labeled **product views** in the filter bar, repeated in
-the active-filter chip and explained beside the controls. It does not filter
-header metrics or customer/territory views: the source contract does not allocate
-header money to categories. This avoids ambiguous category AOV and order counts.
-Apply commits a selection; Reset restores the input's full period/all dimensions.
-Applied selections use URL search parameters as their source of truth. Draft
-controls remain local until Apply navigates to the filtered server-rendered page.
-Shared Next Link navigation preserves the query; browser back/forward restores
-the URL selection. Reset removes the query and restores full-period defaults.
-Controls wait for hydration. Pending filter transitions hide analytics; invalid
-URLs show an error without default or stale metrics. Invalid inputs can be fixed
-with the controls or Reset. Empty
-selections show zero orders/units/sales and NULL AOV (shown as an em dash).
+Date and order-territory selections apply to all analytical measures. Category
+filters affect Products & Categories only; header money is never allocated to
+categories. The compact summary and dedicated Filters page explain that scope.
 
-Charts have tooltips and expandable exact tables. Customer IDs can be searched,
+`/filters` uses a responsive two-column Configure Filters / Applied Filters
+layout, stacked on mobile. Full History, Year, Quarter, Month and Custom Range
+presets select inclusive calendar boundaries; only Custom Range exposes date
+inputs. Territory and category checkboxes support multiple members. All selects
+all members; clearing the last individual selection restores All. Multiple
+territories form a union of disjoint cells; categories form a union only in
+product/category views. Product/category order counts remain non-additive.
+
+Draft controls are local. The Applied Filters chips always come from validated
+URL state, never from the draft. A highlighted Unsaved Changes indicator appears
+when the draft differs. Apply validates and commits the draft through navigation;
+Reset restores and immediately applies full-history/all-member defaults. Leaving
+the page discards unapplied edits. Direct links, refresh and browser back/forward
+restore applied URL state and remount synchronized draft controls.
+
+Only `start`, `end`, `territory` and `category` enter analytics validation from
+page/API URLs. Unrelated parameters, including repeated UTM parameters, are
+ignored. Dimension values are either `all` or comma-separated exact dimension
+keys (for example `territory=1,2&category=1,3`). Repeated recognized query keys,
+empty/malformed values, duplicate members, unknown members and reversed dates
+are rejected. Invalid URLs display no analytics. On `/filters`, the applied
+summary explicitly reports an invalid selection; Configure Filters or Reset can
+repair it. Navigation preserves applied query state. An empty matching period
+returns zero sales/orders/units and NULL AOV, shown as an em dash.
+
+KPI information buttons open metric popovers on hover, keyboard focus/activation
+and click/tap, with Escape/Close dismissal and Data & Definitions links. Charts
+have tooltips and expandable data tables (USD presentation with exact source
+amounts retained in cell titles and the API). Customer IDs can be searched,
 ranked by sales/orders/AOV/ID and paginated. Four customer bar columns use
 independent minimum-to-maximum scales over the complete date/territory-filtered
 customer dataset, before search or pagination. They are relative comparisons,
@@ -190,10 +211,10 @@ Optional flags: `--analytics-root PATH`, `--snapshot-root PATH`, and
 The versioned envelope records source mode, snapshot identity, fingerprint,
 source extraction timestamp, analytical/export revisions and export dirty state,
 six reconciliation outcomes and a canonical data-content SHA-256. The browser
-shows this provenance under Data & definitions. Hashes detect accidental changes;
+shows this provenance under Data & Definitions. Hashes detect accidental changes;
 they are not cryptographic authentication against a malicious local writer.
 The Next server also validates the export schema, content hash, unique cell keys
-and dimension relationships. It rejects duplicate/unknown/invalid filters.
+and dimension relationships. It rejects duplicate or invalid recognized filters after isolating analytics parameters.
 
 To regenerate the fictional demo (from the repository root):
 
@@ -227,7 +248,7 @@ npm run evidence
 
 The web workflow uses Node 22, `npm ci`, locked versions, formatting, TypeScript,
 Vitest/React Testing Library, an actual production build, and Chromium desktop
-and mobile emulation through Playwright. It tests all six routes, active navigation, filter persistence and history,
+and mobile emulation through Playwright. It tests all seven routes, active navigation, filter persistence and history,
 category scope, reset, search, exact tables, keyboard entry, empty responses,
 invalid/duplicate API filters, no document-wide horizontal overflow and axe A/AA
 checks. Python CI keeps the existing synthetic checks and adds fixture-regeneration
@@ -245,9 +266,9 @@ are labeled incomplete; a partial run is not passing evidence.
 
 For an existing **real local export**, start a production server with that input,
 then run `scripts/check_dashboard_api.py --base-url http://127.0.0.1:PORT` from the
-repository root. It compares four complete HTTP filter scenarios against fresh
+repository root. It compares six complete HTTP filter scenarios against fresh
 read-only SQL over the published facts: all data, combined date/territory/category,
-a single boundary day and an empty range. It checks every returned summary,
+a single boundary day, an empty range, multi-territory/category selections, and the same multi-selection with UTM parameters. It checks every returned summary,
 monthly, customer, territory, product and category row plus exact AOV and input
 identity. It does not change the database. Evidence is
 `output/dashboard/http-validation.json`; it remains local and is not CI evidence.

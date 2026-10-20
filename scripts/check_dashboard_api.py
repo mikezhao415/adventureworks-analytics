@@ -28,7 +28,9 @@ def check(base_url, analytics_root):
     try:
         for filters in ({},{'start':'2012-01-01','end':'2012-12-31','territory':'1','category':'1'},
                         {'start':'2011-05-31','end':'2011-05-31'},
-                        {'start':'2030-01-01','end':'2030-01-01'}):
+                        {'start':'2030-01-01','end':'2030-01-01'},
+                        {'territory':'1,2','category':'1,2'},
+                        {'utm_source':'chatgpt.com','territory':'1,2','category':'1,2'}):
             with urllib.request.urlopen(base_url+'/api/dashboard?'+urllib.parse.urlencode(filters)) as response:
                 actual=json.load(response)
             if actual['provenance']['snapshot_id']!=pointer['snapshot_id']:
@@ -36,7 +38,10 @@ def check(base_url, analytics_root):
             applied=actual['filters']
             where='o.is_sales_eligible and cast(o.ordered_at as date) between ? and ?'
             values=[applied['start'],applied['end']]
-            if applied['territory']!='all': where+=' and o.territory_key=?';values.append(int(applied['territory']))
+            if applied['territory']!='all':
+                keys=[int(key) for key in applied['territory'].split(',')]
+                where+=' and o.territory_key in ('+','.join('?' for _ in keys)+')'
+                values.extend(keys)
             groups=[('summary',None,None),('monthly',"strftime(o.ordered_at,'%Y-%m')",'month'),
                     ('customers','o.customer_key','key'),('territories','o.territory_key','key')]
             for section,group,key in groups:
@@ -63,7 +68,10 @@ def check(base_url, analytics_root):
                         if observed!=value:raise ValidationError('HTTP metric differs: '+section+'.'+field)
             for section,group in (('products','p.product_key'),('categories','p.category_key')):
                 clause=where;params=list(values)
-                if applied['category']!='all':clause+=' and p.category_key=?';params.append(int(applied['category']))
+                if applied['category']!='all':
+                    keys=[int(key) for key in applied['category'].split(',')]
+                    clause+=' and p.category_key in ('+','.join('?' for _ in keys)+')'
+                    params.extend(keys)
                 expected=con.execute(f'''select {group},count(distinct l.sales_order_id),sum(l.quantity),sum(l.net_line_sales)
                     from fct_sales_order_lines l join fct_sales_orders o using(sales_order_id)
                     join dim_product p on p.product_key=l.product_key where {clause} group by 1''',params).fetchall()
@@ -78,7 +86,7 @@ def check(base_url, analytics_root):
         'working_tree_dirty':bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip()),
         'environment':{'python':platform.python_version(),'duckdb':duckdb.__version__},
         'limitations':['Local HTTP check against existing analytical artifact; no live SQL Server.']})
-    print('PASS: four HTTP filter scenarios independently reconciled across all six views')
+    print('PASS: six HTTP filter scenarios independently reconciled across all six views')
 
 
 if __name__=='__main__':

@@ -70,6 +70,13 @@ export async function loadDocument(): Promise<DashboardDocument> {
     JSON.parse(await readFile(/* turbopackIgnore: true */ file, "utf8")),
   );
 }
+function validSelection(value: string, options: { key: number }[]) {
+  const keys = value.split(",");
+  return (
+    new Set(keys).size === keys.length &&
+    keys.every((key) => options.some((o) => String(o.key) === key))
+  );
+}
 export function validateFilter(
   input: Record<string, string>,
   doc: DashboardDocument,
@@ -80,8 +87,8 @@ export function validateFilter(
     )
   )
     throw new FilterError("Unknown filter");
-  const start = input.start || doc.data.period.start || "2014-01-01",
-    end = input.end || doc.data.period.end || "2014-12-31";
+  const start = input.start ?? doc.data.period.start ?? "2014-01-01",
+    end = input.end ?? doc.data.period.end ?? "2014-12-31";
   if (
     !isoDate.safeParse(start).success ||
     !isoDate.safeParse(end).success ||
@@ -90,16 +97,16 @@ export function validateFilter(
     throw new FilterError(
       "Choose a valid date range with the start on or before the end.",
     );
-  const territory = input.territory || "all",
-    category = input.category || "all";
+  const territory = input.territory ?? "all",
+    category = input.category ?? "all";
   if (
     territory !== "all" &&
-    !doc.data.dimensions.territories.some((t) => String(t.key) === territory)
+    !validSelection(territory, doc.data.dimensions.territories)
   )
     throw new FilterError("Unknown territory");
   if (
     category !== "all" &&
-    !doc.data.dimensions.categories.some((c) => String(c.key) === category)
+    !validSelection(category, doc.data.dimensions.categories)
   )
     throw new FilterError("Unknown category");
   return { start, end, territory, category };
@@ -158,7 +165,7 @@ export function dashboard(
     r.date >= filters.start &&
     r.date <= filters.end &&
     (filters.territory === "all" ||
-      String(r.territory_key) === filters.territory);
+      filters.territory.split(",").includes(String(r.territory_key)));
   const customers = d.customers.filter(included),
     summary = summarize(customers);
   const ranked = <T extends { net_line_sales: string }>(a: T[]) =>
@@ -203,10 +210,14 @@ export function dashboard(
         (r) =>
           included(r) &&
           (filters.category === "all" ||
-            String(
-              d.dimensions.products.find((p) => p.key === r.product_key)
-                ?.category_key,
-            ) === filters.category),
+            filters.category
+              .split(",")
+              .includes(
+                String(
+                  d.dimensions.products.find((p) => p.key === r.product_key)
+                    ?.category_key,
+                ),
+              )),
       ),
       (r) => String(r.product_key),
     ).map(([key, rows]) => ({
@@ -221,7 +232,7 @@ export function dashboard(
         (r) =>
           included(r) &&
           (filters.category === "all" ||
-            String(r.category_key) === filters.category),
+            filters.category.split(",").includes(String(r.category_key))),
       ),
       (r) => String(r.category_key),
     ).map(([key, rows]) => ({
@@ -238,6 +249,10 @@ export function dashboard(
     territories,
     products,
     categories,
+    category_net_line_sales: fixed(
+      categories.reduce((sum, row) => sum + micros(row.net_line_sales), 0n),
+      6,
+    ),
     provenance: doc.provenance,
     period: d.period,
     options: {

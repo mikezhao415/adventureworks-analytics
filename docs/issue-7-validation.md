@@ -211,3 +211,73 @@ Manual visual acceptance and merge approval remain outstanding. Physical devices
 Firefox/Safari and manual screen-reader coverage were not tested. Currency lineage
 is still omitted by extraction; a future semantic-profile gate is documented as
 unimplemented. PR #13 remains draft, Issue #7 open, and hosting is not implemented.
+
+
+## Filters and manual acceptance refinement - October 20, 2026
+
+Implemented on `codex/issue-7-sales-dashboard` from base `2cbc20e`, with
+local evidence recording the modified working tree. This supersedes earlier
+single-select filter and six-route descriptions.
+
+The confirmed UTM URL failure came from forwarding every query parameter to
+strict analytics validation. Page and API boundaries now isolate `start`, `end`,
+`territory` and `category`; unrelated parameters are ignored. Recognized malformed,
+empty, duplicate or unknown values still fail closed. A browser regression also
+caught the old empty-date default fallback; explicit empty dates are now invalid.
+
+`/filters` provides the required two-column Configure Filters / Applied Filters
+layout, stacked on mobile. Date presets, custom dates and territory/category
+checkboxes edit local drafts. Applied chips retain the validated URL selection
+until Apply; Unsaved Changes is highlighted. Reset immediately applies defaults.
+Navigation discards unapplied edits; direct links, reload and back/forward restore
+applied state and synchronize controls. Multiple territories form a union;
+multiple categories affect only product/category views. Financial aggregation,
+including the selected-category total, stays server-side with scaled integers.
+
+Analytics pages have compact applied summaries and Configure Filters links.
+Page headings, browser metadata and navigation use Title Case. Data & Definitions
+retains `/definitions` and uses the same book icon in navigation/page links.
+The redundant sidebar information container is removed. KPI info buttons provide
+hover/focus/click/tap popovers with definitions links and Escape/Close dismissal.
+Expanded monthly/category/territory money uses zero-decimal USD, retaining exact
+source values in cell titles and the API. No FX conversion or metric arithmetic
+change was introduced.
+
+Executed validation:
+
+- Locked `npm ci`, Prettier formatting checks, TypeScript and production build
+  passed. There is no separate lint script configured in this repository.
+- 19 Vitest/component tests passed, including URL isolation, exact multi-selection
+  composition, draft/applied separation and KPI interactions.
+- Eight Playwright tests passed across Chromium desktop and Pixel 7 emulation:
+  seven routes, titles/active navigation, drafts/apply/reset/history/reload,
+  navigation away with drafts, date presets/custom validation, clearing selections,
+  UTM/mixed URLs, malformed/empty/duplicate recognized filters, empty results,
+  zero-decimal USD tables, KPI focus/click, no document-wide horizontal overflow,
+  and axe WCAG A/AA checks on all seven pages.
+- 22 Python quality/regression tests passed (265.351 seconds). The synthetic
+  runner also passed four models/12 dbt tests and independently reconciled
+  100 orders across six monthly groups.
+- Fixture reproduction passed through the 23-model/97-test build with unchanged
+  logical hash `06b51c1b98d7a08baa7acae946142718e5d1ef362199c890c69126573d2de380`.
+- Real local export revalidated the existing snapshot, independently reconciled
+  all 23 models and passed all six mart controls.
+- Six real-data HTTP scenarios independently matched read-only DuckDB SQL across
+  every returned summary/month/customer/territory/product/category row and exact
+  AOV: full data, combined date/territory/category, boundary day, empty range,
+  multi-territory/category union, and that union with `utm_source=chatgpt.com`.
+- Six fictional overview/customer/Filters desktop/mobile screenshots were refreshed;
+  Filters layouts and representative analytics screens were visually inspected.
+  No real screenshot or real-derived artifact is tracked.
+
+The first browser run exposed an ambiguous alert selector matching Next's route
+announcer; assertions were scoped to main content. The next run exposed the
+empty-date fallback; it was corrected rather than weakening the fail-closed check.
+Final browser evidence is in `apps/web/test-results/`; Python and real HTTP
+reports remain ignored under `output/`. Prior successful runs do not substitute
+for CI on this refinement's pushed revision.
+
+Manual visual acceptance remains required, especially touch-device popovers,
+filter layout/spacing and draft/applied clarity. Physical devices, Safari/Firefox
+and manual screen-reader testing were not performed. PR #13 remains draft,
+Issue #7 remains open, and no merge or deployment is authorized.

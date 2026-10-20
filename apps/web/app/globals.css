@@ -1122,3 +1122,141 @@ tbody tr:hover {
     font-size: 14px;
   }
 }
+
+.filters-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin: 24px 0;
+}
+.filters-layout h2 {
+  margin: 0 0 20px;
+}
+.filters-layout fieldset {
+  border: 0;
+  border-top: 1px solid #d7ded9;
+  margin: 24px 0 0;
+  padding: 20px 0 0;
+  min-width: 0;
+}
+.filters-layout legend {
+  font-weight: 700;
+  padding-right: 12px;
+}
+.filters-layout label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0;
+}
+.filters-layout select,
+.filters-layout input[type="date"] {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #aebbb2;
+  border-radius: 8px;
+  padding: 10px;
+  background: white;
+  color: #263c32;
+}
+.filters-layout .check-option {
+  flex-direction: row;
+  align-items: center;
+  min-height: 44px;
+  margin: 0;
+  gap: 12px;
+}
+.check-option input {
+  width: 20px;
+  height: 20px;
+  accent-color: #315f52;
+}
+.date-inputs {
+  display: flex;
+  gap: 16px;
+}
+.date-inputs label {
+  min-width: 0;
+  flex: 1;
+}
+.filter-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+.filter-actions button {
+  min-height: 44px;
+  padding: 12px 18px;
+}
+.applied-filters {
+  position: sticky;
+  top: 24px;
+}
+.metric-help {
+  position: relative;
+}
+.metric-help .info {
+  cursor: pointer;
+  min-width: 32px;
+  min-height: 32px;
+}
+.metric-popover {
+  position: absolute;
+  right: 0;
+  top: 32px;
+  width: 260px;
+  max-width: 70vw;
+  background: #fff;
+  color: #263c32;
+  border: 1px solid #aebbb2;
+  box-shadow: 0 8px 24px #0002;
+  border-radius: 10px;
+  padding: 16px;
+  z-index: 20;
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+.metric-popover a {
+  text-decoration: underline;
+}
+.metric-popover button {
+  display: block;
+  margin-top: 12px;
+  padding: 8px;
+}
+@media (max-width: 760px) {
+  .filters-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .applied-filters {
+    position: static;
+  }
+  .date-inputs {
+    flex-direction: column;
+    gap: 0;
+  }
+  .filter-actions button {
+    width: 100%;
+  }
+}
+
+.draft-status {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #e6eee3;
+  font-weight: 600;
+  color: #315f52;
+}
+.draft-dirty {
+  background: #fff1d6;
+  color: #76501c;
+}

@@ -1,79 +1,119 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-test("URL filters, drafts, navigation, history and reset", async ({
+import { PAGES } from "../lib/navigation";
+test("drafts, unions, persistence, browser history and reset", async ({
   page,
-}, info) => {
-  await page.goto("/");
-  const sales = page.getByTestId("sales-kpi");
-  await expect(sales).toHaveText("$953,544");
-  await page.getByLabel("Territory", { exact: true }).selectOption("1");
-  await expect(sales).toHaveText("$953,544");
-  await expect(page).toHaveURL(/\/$/);
-  await page.getByRole("button", { name: "Apply filters" }).click();
-  await expect(page).toHaveURL(/territory=1/);
-  await expect(sales).not.toHaveText("$953,544");
-  const selected = await sales.textContent();
-  await page.getByLabel("Product category").selectOption("3");
-  await page.getByRole("button", { name: "Apply filters" }).click();
-  await expect(page).toHaveURL(/category=3/);
-  await expect(sales).toHaveText(selected!);
+}) => {
+  await page.goto("/?utm_source=chatgpt.com");
+  await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
+  await page
+    .getByRole("link", { name: "Configure Filters", exact: true })
+    .click();
+  const applied = page.getByLabel("Applied Filters");
+  await page.getByRole("checkbox", { name: "Northwest", exact: true }).check();
+  await page.getByRole("checkbox", { name: "Southwest", exact: true }).check();
+  await page.getByRole("checkbox", { name: "Bikes", exact: true }).check();
+  await expect(page.getByRole("status")).toHaveText("Unsaved Changes");
+  await expect(applied).toContainText("All Territories");
+  await expect(applied).toContainText("All Categories");
   await page
     .locator("nav")
-    .getByRole("link", { name: "Customer insights", exact: true })
+    .getByRole("link", { name: "Sales Overview", exact: true })
     .click();
-  await expect(page).toHaveURL(/customers.*territory=1.*category=3/);
+  await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
+  await page
+    .getByRole("link", { name: "Configure Filters", exact: true })
+    .click();
   await expect(
-    page.getByRole("textbox", { name: "Search customers" }),
-  ).toBeVisible();
+    page.getByRole("checkbox", { name: "Northwest", exact: true }),
+  ).not.toBeChecked();
+  await page.getByRole("checkbox", { name: "Northwest", exact: true }).check();
+  await page
+    .getByRole("button", { name: "Apply Filters", exact: true })
+    .click();
+  await expect(page).toHaveURL(/territory=1/);
+  await expect(applied).toContainText("Northwest");
+  await page.getByRole("checkbox", { name: "Southwest", exact: true }).check();
+  await page.getByRole("checkbox", { name: "Bikes", exact: true }).check();
+  await expect(applied).not.toContainText("Southwest");
+  await page
+    .getByRole("button", { name: "Apply Filters", exact: true })
+    .click();
+  await expect(page).toHaveURL(/territory=1%2C2/);
+  await expect(applied).toContainText("Southwest");
+  await page.reload();
+  await expect(applied).toContainText("Southwest");
   await page.goBack();
-  await expect(sales).toHaveText(selected!);
-  await page.goBack();
-  await expect(page.getByLabel("Product category")).toHaveValue("all");
+  await expect(applied).not.toContainText("Southwest");
+  await expect(
+    page.getByRole("checkbox", { name: "Southwest", exact: true }),
+  ).not.toBeChecked();
   await page.goForward();
-  await expect(page.getByLabel("Product category")).toHaveValue("3");
-  await page.getByRole("button", { name: "Reset filters" }).click();
-  await expect(page).toHaveURL(/\/$/);
-  await expect(sales).toHaveText("$953,544");
-  if (process.env.CAPTURE_DASHBOARD_SCREENSHOTS === "1")
-    await page.screenshot({
-      path: `../../docs/screenshots/sales-dashboard-${info.project.name}.png`,
-      scale: "css",
-      fullPage: info.project.name === "mobile",
-    });
+  await expect(applied).toContainText("Southwest");
+  await page
+    .locator("nav")
+    .getByRole("link", { name: "Sales Overview", exact: true })
+    .click();
+  const selected = await page.getByTestId("sales-kpi").textContent();
+  await page
+    .getByRole("link", { name: "Configure Filters", exact: true })
+    .click();
+  await page
+    .getByRole("checkbox", { name: "All Categories", exact: true })
+    .check();
+  await page
+    .getByRole("button", { name: "Apply Filters", exact: true })
+    .click();
+  await page
+    .locator("nav")
+    .getByRole("link", { name: "Sales Overview", exact: true })
+    .click();
+  await expect(page.getByTestId("sales-kpi")).toHaveText(selected!);
+  await page
+    .getByRole("link", { name: "Configure Filters", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Reset Filters", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/filters$/);
+  await expect(applied).toContainText("All Territories");
+  await page
+    .locator("nav")
+    .getByRole("link", { name: "Sales Overview", exact: true })
+    .click();
+  await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
 });
-test("all pages deep link, expose active navigation and pass accessibility", async ({
+test("page titles, responsive accessibility, USD tables and KPI information", async ({
   page,
-}, info) => {
-  for (const path of [
-    "/",
-    "/trends",
-    "/products",
-    "/customers",
-    "/territories",
-    "/definitions",
-  ]) {
-    await page.goto(path);
-    await expect(page.locator("h1:visible")).toBeVisible();
-    await expect(page.locator('nav a[aria-current="page"]')).toHaveCount(1);
+}) => {
+  for (const item of PAGES) {
+    await page.goto(item.path);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      item.title,
+    );
+    await expect(page).toHaveTitle(item.title + " | AdventureWorks Analytics");
     await expect(page.locator('nav a[aria-current="page"]')).toHaveAttribute(
       "href",
-      path,
+      item.path,
     );
-    if (path === "/definitions") {
-      await expect(page.getByLabel("Territory", { exact: true })).toHaveCount(
-        0,
-      );
+    await expect(
+      page.getByText("Validated sales metrics", { exact: true }),
+    ).toHaveCount(0);
+    if (item.path !== "/filters")
       await expect(
-        page.getByText(
-          "USD — native AdventureWorks sample amounts; no currency conversion applied.",
-          { exact: false },
-        ),
-      ).toBeVisible();
-      await expect(page.getByText(/OLTP schema does not/)).toBeVisible();
-    } else
-      await expect(
-        page.getByRole("button", { name: "Apply filters" }),
-      ).toBeEnabled();
+        page.getByRole("button", { name: "Apply Filters" }),
+      ).toHaveCount(0);
+    if (
+      process.env.CAPTURE_DASHBOARD_SCREENSHOTS === "1" &&
+      ["/", "/customers", "/filters"].includes(item.path)
+    ) {
+      await page.screenshot({
+        path: `../../docs/screenshots/sales-dashboard${item.path === "/" ? "" : "-" + item.path.slice(1)}-${test.info().project.name}.png`,
+        scale: "css",
+        fullPage:
+          test.info().project.name === "mobile" || item.path === "/filters",
+      });
+    }
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
@@ -88,58 +128,112 @@ test("all pages deep link, expose active navigation and pass accessibility", asy
         nodes: v.nodes.map((n) => n.target),
       })),
     ).toEqual([]);
-    if (
-      path === "/customers" &&
-      process.env.CAPTURE_DASHBOARD_SCREENSHOTS === "1"
-    )
-      await page.screenshot({
-        path: `../../docs/screenshots/sales-dashboard-customers-${info.project.name}.png`,
-        scale: "css",
-        fullPage: info.project.name === "mobile",
-      });
   }
-  await page.goto("/trends");
-  await expect(
-    page.getByRole("button", { name: "Apply filters" }),
-  ).toBeEnabled();
-  await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("link", { name: "Skip to page content" }),
-  ).toBeFocused();
-  await page.keyboard.press("Enter");
-  await page.locator("details summary").focus();
-  await page.keyboard.press("Enter");
-  await expect(
-    page.getByRole("table", { name: "Exact monthly sales and orders" }),
-  ).toBeVisible();
-  await page.goto("/customers");
-  await page.getByRole("textbox", { name: "Search customers" }).fill("00024");
-  await expect(page.getByText("1–1 of 1")).toBeVisible();
-  await page
-    .getByRole("region", { name: "Customer sales table", exact: true })
-    .focus();
-  await expect(
-    page.getByRole("region", { name: "Customer sales table", exact: true }),
-  ).toBeFocused();
+  await page.goto("/");
+  const help = page.getByRole("button", { name: "About Net line sales" });
+  await help.focus();
+  await expect(help).toHaveAttribute("aria-expanded", "true");
+  await page.keyboard.press("Escape");
+  await expect(help).toHaveAttribute("aria-expanded", "false");
+  await help.click();
+  await expect(help).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator(".metric-popover")).toContainText(
+    "Data & Definitions",
+  );
+  for (const [path, caption] of [
+    ["/trends", "Exact monthly sales and orders"],
+    ["/territories", "Exact territory sales"],
+  ]) {
+    await page.goto(path);
+    await page.locator("details summary").click();
+    const table = page.getByRole("table", { name: caption });
+    await expect(table).toBeVisible();
+    const first = table.locator("tbody tr").first();
+    await expect(first.locator("td").first()).toHaveText(/^\$[\d,]+$/);
+    if (path === "/territories")
+      await expect(first.locator("td").last()).toHaveText(/^\$[\d,]+$/);
+  }
 });
-test("empty selections and invalid URLs fail closed", async ({
+test("clean and tracking URLs, recognized malformed filters and empty selections", async ({
   page,
   request,
 }) => {
-  await page.goto("/?start=2020-01-01&end=2020-12-31");
-  await expect(page.getByTestId("sales-kpi")).toHaveText("$0");
-  await expect(
-    page.getByRole("article", { name: "Average order value" }),
-  ).toContainText("—");
+  const clean = await (await request.get("/api/dashboard")).json();
   for (const query of [
-    "start=2014-02-30",
-    "territory=999",
-    "territory=1&territory=2",
+    "utm_source=chatgpt.com",
+    "utm_source=a&utm_source=b",
     "unexpected=yes",
   ]) {
+    const response = await request.get(`/api/dashboard?${query}`);
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toEqual(clean);
+    await page.goto(`/?${query}`);
+    await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
+  }
+  const mixed = await (
+    await request.get("/api/dashboard?utm_source=x&territory=1&category=3")
+  ).json();
+  expect(mixed).toEqual(
+    await (await request.get("/api/dashboard?territory=1&category=3")).json(),
+  );
+  for (const query of [
+    "start=2014-02-30",
+    "start=",
+    "territory=999",
+    "territory=1&territory=2",
+    "category=1,999",
+    "territory=1,1",
+    "utm_source=x&end=bad",
+  ]) {
     await page.goto(`/customers?${query}`);
-    await expect(page.locator(".error-banner")).toBeVisible();
+    await expect(page.locator("main").getByRole("alert")).toBeVisible();
     await expect(page.getByTestId("analytics-content")).toHaveCount(0);
     expect((await request.get(`/api/dashboard?${query}`)).status()).toBe(400);
   }
+  await page.goto("/?start=2020-01-01&end=2020-12-31");
+  await expect(page.getByTestId("sales-kpi")).toHaveText("$0");
+});
+test("presets, custom validation and clearing individual selections", async ({
+  page,
+}) => {
+  await page.goto("/filters");
+  await page.getByLabel("Date preset").selectOption("Year");
+  await page.getByLabel("Year", { exact: true }).selectOption("2014");
+  await page
+    .getByRole("button", { name: "Apply Filters", exact: true })
+    .click();
+  await expect(page).toHaveURL(/start=2014-01-01&end=2014-12-31/);
+  await page.getByLabel("Date preset").selectOption("Quarter");
+  await page.getByLabel("Quarter", { exact: true }).selectOption("2014-02");
+  await page
+    .getByRole("button", { name: "Apply Filters", exact: true })
+    .click();
+  await expect(page).toHaveURL(/start=2014-04-01&end=2014-06-30/);
+  await page.getByLabel("Date preset").selectOption("Month");
+  await page.getByLabel("Month", { exact: true }).selectOption("2014-02");
+  await page
+    .getByRole("button", { name: "Apply Filters", exact: true })
+    .click();
+  await expect(page).toHaveURL(/start=2014-02-01&end=2014-02-28/);
+  await page.getByLabel("Date preset").selectOption("Custom Range");
+  await page.getByLabel("Start date").fill("2014-12-31");
+  await page.getByLabel("End date").fill("2014-01-01");
+  await page
+    .getByRole("button", { name: "Apply Filters", exact: true })
+    .click();
+  await expect(page.locator("main").getByRole("alert")).toContainText(
+    "start on or before the end",
+  );
+  await expect(page.getByLabel("Applied Filters")).toContainText("2014-02-01");
+  await page.getByRole("checkbox", { name: "Northwest", exact: true }).check();
+  await page
+    .getByRole("checkbox", { name: "Northwest", exact: true })
+    .uncheck();
+  await expect(
+    page.getByRole("checkbox", { name: "All Territories", exact: true }),
+  ).toBeChecked();
+  await page
+    .getByRole("button", { name: "Reset Filters", exact: true })
+    .click();
+  await expect(page.getByLabel("Date preset")).toHaveValue("Full History");
 });

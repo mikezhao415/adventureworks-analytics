@@ -4,17 +4,24 @@ import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
   Activity,
-  ArrowUpRight,
   BarChart3,
   BookOpen,
   Globe2,
   LayoutDashboard,
   Package,
-  ShieldCheck,
+  SlidersHorizontal,
   Users,
 } from "lucide-react";
 import { PAGES, preserveQuery } from "../lib/navigation";
-const ICONS = [LayoutDashboard, BarChart3, Package, Users, Globe2, BookOpen];
+const ICONS = [
+  LayoutDashboard,
+  BarChart3,
+  Package,
+  Users,
+  Globe2,
+  BookOpen,
+  SlidersHorizontal,
+];
 export function ApplicationShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname(),
     query = useSearchParams().toString();
@@ -62,27 +69,11 @@ export function ApplicationShell({ children }: { children: React.ReactNode }) {
                 aria-current={pathname === page.path ? "page" : undefined}
               >
                 <Icon size={20} aria-hidden="true" />
-                <span>
-                  {page.path === "/products"
-                    ? "Products & categories"
-                    : page.title}
-                </span>
+                <span>{page.title}</span>
               </Link>
             );
           })}
         </nav>
-        <div className="sidebar-bottom">
-          <ShieldCheck size={23} aria-hidden="true" />
-          <strong>Validated sales metrics</strong>
-          <p>
-            Historical snapshots.
-            <br />
-            Independent reconciliation.
-          </p>
-          <Link href={preserveQuery("/definitions", query)} prefetch={false}>
-            Data & definitions <ArrowUpRight size={16} aria-hidden="true" />
-          </Link>
-        </div>
       </aside>
       <div className="workspace">
         <main id="main" tabIndex={-1}>

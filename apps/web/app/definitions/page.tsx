@@ -1,3 +1,6 @@
+export const metadata = {
+  title: "Data & Definitions | AdventureWorks Analytics",
+};
 import { loadDocument } from "../../lib/data";
 import { METRICS } from "../../lib/format";
 import { Disclosure } from "../../components/disclosure";
@@ -9,7 +12,7 @@ export default async function Definitions() {
   } catch {
     return (
       <section>
-        <h1>Metric definitions</h1>
+        <h1>Data & Definitions</h1>
         <p role="alert">
           Data provenance is unavailable because the configured export failed to
           load. No fallback data has been substituted.
@@ -30,7 +33,7 @@ export default async function Definitions() {
       <Disclosure context={context} />
       <div className="page-heading">
         <div>
-          <h1>Metric definitions</h1>
+          <h1>Data & Definitions</h1>
           <p className="intro">
             Calculation rules, filter scopes and the provenance behind every
             view.

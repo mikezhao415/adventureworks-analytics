@@ -7,10 +7,12 @@ import { Dashboard } from "../components/dashboard";
 import { CustomersView } from "../components/customers";
 import { comparisonWidths } from "../lib/comparison";
 import { displayAmount } from "../lib/format";
+import { Filters } from "../components/filters";
 import { scalarFilters } from "../lib/navigation";
 const { push } = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
+  useSearchParams: () => new URLSearchParams(),
   useRouter: () => ({ push }),
 }));
 vi.mock("recharts", async (original) => ({
@@ -43,19 +45,54 @@ describe("page presentation and filter navigation", () => {
   it("keeps drafts local until Apply and resets through the URL", async () => {
     const user = userEvent.setup();
     push.mockClear();
-    render(<Dashboard {...props} />);
-    await user.selectOptions(screen.getByLabelText("Territory"), "1");
-    expect(push).not.toHaveBeenCalled();
-    await user.click(screen.getByRole("button", { name: "Apply filters" }));
-    await waitFor(() =>
-      expect(push).toHaveBeenCalledWith(
-        expect.stringContaining("territory=1"),
-        { scroll: false },
-      ),
+    const apply = vi.fn(),
+      reset = vi.fn();
+    render(
+      <Filters
+        applied={data.filters}
+        defaults={data.filters}
+        context={data}
+        pending={false}
+        onApply={apply}
+        onReset={reset}
+      />,
     );
-    await user.click(screen.getByRole("button", { name: "Reset filters" }));
-    expect(push).toHaveBeenLastCalledWith("/", { scroll: false });
+    const summary = screen.getByLabelText("Applied Filters");
+    await user.click(screen.getByRole("checkbox", { name: "Northwest" }));
+    expect(apply).not.toHaveBeenCalled();
+    expect(summary).toHaveTextContent("All Territories");
+    expect(screen.getByRole("status")).toHaveTextContent("Unsaved Changes");
+    await user.click(screen.getByRole("button", { name: "Apply Filters" }));
+    expect(apply).toHaveBeenCalledWith(
+      expect.objectContaining({ territory: "1" }),
+    );
+    expect(summary).toHaveTextContent("All Territories");
+    await user.click(screen.getByRole("button", { name: "Reset Filters" }));
+    expect(reset).toHaveBeenCalledOnce();
   });
+  it("opens KPI information by focus, click and hover", async () => {
+    const user = userEvent.setup();
+    render(<Dashboard {...props} />);
+    const button = screen.getByRole("button", {
+      name: /About Net line sales/i,
+    });
+    await user.hover(button);
+    expect(button).toHaveAttribute("aria-expanded", "true");
+    await user.unhover(button);
+    expect(button).toHaveAttribute("aria-expanded", "false");
+    button.focus();
+    await waitFor(() =>
+      expect(button).toHaveAttribute("aria-expanded", "true"),
+    );
+    await user.keyboard("{Escape}");
+    expect(button).toHaveAttribute("aria-expanded", "false");
+    await user.click(button);
+    expect(button).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getAllByRole("link", { name: "Data & Definitions" }),
+    ).toHaveLength(2);
+  });
+
   it("hides metrics when the URL is invalid", () => {
     render(<Dashboard {...props} data={null} error="Unknown filter" />);
     expect(screen.getByRole("alert")).toHaveTextContent("Unknown filter");

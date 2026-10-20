@@ -189,6 +189,8 @@ describe("validated dashboard boundary", () => {
   it("rejects malformed, reversed, unknown and impossible filters", () => {
     for (const query of [
       { start: "2014-02-30" },
+      { start: "" },
+      { end: "" },
       { start: "2014-02-01", end: "2014-01-01" },
       { territory: "999" },
       { category: "999" },
@@ -212,5 +214,62 @@ describe("validated dashboard boundary", () => {
       "9,007,199,254,740,993.123456",
     );
     expect(money(null)).toBe("—");
+  });
+});
+
+import { scalarFilters, filterHref, PAGES } from "../lib/navigation";
+describe("URL boundary and multi-selection", () => {
+  it("isolates tracking parameters while retaining supported filters", () => {
+    const doc = example();
+    expect(dashboard(doc, scalarFilters({}))).toEqual(
+      dashboard(
+        doc,
+        scalarFilters({ utm_source: "chatgpt.com", utm_campaign: ["a", "b"] }),
+      ),
+    );
+    expect(
+      scalarFilters({ utm_source: "x", territory: "1,2", category: "2" }),
+    ).toEqual({ territory: "1,2", category: "2" });
+    expect(() =>
+      dashboard(doc, scalarFilters({ utm_source: "x", start: "bad" })),
+    ).toThrow();
+    expect(() =>
+      scalarFilters({ start: ["2014-01-01", "2014-01-02"] }),
+    ).toThrow();
+  });
+  it("composes unions of disjoint territories and limits categories to product views", () => {
+    const all = dashboard(example()),
+      multi = dashboard(example(), { territory: "1,2", category: "1,2" });
+    expect(multi.summary).toEqual(all.summary);
+    expect(multi.category_net_line_sales).toBe("30.000003");
+    expect(multi.products).toEqual(all.products);
+    const scoped = dashboard(example(), { territory: "1,2", category: "2" });
+    expect(scoped.summary).toEqual(all.summary);
+    expect(scoped.categories).toHaveLength(1);
+    expect(scoped.category_net_line_sales).toBe("6.000001");
+    expect(scoped.products[0].name).toBe("Pedal");
+    for (const territory of ["", "1,", "1,1", "all,1", "1,999"])
+      expect(() => dashboard(example(), { territory })).toThrow();
+    for (const category of ["", "1,", "1,1", "all,1", "1,999"])
+      expect(() => dashboard(example(), { category })).toThrow();
+  });
+  it("uses consistent navigation titles and serializes multi-selections", () => {
+    expect(PAGES.map((p) => p.title)).toEqual([
+      "Sales Overview",
+      "Sales Trends",
+      "Products & Categories",
+      "Customers",
+      "Territory Performance",
+      "Data & Definitions",
+      "Filters",
+    ]);
+    expect(
+      filterHref("/products", {
+        start: "2014-01-01",
+        end: "2014-01-02",
+        territory: "1,2",
+        category: "all",
+      }),
+    ).toContain("territory=1%2C2");
   });
 });
