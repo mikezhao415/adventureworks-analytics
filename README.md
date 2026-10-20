@@ -126,7 +126,9 @@ See [docs/synthetic-slice.md](docs/synthetic-slice.md) for negative tests, evide
 
 ## Data provenance and licensing
 
-AdventureWorks is a Microsoft sample database. Verify applicable licensing and redistribution terms for the exact files and derived artifacts before publishing them. Prefer documented acquisition over committing a database backup. Never commit secrets, sensitive records, large snapshots, generated DuckDB files, or unreviewed output artifacts. Code licensing and data licensing are separate decisions; the repository-wide license is **not yet selected**.
+AdventureWorks 2022 is a Microsoft SQL Server sample distributed through Microsoft's [official release](https://github.com/microsoft/sql-server-samples/releases/tag/adventureworks). Microsoft describes its SQL Server samples as [MIT-licensed](https://learn.microsoft.com/en-us/sql/samples/sql-samples-where-are); redistribution of covered materials requires retaining the [Microsoft copyright and permission notice](https://github.com/microsoft/sql-server-samples/blob/master/license.txt). See the [data provenance and redistribution policy](docs/data-redistribution.md) for the source evidence, attribution rules, and asset-specific caveat.
+
+The hosted-demo plan uses this project's **deterministic fictional fixture**, not the actual AdventureWorks-derived export. Do not commit database backups, source snapshots, generated DuckDB files, secrets, or unreviewed real-derived outputs. Original project code licensing is a separate decision; the repository-wide license is **not yet selected**.
 
 ## Evidence and limitations
 
