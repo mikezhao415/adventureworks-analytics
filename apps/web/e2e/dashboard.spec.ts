@@ -193,29 +193,19 @@ test("clean and tracking URLs, recognized malformed filters and empty selections
   await page.goto("/?start=2020-01-01&end=2020-12-31");
   await expect(page.getByTestId("sales-kpi")).toHaveText("$0");
 });
-test("presets, custom validation and clearing individual selections", async ({
+test("custom date range, validation and clearing individual selections", async ({
   page,
 }) => {
   await page.goto("/filters");
-  await page.getByLabel("Date preset").selectOption("Year");
-  await page.getByLabel("Year", { exact: true }).selectOption("2014");
-  await page
-    .getByRole("button", { name: "Apply Filters", exact: true })
-    .click();
-  await expect(page).toHaveURL(/start=2014-01-01&end=2014-12-31/);
-  await page.getByLabel("Date preset").selectOption("Quarter");
-  await page.getByLabel("Quarter", { exact: true }).selectOption("2014-02");
-  await page
-    .getByRole("button", { name: "Apply Filters", exact: true })
-    .click();
-  await expect(page).toHaveURL(/start=2014-04-01&end=2014-06-30/);
-  await page.getByLabel("Date preset").selectOption("Month");
-  await page.getByLabel("Month", { exact: true }).selectOption("2014-02");
+  await expect(page.getByLabel("Date preset")).toHaveCount(0);
+  await page.getByLabel("Start date").fill("2014-02-01");
+  await page.getByLabel("End date").fill("2014-02-28");
+  await expect(page.getByLabel("Applied Filters")).not.toContainText("2014-02-01");
   await page
     .getByRole("button", { name: "Apply Filters", exact: true })
     .click();
   await expect(page).toHaveURL(/start=2014-02-01&end=2014-02-28/);
-  await page.getByLabel("Date preset").selectOption("Custom Range");
+  await expect(page.getByLabel("Applied Filters")).toContainText("2014-02-01");
   await page.getByLabel("Start date").fill("2014-12-31");
   await page.getByLabel("End date").fill("2014-01-01");
   await page
@@ -226,14 +216,13 @@ test("presets, custom validation and clearing individual selections", async ({
   );
   await expect(page.getByLabel("Applied Filters")).toContainText("2014-02-01");
   await page.getByRole("checkbox", { name: "Northwest", exact: true }).check();
-  await page
-    .getByRole("checkbox", { name: "Northwest", exact: true })
-    .uncheck();
+  await page.getByRole("checkbox", { name: "Northwest", exact: true }).uncheck();
   await expect(
     page.getByRole("checkbox", { name: "All Territories", exact: true }),
   ).toBeChecked();
   await page
     .getByRole("button", { name: "Reset Filters", exact: true })
     .click();
-  await expect(page.getByLabel("Date preset")).toHaveValue("Full History");
+  await expect(page.getByLabel("Start date")).toHaveValue("2013-01-01");
+  await expect(page.getByLabel("End date")).toHaveValue("2014-12-22");
 });
