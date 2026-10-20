@@ -315,9 +315,6 @@ main {
   flex-direction: column;
   gap: 8px;
 }
-.active-filters > .source-link {
-  margin-left: auto;
-}
 .active-filters strong {
   font-weight: 500;
 }
@@ -997,10 +994,6 @@ tbody tr:hover {
   .active-filter-details {
     flex: 0 1 auto;
     width: 100%;
-  }
-  .active-filters > .source-link {
-    align-self: flex-end;
-    margin-left: auto;
   }
   .filter-explainer {
     font-size: 13px;
