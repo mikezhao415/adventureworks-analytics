@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import demo from "../data/demo.json";
 import { dashboard, validateDocument } from "../lib/data";
@@ -70,27 +70,14 @@ describe("page presentation and filter navigation", () => {
     await user.click(screen.getByRole("button", { name: "Reset Filters" }));
     expect(reset).toHaveBeenCalledOnce();
   });
-  it("opens KPI information by focus, click and hover", async () => {
-    const user = userEvent.setup();
+  it("renders KPI definitions accessibly without information icons", () => {
     render(<Dashboard {...props} />);
-    const button = screen.getByRole("button", {
-      name: /About Net line sales/i,
-    });
-    await user.hover(button);
-    expect(button).toHaveAttribute("aria-expanded", "true");
-    await user.unhover(button);
-    expect(button).toHaveAttribute("aria-expanded", "false");
-    button.focus();
-    await waitFor(() =>
-      expect(button).toHaveAttribute("aria-expanded", "true"),
+    expect(screen.queryByRole("button", { name: /About Net line sales/i })).not.toBeInTheDocument();
+    expect(screen.queryByText("i", { selector: ".info" })).not.toBeInTheDocument();
+    expect(screen.getByTestId("sales-kpi").closest("article")).toHaveAccessibleDescription(
+      expect.stringContaining("Exact USD:"),
     );
-    await user.keyboard("{Escape}");
-    expect(button).toHaveAttribute("aria-expanded", "false");
-    await user.click(button);
-    expect(button).toHaveAttribute("aria-expanded", "true");
-    expect(
-      screen.getAllByRole("link", { name: "Data & Definitions" }),
-    ).toHaveLength(2);
+    expect(screen.getByRole("link", { name: "Data & Definitions" })).toBeInTheDocument();
   });
 
   it("hides metrics when the URL is invalid", () => {
