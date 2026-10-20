@@ -994,6 +994,10 @@ tbody tr:hover {
     align-items: stretch;
     gap: 12px;
   }
+  .active-filter-details {
+    flex: 0 1 auto;
+    width: 100%;
+  }
   .active-filters > .source-link {
     align-self: flex-end;
     margin-left: auto;
