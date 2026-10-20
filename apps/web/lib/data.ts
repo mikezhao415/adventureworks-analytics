@@ -63,12 +63,18 @@ export function validateDocument(input: unknown): DashboardDocument {
   return doc;
 }
 export async function loadDocument(): Promise<DashboardDocument> {
+  // Public production must never load a developer-supplied source export.
   const file =
-    process.env.AW_DASHBOARD_DATA ||
-    path.join(process.cwd(), "data", "demo.json");
-  return validateDocument(
+    process.env.NODE_ENV === "production"
+      ? path.join(process.cwd(), "data", "demo.json")
+      : process.env.AW_DASHBOARD_DATA ||
+        path.join(process.cwd(), "data", "demo.json");
+  const doc = validateDocument(
     JSON.parse(await readFile(/* turbopackIgnore: true */ file, "utf8")),
   );
+  if (process.env.NODE_ENV === "production" && doc.provenance.mode !== "offline_fixture")
+    throw new Error("Production dashboard requires fictional demonstration data");
+  return doc;
 }
 function validSelection(value: string, options: { key: number }[]) {
   const keys = value.split(",");
