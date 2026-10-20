@@ -10,7 +10,7 @@ test("drafts, unions, persistence, browser history and reset", async ({
     .getByRole("navigation", { name: "Analytics pages" })
     .getByRole("link", { name: "Filters", exact: true })
     .click();
-  const applied = page.getByLabel("Applied Filters");
+  const applied = page.locator("#main").getByLabel("Applied Filters");
   await page.getByRole("checkbox", { name: "Northwest", exact: true }).check();
   await page.getByRole("checkbox", { name: "Southwest", exact: true }).check();
   await page.getByRole("checkbox", { name: "Bikes", exact: true }).check();
