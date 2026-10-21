@@ -12,7 +12,7 @@ Do not reference unrelated repositories, employer systems, proprietary schemas, 
 - AGENTS.md defines engineering and agent behavior.
 - Code, tests, CI, and observed logs establish what is implemented and validated.
 - Issues and plans are proposals until acceptance evidence exists.
-- Keep status accurate: the synthetic vertical slice and Issue #4 extraction are merged and validated. Issue #5 dimensional models and local sales marts are merged in PR #11. Issue #6 quality automation is merged in PR #12. Issue #7 sales dashboard is implemented for review; do not call it complete before validation and merge approval. Public hosting and case-study publication remain future work.
+- Keep status accurate: the synthetic vertical slice and Issue #4 extraction are merged and validated. Issue #5 dimensional models and local sales marts are merged in PR #11. Issue #6 quality automation is merged in PR #12. Issue #7 sales dashboard is complete (PR #13). Issue #16 aggregate publication is complete (PR #17), with the reviewed historical sample publicly hosted on Vercel. Issue #8 remains open for the business/technical portfolio case study and reproducibility publication.
 - Synthetic fixtures use two tenant labels solely to exercise scoped composite keys. **Do not expand multi-tenant simulation into a required project deliverable.**
 - **Do not add legacy-vs-modern benchmarks or direct transactional-query comparisons** without an explicit change of scope.
 
@@ -62,9 +62,9 @@ AGENTS.md
 - Keep data access/composition separate from presentation. Exact amounts cross JSON as decimal strings; compose financial values with scaled integers, never floating point.
 - Date and order territory affect all views. Category filters affect product/category views only; do not allocate header money or sum overlapping product/category order counts.
 - Dashboard USD presentation follows the reviewed `docs/currency-interpretation.md`: native sample amounts, no FX conversion; preserve exact calculations and source precision.
-- Project-created fictional fixtures/screenshots remain available for tests and rollback. Real-derived exports remain ignored under `output/`; only an explicitly approved exact static aggregate artifact may be added for publication, with pinned full-file/content hashes, snapshot identity, review manifest, Microsoft notice and a path-specific Git `-text` attribute to preserve exact bytes. Never stage that artifact before explicit redistribution approval. `AW_DASHBOARD_DATA` is development-only; production loads the fixed reviewed artifact and fails closed.
+- Project-created fictional fixtures/screenshots remain available for tests and rollback. Real-derived exports remain ignored under `output/`; only the exact reviewed aggregate artifact from PR #17 is approved and published, with pinned full-file/content hashes, snapshot identity, review manifest, Microsoft notice and a path-specific Git `-text` attribute to preserve exact bytes. Any replacement or new artifact requires a new redistribution review and explicit approval. `AW_DASHBOARD_DATA` is development-only; production loads the fixed reviewed artifact and fails closed.
 - Use `npm ci`, formatting, typecheck, Vitest, a production build and Playwright for web changes. Preserve Python/dbt gates and fixture-content reproduction checks.
-- Do not deploy, add authentication/persistence, dashboard builders or future product scope without a separate user request.
+- The dashboard is live at https://adventureworks-analytics-flax.vercel.app/. Do not make further deployments, configuration changes, or scope additions without separate user approval. Merging to `main` can trigger Production automatically; confirm both merge and Production release approval.
 
 ## Metric and data contracts
 
@@ -106,6 +106,7 @@ Explain the **implemented** analytical solution and its business outputs without
 6. Review for confidential material, generated artifacts, licensing, scope creep, and unsupported claims.
 7. Summarize changes, tests, limitations, and follow-ups in the PR.
 8. Do not merge or declare an issue done until required checks pass and the user approves.
+9. After major merges/deployments, reconcile README, root/nested AGENTS, guides, provenance, parent/child issues, URLs, evidence and remaining work. Search for stale fixture-only, proposed, and no-deployment claims; preserve dated historical reviews.
 
 ## Definition of done
 
