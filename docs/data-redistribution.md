@@ -21,21 +21,21 @@ Microsoft describes the SQL Server samples and templates as MIT-licensed. Its of
 
 ## Publication rules
 
-- Prefer publishing the existing deterministic fictional fixture for the hosted dashboard. This does not require distributing the real-source snapshot or backup.
+- The approved hosted dashboard serves only the reviewed, pinned AdventureWorks 2022-derived aggregate (PR #17). The deterministic fictional fixture remains for tests and rollback reference, not the current Production source.
 - Do not commit or deploy the `.bak`, source Parquet snapshots, local DuckDB files, credentials, or full derived real-source exports by default.
-- For any later public AdventureWorks-derived dataset: record exact upstream URL and version, acquisition date, transformation lineage, schema, row scope, hash, and publication purpose; review content for embedded third-party assets and identifiers; include the upstream Microsoft copyright and MIT permission notice with substantial redistributions; and review the specific publication artifact before release.
+- For any additional or replacement public AdventureWorks-derived dataset: record exact upstream URL and version, acquisition date, transformation lineage, schema, row scope, hash, and publication purpose; review content for embedded third-party assets and identifiers; include the upstream Microsoft copyright and MIT permission notice with substantial redistributions; and review the specific publication artifact before release.
 - For screenshots or charts, disclose whether they show deterministic fictional fixture results or historical AdventureWorks sample metrics. Avoid claims of production performance, recognized revenue, real customers, or live freshness.
 - Retain links to the Microsoft source and license in the README, case study and any redistribution package.
 - Do not claim the entire repository is MIT-licensed until the original project code license is independently selected.
 
 ## Release gate
 
-**Current recommended release:** host `apps/web` using the checked-in fictional fixture, with clear disclosure and a link to this policy. This path does not depend on publishing Microsoft's backup or real-source export.
+**Current approved release (2026-10-20):** the public Vercel dashboard serves the reviewed checked-in `apps/web/data/adventureworks2022.json` aggregate with Microsoft notice at `apps/web/public/notices/microsoft-sql-server-samples.txt`. It does not distribute the source `.bak`, raw snapshots or arbitrary exports. PR #17 is merged; Issue #16 is complete.
 
-**If later publishing AdventureWorks-derived exports:** confirm the exact artifact and any asset-specific terms, carry the complete upstream license notice, document provenance, and obtain legal review if commercial or high-stakes redistribution certainty is required.
+**For future replacements or additional AdventureWorks-derived exports:** confirm the exact artifact and any asset-specific terms, carry the complete upstream license notice, document provenance, and obtain legal review if commercial or high-stakes redistribution certainty is required.
 
 **Open separate decision:** select and add a license for this project's original code. Do not conflate code licensing with the Microsoft sample data terms.
 
-## Issue #16 proposed aggregate exception
+## Issue #16 approved aggregate exception
 
-The existing production fixture remains unchanged. The [exact candidate review](dashboard-artifact-review.md) conditionally assesses one AdventureWorks-derived aggregate artifact, including retained numeric sample identifiers and the unverified acquisition URL. This supersedes the fixture-only recommendation only after explicit artifact redistribution approval. No backup, source snapshot or arbitrary export is approved. The complete Microsoft notice accompanies the proposed artifact in `apps/web/public/notices/microsoft-sql-server-samples.txt`.
+The [exact artifact review](dashboard-artifact-review.md) conditionally assessed and approved **one** AdventureWorks-derived aggregate artifact, including retained numeric sample identifiers. Separate redistribution, merge, and Production release approvals were granted; PR #17 merged and the public deployment was verified. The original backup acquisition URL/hash and independent asset-level license grant remain unverified. This is not blanket approval for backups, raw snapshots, arbitrary exports, or replacement artifacts; nor is it a legal guarantee. The complete Microsoft notice accompanies the approved artifact.

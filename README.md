@@ -4,7 +4,7 @@ An end-to-end **BI-as-Code analytics engineering portfolio project** demonstrati
 
 The goal is to **build and demonstrate a modern analytical implementation**, not to benchmark it against a traditional reporting approach. Correctness, version control, maintainability, reproducibility, and useful business metrics are the central themes.
 
-> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are merged in [PR #11](https://github.com/mikezhao415/adventureworks-analytics/pull/11); see the [snapshot-to-mart guide](docs/dimensional-modeling.md). The sales dashboard was completed and squash-merged in [PR #13](https://github.com/mikezhao415/adventureworks-analytics/pull/13), closing [Issue #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7). Public hosting and the portfolio case study are the next publication phase ([Issue #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8)).
+> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are merged in [PR #11](https://github.com/mikezhao415/adventureworks-analytics/pull/11); see the [snapshot-to-mart guide](docs/dimensional-modeling.md). The sales dashboard was completed and squash-merged in [PR #13](https://github.com/mikezhao415/adventureworks-analytics/pull/13), closing [Issue #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7). The public dashboard is live at https://adventureworks-analytics-flax.vercel.app/; the separate business/technical case study and complete reproducibility guide remain pending ([Issue #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8)).
 
 ## What this project demonstrates
 
@@ -32,13 +32,15 @@ AdventureWorks 2022 / SQL Server
   Tested, documented sales metrics
           |
           v
-  Validated Next.js sales dashboard (local)
+  Reviewed pinned aggregate export
           |
           v
-  Public BI-as-Code case study
+  Public Next.js dashboard on Vercel
+
+  Separate business/technical portfolio case study: pending
 ```
 
-SQL Server ingestion publishes validated local Parquet snapshots. A separate real-source dbt project builds 23 staging, dimensional, fact and mart models with independent Python reconciliation. The synthetic mode retains its original smaller pipeline. The local Next.js sales dashboard consumes a reconciled versioned export; see the [dashboard guide](docs/sales-dashboard.md).
+SQL Server ingestion publishes validated local Parquet snapshots. A separate real-source dbt project builds 23 staging, dimensional, fact and mart models with independent Python reconciliation. The synthetic mode retains its original smaller pipeline. The public Next.js dashboard serves only the reviewed, checked-in static aggregate; the SQL Server, Parquet, DuckDB and dbt pipeline is not hosted on Vercel. It consumes a reconciled versioned export; see the [dashboard guide](docs/sales-dashboard.md).
 
 ## Technology
 
@@ -66,10 +68,13 @@ python -m src.analytics
 python -m src.analytics_check
 ```
 
+## Explore the published dashboard
+
+**Live:** https://adventureworks-analytics-flax.vercel.app/ — Microsoft's fictional historical AdventureWorks 2022 sample business data, not live or actual commercial results. The pinned static aggregate is published with Microsoft attribution; no SQL Server or analytics database is hosted on Vercel.
+
 ## Launch the local sales dashboard
 
-Use Node.js 22 or newer. No SQL Server, credentials or private data are needed for the
-clearly labeled fictional demo:
+Use Node.js 22 or newer. No SQL Server, credentials or private data are needed to run the checked-in web application locally:
 
 ```bash
 cd apps/web
@@ -86,7 +91,7 @@ Data & Definitions explains metric rules, provenance, and interpretation. The UI
 uses native AdventureWorks sample USD amounts for display, preserving exact
 underlying decimal precision. See the [dashboard implementation and validation guide](docs/sales-dashboard.md).
 
-The checked-in demo is explicitly **fictional**. The existing public deployment uses that fixture. Issue #16 prepares a pinned AdventureWorks-derived static aggregate artifact; the exact candidate is approved for repository publication and draft PR preparation. No merge or deployment is authorized. See the [exact artifact review](docs/dashboard-artifact-review.md).
+The checked-in demo is explicitly **fictional**. Production instead serves the reviewed, pinned AdventureWorks 2022-derived aggregate artifact (PR #17, Issue #16 complete); the project-created fictional fixture remains for local development and tests. The Production release was explicitly approved and verified. Future releases require separate approval. See the [exact artifact review](docs/dashboard-artifact-review.md).
 The dashboard was delivered by [PR #13](https://github.com/mikezhao415/adventureworks-analytics/pull/13),
 with both Sales dashboard and BI quality/reproducibility workflows passing on the
 final PR head. Quality automation was delivered in PR #12.
@@ -103,7 +108,7 @@ The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) 
 4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) — merged in PR #11.** Staging, facts, dimensions, sales marts, contracts, tests, and lineage.
 5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Merged in PR #12: quality gates, regression coverage, repeatability, and evidence.
 6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7) — complete (PR #13).** Validated local dashboard, versioned export, fictional public-safe demo, responsive views, documented metric definitions, and passing browser/CI checks.
-7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) — next.** The current hosted demo uses fictional fixtures. Issue #16 proposes reviewed AdventureWorks-derived aggregates, subject to explicit artifact and release approval. The two-audience case study and reproduction gates remain open.
+7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) — next.** The public dashboard now serves the reviewed AdventureWorks sample aggregate (PR #17, Issue #16 completed). The two-audience case study and reproduction gates remain open.
 
 Phases may overlap where practical, but each issue must state its own acceptance evidence. **Neither direct-query comparisons nor multi-tenant simulation is required.**
 
@@ -127,7 +132,7 @@ See [docs/synthetic-slice.md](docs/synthetic-slice.md) for negative tests, evide
 
 AdventureWorks 2022 is a Microsoft SQL Server sample distributed through Microsoft's [official release](https://github.com/microsoft/sql-server-samples/releases/tag/adventureworks). Microsoft describes its SQL Server samples as [MIT-licensed](https://learn.microsoft.com/en-us/sql/samples/sql-samples-where-are); redistribution of covered materials requires retaining the [Microsoft copyright and permission notice](https://github.com/microsoft/sql-server-samples/blob/master/license.txt). See the [data provenance and redistribution policy](docs/data-redistribution.md) for the source evidence, attribution rules, and asset-specific caveat.
 
-The existing hosted demo uses this project's **deterministic fictional fixture**. The [Issue #16 candidate review](docs/dashboard-artifact-review.md) proposes only the exact pinned aggregate export, with a Microsoft notice and separate approval gates. Do not commit database backups, source snapshots, generated DuckDB files, secrets, or unreviewed real-derived outputs. Original project code licensing is a separate decision; the repository-wide license is **not yet selected**.
+The hosted dashboard uses the **reviewed AdventureWorks 2022-derived aggregate export** with the Microsoft notice. The [Issue #16 artifact review](docs/dashboard-artifact-review.md) documents its scope and release. The original backup download URL/hash and independent asset-level license grant remain unverified; this is a conditional licensing assessment, not legal clearance. Do not commit database backups, raw source snapshots, generated DuckDB files, secrets, or unreviewed exports. Original project code licensing is a separate decision; the repository-wide license is **not yet selected**.
 
 ## Evidence and limitations
 

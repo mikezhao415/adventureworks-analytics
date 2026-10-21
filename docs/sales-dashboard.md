@@ -3,7 +3,7 @@
 Issue #7 adds a local Next.js App Router application in `apps/web`. It uses React,
 TypeScript, Tailwind CSS and Recharts. Native labeled controls and small typed
 components serve this dashboard without a component framework or dashboard engine.
-The existing public deployment uses the fictional fixture; Issue #16 prepares a separately reviewed sample artifact. No authentication, persistence, arbitrary uploads/SQL, scheduled refresh,
+The public Vercel deployment serves the reviewed, pinned AdventureWorks 2022-derived aggregate (PR #17; Issue #16 completed). The fictional fixture remains for local tests and historical screenshots. No authentication, persistence, arbitrary uploads/SQL, scheduled refresh,
 custom metrics or multi-tenancy are implemented.
 
 ![Fictional dashboard, desktop](screenshots/sales-dashboard-desktop.png)
@@ -36,8 +36,8 @@ npm run build
 npm run start
 ```
 
-Both scripts bind to `127.0.0.1`. This issue does not deploy the application.
-Production on this branch requires the fixed `data/adventureworks2022.json`, pinned full-file/content hashes and snapshot, and `real_adventureworks` mode. It ignores `AW_DASHBOARD_DATA` and fails closed if the artifact is absent or unexpected. The exact candidate is approved for repository publication, with merge/deployment gated separately; see [artifact review](dashboard-artifact-review.md). Local export
+Both scripts bind to `127.0.0.1`. The approved public Production deployment is https://adventureworks-analytics-flax.vercel.app/.
+Production on this branch requires the fixed `data/adventureworks2022.json`, pinned full-file/content hashes and snapshot, and `real_adventureworks` mode. It ignores `AW_DASHBOARD_DATA` and fails closed if the artifact is absent or unexpected. The exact artifact was approved, merged and deployed; future replacements and deployments require separate approval; see [artifact review](dashboard-artifact-review.md). Local export
 overrides are supported only outside production; use `npm run dev` for them.
 Do not run a build while a test or production server is using that same `.next`
 output; stop that owned process first. The dev server uses `.next/dev`.
@@ -177,11 +177,7 @@ compliance or screen-reader coverage.
 
 ## Local real-source use and refresh
 
-Real-source and derived dataset redistribution provenance remains unresolved;
-see [extraction licensing](adventureworks-extraction.md#licensing-and-redistribution).
-Only fictional data and fictional screenshots are tracked. Real exports are
-restricted to ignored `output/` by the exporter, and are never placed in `public/`,
-the tracked demo, CI artifacts or hosting. Do not commit or publish real exports.
+The single reviewed AdventureWorks-derived aggregate artifact is tracked and deployed under the conditional [redistribution policy](data-redistribution.md). The original backup URL/hash and asset-level license grant remain unverified. Other locally generated exports stay ignored under `output/`; do not publish backups, raw snapshots, databases, secrets or unreviewed outputs. Committed screenshots show the fictional fixture, not the current Production dataset.
 
 With Python 3.13, `requirements.lock` installed, and an existing valid snapshot
 and analytical run (from the repository root):
@@ -195,7 +191,7 @@ npm run dev
 
 On Linux, use `.venv/bin/python`, then set an absolute `AW_DASHBOARD_DATA` path in
 the environment of the Node process. Unset the variable to return to the demo.
-The default app input is `apps/web/data/demo.json`; no `.env` file is required.
+Development defaults to `apps/web/data/demo.json`; Production uses only the pinned `apps/web/data/adventureworks2022.json`. No `.env` file is required for default local development.
 Restart the local Node process after changing its environment.
 
 `src.dashboard_export` verifies the current analytical pointer's evidence/database
@@ -289,16 +285,16 @@ dimensions available in each selection are limited to the exported snapshot.
 The local development server loads and validates JSON per request. Production rechecks the full-file hash on every read and reuses the successfully validated fixed document within a process; cold processes recompute all content/schema/grain checks. Customer search
 and pagination operate on the shaped customer response; this is a deliberately
 bounded portfolio dashboard, without streaming, caching infrastructure or a
-large-scale serving claim. Input files must be operator-controlled. Any sample release or deployment requires the separate artifact and release gates in [the review](dashboard-artifact-review.md). User accounts and other remote serving changes remain out of scope.
+large-scale serving claim. Input files must be operator-controlled. Any future sample replacement or deployment requires separate artifact and release gates in [the review](dashboard-artifact-review.md). User accounts and other remote serving changes remain out of scope.
 
 Typed KPI/chart props, centralized data access/metric formatting and a separate
 web app leave ordinary extension points. A dashboard builder, saved layouts,
 plugin system, user-defined metrics, arbitrary connectors, authentication,
 persistence and monetization remain explicitly out of scope.
 
-## Issue #16 candidate validation
+## Approved sample artifact validation (Issue #16 completed)
 
-The [artifact review and manifest](dashboard-artifact-review.md) define the only proposed production input. After `npm run build`, run the ordinary fictional suite with `npm run test:e2e` (development server), then `$env:AW_E2E_SAMPLE="1"; npm run test:e2e` (production sample server). Unset the flag afterward. Production sample runs require the exact local candidate; they do not publish it. Full-file hashes must match after copying; never regenerate it into a tracked destination. Run evidence after each suite; results identify the selected mode. Keep real sample browser reports local.
+The [artifact review and manifest](dashboard-artifact-review.md) define the only approved production input. After `npm run build`, run the ordinary fictional suite with `npm run test:e2e` (development server), then `$env:AW_E2E_SAMPLE="1"; npm run test:e2e` (production sample server). Unset the flag afterward. Production sample test runs require the exact approved local artifact; they do not themselves publish it. Full-file hashes must match after copying; never regenerate it into a tracked destination. Run evidence after each suite; results identify the selected mode. Keep real sample browser reports local.
 
 
 The server composes the complete analytical response, then `lib/page-data.ts` sends only typed per-view props across the React client boundary. Only Customers receives every selected customer's exact display fields, encoded as named tuples; search/sort/pagination and comparison ranges retain the whole selection. Other pages receive only their own rows or counts. The complete API and original artifact remain unchanged. HTML/RSC response budgets are tested. See the final serialization measurements in the [artifact review](dashboard-artifact-review.md).
