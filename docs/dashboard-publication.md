@@ -1,57 +1,45 @@
-# Dashboard publication runbook (Issue #8)
+# Dashboard publication runbook — Issues #8 and #16
 
-## Boundary
+The existing fixture deployment remains unchanged. This branch prepares a static Microsoft AdventureWorks 2022-derived aggregate release; no runtime database or live ingestion is proposed. See [exact artifact review](dashboard-artifact-review.md) and [redistribution policy](data-redistribution.md).
 
-The public Next.js dashboard is a standalone fictional-data demonstration, not a hosted AdventureWorks analytics database or a live feed. The source repository includes a full local analytics pipeline; that pipeline is **not** a deployment dependency.
-
-Production `loadDocument()` ignores `AW_DASHBOARD_DATA` and loads only `apps/web/data/demo.json`. It validates the document checksum and requires provenance mode `offline_fixture`. Next.js output file tracing explicitly includes the JSON fixture for the API route.
-
-## Proposed Vercel configuration (not deployed)
-
-- Account: personal Vercel account, separate project `adventureworks-analytics`
-- Git repository: `mikezhao415/adventureworks-analytics`
-- Framework: Next.js
-- Root directory: `apps/web`
-- Node.js: 24.x
-- Install: `npm ci`; build: `npm run build`
-- No database, Python, DuckDB, dbt, or source-export environment variables
-- Keep previews protected. Do not enable public production without explicit approval.
-
-**Caution:** Connecting Git can initiate automatic deployments. Review Vercel Git/deployment settings before importing the repository; this document does not authorize deployment.
+Production reads only `apps/web/data/adventureworks2022.json`, with code-reviewed file size, full-file SHA-256, canonical data hash, sample provenance and snapshot pins. It ignores `AW_DASHBOARD_DATA`; missing/unexpected files fail closed. The exact candidate received explicit repository-publication approval on October 20, 2026; replacement bytes require fresh approval. Deployment approval remains separate. The Next.js API trace includes the fixed file and Microsoft notice; the raw JSON is outside `public/`. Development defaults to unchanged `data/demo.json` and permits local overrides.
 
 ## Local verification
 
-From `apps/web` with Node 24.x:
+Use Node 22 and `npm ci`, `npm run format:check`, `npm run typecheck`, `npm test`, `npm run build`, `npm run test:e2e`, and `npm run evidence` in `apps/web`. There is no configured lint script; formatting and TypeScript are the configured static checks. Default E2E uses the fictional development server and requires no source dataset. With the exact local candidate present, run the same suite using `AW_E2E_SAMPLE=1` against the production server. The invalid override must be ignored. Run evidence for each mode, preserving reports locally before the next run. Never run a build while a server uses that `.next` output.
 
-```sh
-npm ci
-npm run format:check
-npm run typecheck
-npm test
-npm run build
-npx playwright install chromium
-npm run test:e2e
+Inspect the API trace and total traced bytes, data file hashes, license notice, full API response sizes, load/validation/composition timing and memory. Run `scripts/check_dashboard_api.py` against the candidate to compare six HTTP scenarios with independent local SQL controls. No downsampling/truncation is authorized. Local results do not establish Vercel performance or concurrency.
+
+## Approval and release sequence
+
+1. Exact candidate contents/redistribution were approved October 20, 2026 under the documented conditional assessment. Stage only the 32 paths in `docs/issue-16-staging.txt`; verify the exact staged bytes/hash. Do not stage output/ or unrelated data.
+2. Prepare a draft PR after artifact approval; retain fixture rollback and run all CI checks. Update parent #8 scope after approval without closing its case-study work.
+3. The user authorized pushing `feature/16-adventureworks-dashboard-publication` for a draft PR, after checking Git deployment behavior. Obtain separate explicit merge approval. No preview or production deployment is authorized by that push approval.
+4. Obtain separate approval for any preview or production deployment. Do not alter current production or environment variables. Verify the protected deployment's source mode, hashes/identity, attribution, filters, mobile/keyboard/axe behavior and runtime limits before public promotion.
+5. Close #16/#8 only with their respective evidence and approval.
+
+## Rollback
+
+Retain the current fictional deployment and its matching revision. With explicit approval, restore that deployment/build, including its fixture loader; copying demo.json into the new pinned path correctly fails. The current source fixture remains unchanged. New sample exports require a fresh artifact review and pins, not a runtime environment switch. Original project code licensing remains a separate decision.
+
+
+## Windows controlled-server verification
+
+If managed-server teardown hangs in a restricted Windows session, create ignored `test-results/external.config.ts` in `apps/web`:
+
+```ts
+import config from "../playwright.config";
+import path from "node:path";
+export default {
+  ...config,
+  testDir: path.resolve("e2e"),
+  outputDir: path.resolve("test-results/playwright-artifacts"),
+  webServer: undefined,
+};
 ```
 
-In a production-mode server, verify `/api/dashboard` returns provenance mode `offline_fixture` and the disclosure reads "Fictional demonstration data". Check that an invalid `AW_DASHBOARD_DATA` override does not redirect production to another file. Test filter inputs, error responses, mobile and desktop views, keyboard navigation, accessibility, and deployment artifact boundaries.
+Run a loopback server in one terminal: `node node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3100` for the sample production build (set `AW_DASHBOARD_DATA` to a nonexistent path to exercise isolation), or `next dev` through `npm run dev -- --port 3100` with no override for the fictional fixture. In another terminal, set `AW_E2E_SAMPLE=1` only for the sample run, then run `npx playwright test --config test-results/external.config.ts` and `npm run evidence`. Clear that flag for the fixture run. Stop the server before switching modes and keep source files stable during each development-server run. Preserve each mode's reports before the next suite.
 
-The unit suite checks production override isolation, explicit rejection of an otherwise
-valid document with non-fixture provenance, and successful development overrides.
-The Playwright suite starts the production server with a missing override path,
-checks the API's fictional provenance against the tracked fixture, and asserts that
-the API's generated Next.js file trace includes `data/demo.json`. Existing page,
-filter, keyboard, responsive and axe checks run against that same server.
-Run `npm run evidence` after testing to record revision, environment, input hashes
-and unit/browser results under ignored `apps/web/test-results/`. CI preserves this
-evidence as a workflow artifact. These checks do not validate a hosted Vercel runtime;
-that remains a separately approved phase. Current CI uses Node 22; Node 24 hosting
-validation remains part of that later phase.
+Reporter paths are absolute so extending a config cannot redirect output to a nested directory. Evidence must show matching requested/reported data mode and the current report's test counts/timestamp. Untagged or mismatched reports are incomplete. Do not use stale successful reports as current validation. Keep this temporary configuration and all generated reports ignored.
 
-Never publish `.bak`, real-source Parquet, DuckDB, credentials, or derived real-source exports. See [redistribution policy](data-redistribution.md). A passing local build does not by itself establish hosted runtime correctness.
-
-## Approval gates
-
-1. Review and approve this hardening PR before merging.
-2. Separately approve any protected Vercel preview/project setup.
-3. Separately approve public production release.
-4. Separately approve closing Issue #8 after case-study and reproduction checks.
+For the final content audit, run `node scripts/review-artifact.mjs` in `apps/web`. For HTML/RSC measurements, use `node scripts/measure-page-payloads.mjs before` on the prior build and `after` on the new build, with the same exact artifact and loopback port. Neither command publishes data. The pinned JSON has a path-specific Git `-text` attribute; preserve it when preparing an explicitly approved release.

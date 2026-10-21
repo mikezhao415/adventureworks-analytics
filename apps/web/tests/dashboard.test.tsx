@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import demo from "../data/demo.json";
 import { dashboard, validateDocument } from "../lib/data";
+import { projectPageData } from "../lib/page-data";
 import { Dashboard } from "../components/dashboard";
 import { CustomersView } from "../components/customers";
 import { comparisonWidths } from "../lib/comparison";
@@ -26,7 +27,7 @@ vi.mock("next/link", () => ({
 }));
 const data = dashboard(validateDocument(demo));
 const props = {
-  data,
+  data: projectPageData(data, "overview"),
   context: data,
   defaults: data.filters,
   view: "overview" as const,
@@ -92,7 +93,9 @@ describe("page presentation and filter navigation", () => {
     expect(screen.queryByTestId("analytics-content")).not.toBeInTheDocument();
   });
   it("does not rescale customer bars after search", async () => {
-    const { container } = render(<CustomersView data={data} />);
+    const { container } = render(
+      <CustomersView data={projectPageData(data, "customers")} />,
+    );
     const first = data.customers[0];
     const selector = `[data-customer="${first.key}"] [data-metric="net_line_sales"]`;
     const width = container.querySelector(selector)?.getAttribute("data-width");
@@ -173,4 +176,24 @@ describe("page presentation and filter navigation", () => {
     expect(displayAmount("0.000000")).toBe("$0");
     expect(() => scalarFilters({ territory: ["1", "2"] })).toThrow();
   });
+});
+
+// Use fictional content with an explicit sample marker solely to test disclosure copy.
+it("labels the Microsoft historical sample without suggesting live business results", () => {
+  const sample = structuredClone(data);
+  sample.provenance.mode = "real_adventureworks";
+  render(
+    <Dashboard
+      {...props}
+      data={projectPageData(sample, "overview")}
+      context={sample}
+    />,
+  );
+  expect(
+    screen.getByText("AdventureWorks 2022 Sample Data"),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByText(/Microsoft fictional historical sample business/),
+  ).toBeInTheDocument();
+  expect(screen.queryByText("DEMO MODE")).not.toBeInTheDocument();
 });

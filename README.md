@@ -86,8 +86,7 @@ Data & Definitions explains metric rules, provenance, and interpretation. The UI
 uses native AdventureWorks sample USD amounts for display, preserving exact
 underlying decimal precision. See the [dashboard implementation and validation guide](docs/sales-dashboard.md).
 
-The checked-in demo is explicitly **fictional**, and real-derived exports stay local
-and ignored by Git. No dashboard deployment or dataset publication has occurred.
+The checked-in demo is explicitly **fictional**. The existing public deployment uses that fixture. Issue #16 prepares a pinned AdventureWorks-derived static aggregate artifact; the exact candidate is approved for repository publication and draft PR preparation. No merge or deployment is authorized. See the [exact artifact review](docs/dashboard-artifact-review.md).
 The dashboard was delivered by [PR #13](https://github.com/mikezhao415/adventureworks-analytics/pull/13),
 with both Sales dashboard and BI quality/reproducibility workflows passing on the
 final PR head. Quality automation was delivered in PR #12.
@@ -104,7 +103,7 @@ The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) 
 4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) — merged in PR #11.** Staging, facts, dimensions, sales marts, contracts, tests, and lineage.
 5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Merged in PR #12: quality gates, regression coverage, repeatability, and evidence.
 6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7) — complete (PR #13).** Validated local dashboard, versioned export, fictional public-safe demo, responsive views, documented metric definitions, and passing browser/CI checks.
-7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) — next.** Plan a separately hosted, fictional-data-only dashboard demo and a two-audience portfolio case study; validate deployment and public evidence before linking.
+7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) — next.** The current hosted demo uses fictional fixtures. Issue #16 proposes reviewed AdventureWorks-derived aggregates, subject to explicit artifact and release approval. The two-audience case study and reproduction gates remain open.
 
 Phases may overlap where practical, but each issue must state its own acceptance evidence. **Neither direct-query comparisons nor multi-tenant simulation is required.**
 
@@ -128,7 +127,7 @@ See [docs/synthetic-slice.md](docs/synthetic-slice.md) for negative tests, evide
 
 AdventureWorks 2022 is a Microsoft SQL Server sample distributed through Microsoft's [official release](https://github.com/microsoft/sql-server-samples/releases/tag/adventureworks). Microsoft describes its SQL Server samples as [MIT-licensed](https://learn.microsoft.com/en-us/sql/samples/sql-samples-where-are); redistribution of covered materials requires retaining the [Microsoft copyright and permission notice](https://github.com/microsoft/sql-server-samples/blob/master/license.txt). See the [data provenance and redistribution policy](docs/data-redistribution.md) for the source evidence, attribution rules, and asset-specific caveat.
 
-The hosted-demo plan uses this project's **deterministic fictional fixture**, not the actual AdventureWorks-derived export. Do not commit database backups, source snapshots, generated DuckDB files, secrets, or unreviewed real-derived outputs. Original project code licensing is a separate decision; the repository-wide license is **not yet selected**.
+The existing hosted demo uses this project's **deterministic fictional fixture**. The [Issue #16 candidate review](docs/dashboard-artifact-review.md) proposes only the exact pinned aggregate export, with a Microsoft notice and separate approval gates. Do not commit database backups, source snapshots, generated DuckDB files, secrets, or unreviewed real-derived outputs. Original project code licensing is a separate decision; the repository-wide license is **not yet selected**.
 
 ## Evidence and limitations
 

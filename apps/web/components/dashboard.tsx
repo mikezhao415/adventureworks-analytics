@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BookOpen } from "lucide-react";
-import type { DashboardData } from "../lib/data";
+import type { PageData } from "../lib/page-data";
 import type { Filter } from "../lib/schema";
 import { PAGES, filterHref, type View } from "../lib/navigation";
 import { Disclosure, type DataContext } from "./disclosure";
@@ -22,7 +22,7 @@ export function Dashboard({
   view,
   error,
 }: {
-  data: DashboardData | null;
+  data: PageData | null;
   context: DataContext;
   defaults: Filter;
   view: View;
@@ -91,17 +91,17 @@ export function Dashboard({
           data-testid="analytics-content"
           data-filter-key={new URLSearchParams(data.filters).toString()}
         >
-          {view === "overview" ? (
+          {data.view === "overview" ? (
             <OverviewView data={data} />
-          ) : view === "trends" ? (
+          ) : data.view === "trends" ? (
             <TrendsView data={data} />
-          ) : view === "products" ? (
+          ) : data.view === "products" ? (
             <ProductsView data={data} />
-          ) : view === "customers" ? (
+          ) : data.view === "customers" ? (
             <CustomersView data={data} />
-          ) : (
+          ) : data.view === "territories" ? (
             <TerritoriesView data={data} />
-          )}
+          ) : null}
         </div>
       ) : null}
     </>

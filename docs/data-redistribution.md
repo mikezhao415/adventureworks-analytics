@@ -35,3 +35,7 @@ Microsoft describes the SQL Server samples and templates as MIT-licensed. Its of
 **If later publishing AdventureWorks-derived exports:** confirm the exact artifact and any asset-specific terms, carry the complete upstream license notice, document provenance, and obtain legal review if commercial or high-stakes redistribution certainty is required.
 
 **Open separate decision:** select and add a license for this project's original code. Do not conflate code licensing with the Microsoft sample data terms.
+
+## Issue #16 proposed aggregate exception
+
+The existing production fixture remains unchanged. The [exact candidate review](dashboard-artifact-review.md) conditionally assesses one AdventureWorks-derived aggregate artifact, including retained numeric sample identifiers and the unverified acquisition URL. This supersedes the fixture-only recommendation only after explicit artifact redistribution approval. No backup, source snapshot or arbitrary export is approved. The complete Microsoft notice accompanies the proposed artifact in `apps/web/public/notices/microsoft-sql-server-samples.txt`.

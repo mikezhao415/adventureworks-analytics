@@ -3,40 +3,81 @@ import AxeBuilder from "@axe-core/playwright";
 import { PAGES } from "../lib/navigation";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { createHash } from "node:crypto";
+import { PUBLIC_ARTIFACT } from "../lib/data";
 
-test("production API uses the fictional fixture and traces it for deployment", async ({
-  request,
-}) => {
+const sample = process.env.AW_E2E_SAMPLE === "1";
+const allSales = sample ? "$109,846,381" : "$953,544";
+const secondTerritory = sample ? "Northeast" : "Southwest";
+test("API identity and production file tracing", async ({ request }) => {
   const response = await request.get("/api/dashboard");
   expect(response.status()).toBe(200);
   const body = await response.json();
-  const demo = JSON.parse(await readFile("data/demo.json", "utf8"));
-  expect(body.provenance.mode).toBe("offline_fixture");
+  const file = sample ? "data/adventureworks2022.json" : "data/demo.json";
+  const doc = JSON.parse(await readFile(file, "utf8"));
+  expect(body.provenance.mode).toBe(
+    sample ? "real_adventureworks" : "offline_fixture",
+  );
   expect(body.provenance.input_fingerprint).toBe(
-    demo.provenance.input_fingerprint,
+    doc.provenance.input_fingerprint,
   );
   const tracePath = path.resolve(
     ".next/server/app/api/dashboard/route.js.nft.json",
   );
   const trace = JSON.parse(await readFile(tracePath, "utf8"));
-  expect(
-    trace.files.map((file: string) =>
-      path.resolve(path.dirname(tracePath), file),
-    ),
-  ).toContain(path.resolve("data/demo.json"));
+  const files = trace.files.map((file: string) =>
+    path.resolve(path.dirname(tracePath), file),
+  );
+  if (sample) {
+    const raw = await readFile(file);
+    expect(raw.length).toBe(PUBLIC_ARTIFACT.bytes);
+    expect(createHash("sha256").update(raw).digest("hex")).toBe(
+      PUBLIC_ARTIFACT.sha256,
+    );
+    expect(doc.content_sha256).toBe(PUBLIC_ARTIFACT.content_sha256);
+    expect(body.provenance.snapshot_id).toBe(PUBLIC_ARTIFACT.snapshot_id);
+    expect(files).toContain(path.resolve(file));
+    expect(files).toContain(
+      path.resolve("public/notices/microsoft-sql-server-samples.txt"),
+    );
+    expect(files).not.toContain(path.resolve("data/demo.json"));
+    for (const route of [
+      "page",
+      "trends/page",
+      "products/page",
+      "customers/page",
+      "territories/page",
+      "filters/page",
+      "definitions/page",
+    ]) {
+      const pageTrace = path.resolve(
+        ".next/server/app",
+        route + ".js.nft.json",
+      );
+      const entries = JSON.parse(await readFile(pageTrace, "utf8"));
+      expect(
+        entries.files.map((entry: string) =>
+          path.resolve(path.dirname(pageTrace), entry),
+        ),
+      ).toContain(path.resolve(file));
+    }
+  }
+  expect(files).not.toContain(path.resolve("../../output/dashboard/data.json"));
 });
 test("drafts, unions, persistence, browser history and reset", async ({
   page,
 }) => {
   await page.goto("/?utm_source=chatgpt.com");
-  await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
+  await expect(page.getByTestId("sales-kpi")).toHaveText(allSales);
   await page
     .getByRole("navigation", { name: "Analytics pages" })
     .getByRole("link", { name: "Filters", exact: true })
     .click();
   const applied = page.locator("#main").getByLabel("Applied Filters");
   await page.getByRole("checkbox", { name: "Northwest", exact: true }).check();
-  await page.getByRole("checkbox", { name: "Southwest", exact: true }).check();
+  await page
+    .getByRole("checkbox", { name: secondTerritory, exact: true })
+    .check();
   await page.getByRole("checkbox", { name: "Bikes", exact: true }).check();
   await expect(page.getByRole("status")).toHaveText("Unsaved Changes");
   await expect(applied).toContainText("All Territories");
@@ -45,7 +86,7 @@ test("drafts, unions, persistence, browser history and reset", async ({
     .locator("nav")
     .getByRole("link", { name: "Sales Overview", exact: true })
     .click();
-  await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
+  await expect(page.getByTestId("sales-kpi")).toHaveText(allSales);
   await page
     .getByRole("navigation", { name: "Analytics pages" })
     .getByRole("link", { name: "Filters", exact: true })
@@ -59,23 +100,25 @@ test("drafts, unions, persistence, browser history and reset", async ({
     .click();
   await expect(page).toHaveURL(/territory=1/);
   await expect(applied).toContainText("Northwest");
-  await page.getByRole("checkbox", { name: "Southwest", exact: true }).check();
+  await page
+    .getByRole("checkbox", { name: secondTerritory, exact: true })
+    .check();
   await page.getByRole("checkbox", { name: "Bikes", exact: true }).check();
-  await expect(applied).not.toContainText("Southwest");
+  await expect(applied).not.toContainText(secondTerritory);
   await page
     .getByRole("button", { name: "Apply Filters", exact: true })
     .click();
   await expect(page).toHaveURL(/territory=1%2C2/);
-  await expect(applied).toContainText("Southwest");
+  await expect(applied).toContainText(secondTerritory);
   await page.reload();
-  await expect(applied).toContainText("Southwest");
+  await expect(applied).toContainText(secondTerritory);
   await page.goBack();
-  await expect(applied).not.toContainText("Southwest");
+  await expect(applied).not.toContainText(secondTerritory);
   await expect(
-    page.getByRole("checkbox", { name: "Southwest", exact: true }),
+    page.getByRole("checkbox", { name: secondTerritory, exact: true }),
   ).not.toBeChecked();
   await page.goForward();
-  await expect(applied).toContainText("Southwest");
+  await expect(applied).toContainText(secondTerritory);
   await page
     .locator("nav")
     .getByRole("link", { name: "Sales Overview", exact: true })
@@ -109,7 +152,7 @@ test("drafts, unions, persistence, browser history and reset", async ({
     .locator("nav")
     .getByRole("link", { name: "Sales Overview", exact: true })
     .click();
-  await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
+  await expect(page.getByTestId("sales-kpi")).toHaveText(allSales);
 });
 test("page titles, responsive accessibility, USD tables and icon-free KPIs", async ({
   page,
@@ -132,6 +175,7 @@ test("page titles, responsive accessibility, USD tables and icon-free KPIs", asy
         page.getByRole("button", { name: "Apply Filters" }),
       ).toHaveCount(0);
     if (
+      !sample &&
       process.env.CAPTURE_DASHBOARD_SCREENSHOTS === "1" &&
       ["/", "/customers", "/filters"].includes(item.path)
     ) {
@@ -196,7 +240,7 @@ test("clean and tracking URLs, recognized malformed filters and empty selections
     expect(response.status()).toBe(200);
     expect(await response.json()).toEqual(clean);
     await page.goto(`/?${query}`);
-    await expect(page.getByTestId("sales-kpi")).toHaveText("$953,544");
+    await expect(page.getByTestId("sales-kpi")).toHaveText(allSales);
   }
   const mixed = await (
     await request.get("/api/dashboard?utm_source=x&territory=1&category=3")
@@ -255,6 +299,40 @@ test("custom date range, validation and clearing individual selections", async (
   await page
     .getByRole("button", { name: "Reset Filters", exact: true })
     .click();
-  await expect(page.getByLabel("Start date")).toHaveValue("2013-01-01");
-  await expect(page.getByLabel("End date")).toHaveValue("2014-12-22");
+  await expect(page.getByLabel("Start date")).toHaveValue(
+    sample ? "2011-05-31" : "2013-01-01",
+  );
+  await expect(page.getByLabel("End date")).toHaveValue(
+    sample ? "2014-06-30" : "2014-12-22",
+  );
+});
+
+test("HTML and RSC contain only selected-view data within response budgets", async ({
+  request,
+}) => {
+  for (const route of [
+    "/",
+    "/trends",
+    "/products",
+    "/customers",
+    "/territories",
+    "/filters",
+  ]) {
+    for (const rsc of [false, true]) {
+      const response = await request.get(route, {
+        headers: rsc ? { RSC: "1" } : {},
+      });
+      expect(response.status()).toBe(200);
+      const body = await response.body();
+      // Leave space for runtime metadata; prevent accidental whole-response props.
+      expect(body.length).toBeLessThan(
+        route === "/customers" ? 2500000 : 150000,
+      );
+      expect(body.toString().includes("customerValues")).toBe(
+        route === "/customers",
+      );
+      if (route !== "/customers")
+        expect(body.toString()).not.toContain("Customer 11000");
+    }
+  }
 });
