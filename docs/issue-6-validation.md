@@ -1,5 +1,7 @@
 # Issue #6 local validation
 
+> Historical validation record: Issue #6 merged in PR #12. Pending-review or undeployed statements below describe the original validation stage, not current publication status. See [reproducibility](reproducibility.md) for current instructions.
+
 Validation date: October 19, 2026 (America/Los_Angeles). These are local Windows
 results, not remote GitHub Actions results. The starting main revision was
 `cfa40482084fb80c817c95fe93ef1e5af6911f98`; GitHub confirmed PRs #10 and #11 merged.

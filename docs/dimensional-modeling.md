@@ -195,7 +195,7 @@ These tests never alter source snapshots or published analytical databases.
 Offline unittest fixtures also test canceled eligibility, unknown relationships,
 halfway AOV rounding, no eligible orders, manifest tampering, and failed-publication
 preservation. CI discovers these small local-Parquet tests without SQL Server,
-Docker, credentials, dbt packages, or private datasets. It retains the existing
+Docker, credentials, external dbt packages, or private datasets. The pinned dbt Core and dbt-duckdb Python dependencies are required. It retains the existing
 synthetic positive/repeatability/negative checks. Real-source evidence is local and
 separately labeled; offline CI does not prove a real-source run.
 
@@ -206,8 +206,5 @@ DuckDB files, dbt manifests and analytical evidence remain ignored and local.
 Existing acquisition, dataset licensing/provenance and publication restrictions
 from [Issue #4](adventureworks-extraction.md#licensing-and-redistribution) still apply.
 
-See [Issue #6 quality coverage](quality-automation.md) for regression additions, evidence retention and recovery; #7 can
-select/report business requirements and deliver dashboards over these contracts;
-#8 can publish the reproducible technical/business narrative. This milestone does
-not implement dashboard delivery, historical dimensions, margin, revenue recognition,
+See [Issue #6 quality coverage](quality-automation.md) for regression additions, evidence retention and recovery. The later [sales dashboard](sales-dashboard.md) and [published case study](https://mikezhao.dev/projects/adventureworks-analytics) use these contracts. Follow [reproducibility](reproducibility.md) for the complete pipeline. Issue #5 itself did not implement dashboard delivery. The current project does not implement historical dimensions, margin, revenue recognition,
 currency conversion, large-dataset streaming or production orchestration.

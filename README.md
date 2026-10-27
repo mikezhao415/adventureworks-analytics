@@ -4,7 +4,7 @@ An end-to-end **BI-as-Code analytics engineering portfolio project** demonstrati
 
 The goal is to **build and demonstrate a modern analytical implementation**, not to benchmark it against a traditional reporting approach. Correctness, version control, maintainability, reproducibility, and useful business metrics are the central themes.
 
-> **Current status:** The synthetic vertical slice and AdventureWorks extraction are merged and validated ([PR #2](https://github.com/mikezhao415/adventureworks-analytics/pull/2), [PR #10](https://github.com/mikezhao415/adventureworks-analytics/pull/10)). Real-source dimensional models and sales marts are merged in [PR #11](https://github.com/mikezhao415/adventureworks-analytics/pull/11); see the [snapshot-to-mart guide](docs/dimensional-modeling.md). The sales dashboard was completed and squash-merged in [PR #13](https://github.com/mikezhao415/adventureworks-analytics/pull/13), closing [Issue #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7). The public dashboard is live at https://adventureworks-analytics-flax.vercel.app/; the separate business/technical case study and complete reproducibility guide remain pending ([Issue #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8)).
+> **Current status:** The [dashboard](https://adventureworks.mikezhao.dev) and [case study](https://mikezhao.dev/projects/adventureworks-analytics), with [business](https://mikezhao.dev/projects/adventureworks-analytics/business) and [technical](https://mikezhao.dev/projects/adventureworks-analytics/technical) reading paths, are published. [Reproduction instructions](docs/reproducibility.md) are documented; final verification, licensing limitations and explicit issue-closure approval remain open under [Issue #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8).
 
 ## What this project demonstrates
 
@@ -37,7 +37,7 @@ AdventureWorks 2022 / SQL Server
           v
   Public Next.js dashboard on Vercel
 
-  Separate business/technical portfolio case study: pending
+  Separate published business/technical portfolio case study on mikezhao.dev
 ```
 
 SQL Server ingestion publishes validated local Parquet snapshots. A separate real-source dbt project builds 23 staging, dimensional, fact and mart models with independent Python reconciliation. The synthetic mode retains its original smaller pipeline. The public Next.js dashboard serves only the reviewed, checked-in static aggregate; the SQL Server, Parquet, DuckDB and dbt pipeline is not hosted on Vercel. It consumes a reconciled versioned export; see the [dashboard guide](docs/sales-dashboard.md).
@@ -70,7 +70,9 @@ python -m src.analytics_check
 
 ## Explore the published dashboard
 
-**Live:** https://adventureworks-analytics-flax.vercel.app/ — Microsoft's fictional historical AdventureWorks 2022 sample business data, not live or actual commercial results. The pinned static aggregate is published with Microsoft attribution; no SQL Server or analytics database is hosted on Vercel.
+**Live:** [adventureworks.mikezhao.dev](https://adventureworks.mikezhao.dev) — Microsoft's fictional historical AdventureWorks 2022 sample business data, not live or actual commercial results. The pinned static aggregate is published with Microsoft attribution; no SQL Server or analytics database is hosted on Vercel.
+
+Read the [case study](https://mikezhao.dev/projects/adventureworks-analytics), [business narrative](https://mikezhao.dev/projects/adventureworks-analytics/business), and [technical implementation](https://mikezhao.dev/projects/adventureworks-analytics/technical). The [reproducibility guide](docs/reproducibility.md) separates local fixture/approved-aggregate viewing from full source reproduction. Publication does not establish live production data, complete accessibility coverage, or asset-level licensing clearance.
 
 ## Launch the local sales dashboard
 
@@ -108,7 +110,7 @@ The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) 
 4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) — merged in PR #11.** Staging, facts, dimensions, sales marts, contracts, tests, and lineage.
 5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Merged in PR #12: quality gates, regression coverage, repeatability, and evidence.
 6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7) — complete (PR #13).** Validated local dashboard, versioned export, fictional public-safe demo, responsive views, documented metric definitions, and passing browser/CI checks.
-7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) — next.** The public dashboard now serves the reviewed AdventureWorks sample aggregate (PR #17, Issue #16 completed). The two-audience case study and reproduction gates remain open.
+7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) — published, final review open.** The dashboard serves the reviewed sample aggregate (PR #17, Issue #16 completed). The case study and its business/technical paths are published. Reproduction instructions are documented; fresh full-source execution, remaining independent hosted verification, licensing limitations, and explicit issue-closure approval remain separate.
 
 Phases may overlap where practical, but each issue must state its own acceptance evidence. **Neither direct-query comparisons nor multi-tenant simulation is required.**
 

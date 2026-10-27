@@ -11,7 +11,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## AdventureWorks web app
 
 - Follow repository-root AGENTS.md and docs/sales-dashboard.md.
-- This is a bounded dashboard, not a configurable BI platform. The reviewed sample dashboard is publicly deployed at https://adventureworks-analytics-flax.vercel.app/ (PR #17); any future Production change requires approval.
+- This is a bounded dashboard, not a configurable BI platform. The reviewed sample dashboard is publicly deployed at https://adventureworks.mikezhao.dev (PR #17); any future Production change requires approval.
 - Keep filesystem/data parsing and exact metric composition in lib/data.ts on the server; components consume typed view data. Project only the selected view's required props before the client boundary; do not serialize unrelated full row sets into HTML/RSC. Preserve all records required for interactive search/sort/pagination.
 - The tracked data/demo.json is explicitly fictional and must remain available. Real source exports stay ignored under output/. The fixed data/adventureworks2022.json artifact was approved and deployed in PR #17; replacement bytes need fresh review/approval. Production accepts only its pinned bytes, content hash and snapshot. AW_DASHBOARD_DATA works only outside production.
 - Date and territory filter all views; category filters product/category views only. Make scope visible.

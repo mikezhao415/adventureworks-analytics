@@ -3,7 +3,7 @@
 Issue #4 implements an opt-in local ingestion workflow. It reads the existing
 SQL Server 2022 / AdventureWorks2022 database and publishes validated local
 Parquet snapshots. A separate [Issue #5 analytical project](dimensional-modeling.md)
-now consumes these snapshots; dashboards remain future work. The original dbt
+now consumes these snapshots; the [published dashboard](https://adventureworks.mikezhao.dev) serves the separately reviewed aggregate. See [reproducibility](reproducibility.md) for the complete path. The original dbt
 project still processes its synthetic fixture.
 
 ## Prerequisites and acquisition
@@ -217,7 +217,7 @@ identifies its sample code as MIT and requires preserving its notice. The
 documents the version-specific backup acquisition path. Those references do not
 establish the provenance or redistribution permission of the exact already-restored
 backup used locally. Record the acquisition URL, artifact hash and applicable terms
-before redistributing any source or derived dataset. This PR distributes neither.
+before any additional redistribution of source or derived datasets. Issue #4 distributed neither; the later PR #17 approved one exact aggregate under the conditional [redistribution policy](data-redistribution.md). Its original backup acquisition URL/hash and independent asset-level license grant remain unverified.
 SQL Server/Docker licensing and this project's code license are separate questions;
 the project-wide code license remains unselected. Installed package metadata identifies
 PyArrow as Apache-2.0 and python-dotenv as BSD-3-Clause. Review their full notices

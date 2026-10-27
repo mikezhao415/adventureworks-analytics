@@ -134,3 +134,7 @@ published by this change.
 
 Actual #6 execution results are in [issue-6-validation.md](issue-6-validation.md).
 Remote CI evidence must be assessed on the PR separately from local results.
+
+## Current publication boundary
+
+The checks and evidence above describe pipeline validation, not deployment authorization. PR #17 subsequently published one reviewed, pinned AdventureWorks aggregate; other generated outputs remain ignored. Follow [reproducibility](reproducibility.md) for dashboard-only and full-pipeline paths. The [redistribution policy](data-redistribution.md) retains the original backup URL/hash and independent asset-level license limitations; offline quality success does not resolve them.

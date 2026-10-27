@@ -3,10 +3,12 @@
 Issue #7 adds a local Next.js App Router application in `apps/web`. It uses React,
 TypeScript, Tailwind CSS and Recharts. Native labeled controls and small typed
 components serve this dashboard without a component framework or dashboard engine.
-The public Vercel deployment serves the reviewed, pinned AdventureWorks 2022-derived aggregate (PR #17; Issue #16 completed). The fictional fixture remains for local tests and historical screenshots. No authentication, persistence, arbitrary uploads/SQL, scheduled refresh,
+The [public Vercel deployment](https://adventureworks.mikezhao.dev) serves the reviewed, pinned AdventureWorks 2022-derived aggregate (PR #17; Issue #16 completed). The fictional fixture remains for local tests and historical screenshots. No authentication, persistence, arbitrary uploads/SQL, scheduled refresh,
 custom metrics or multi-tenancy are implemented.
 
 ![Fictional dashboard, desktop](screenshots/sales-dashboard-desktop.png)
+
+The published [case study](https://mikezhao.dev/projects/adventureworks-analytics) has [business](https://mikezhao.dev/projects/adventureworks-analytics/business) and [technical](https://mikezhao.dev/projects/adventureworks-analytics/technical) paths. See [reproducibility](reproducibility.md) for the two supported local paths and their evidence boundaries. Screenshots below are historical fictional-fixture views, not the current published aggregate.
 
 ## Start from a clean checkout
 
@@ -36,8 +38,8 @@ npm run build
 npm run start
 ```
 
-Both scripts bind to `127.0.0.1`. The approved public Production deployment is https://adventureworks-analytics-flax.vercel.app/.
-Production on this branch requires the fixed `data/adventureworks2022.json`, pinned full-file/content hashes and snapshot, and `real_adventureworks` mode. It ignores `AW_DASHBOARD_DATA` and fails closed if the artifact is absent or unexpected. The exact artifact was approved, merged and deployed; future replacements and deployments require separate approval; see [artifact review](dashboard-artifact-review.md). Local export
+The start script binds to `127.0.0.1`; build creates the production output without starting a server. The approved public Production deployment is [adventureworks.mikezhao.dev](https://adventureworks.mikezhao.dev).
+Production requires the fixed `data/adventureworks2022.json`, pinned full-file/content hashes and snapshot, and `real_adventureworks` mode. It ignores `AW_DASHBOARD_DATA` and fails closed if the artifact is absent or unexpected. The exact artifact was approved, merged and deployed; future replacements and deployments require separate approval; see [artifact review](dashboard-artifact-review.md). Local export
 overrides are supported only outside production; use `npm run dev` for them.
 Do not run a build while a test or production server is using that same `.next`
 output; stop that owned process first. The dev server uses `.next/dev`.
