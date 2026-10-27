@@ -12,7 +12,7 @@ Do not reference unrelated repositories, employer systems, proprietary schemas, 
 - AGENTS.md defines engineering and agent behavior.
 - Code, tests, CI, and observed logs establish what is implemented and validated.
 - Issues and plans are proposals until acceptance evidence exists.
-- Keep status accurate: the synthetic vertical slice and Issue #4 extraction are merged and validated. Issue #5 dimensional models and local sales marts are merged in PR #11. Issue #6 quality automation is merged in PR #12. Issue #7 sales dashboard is complete (PR #13). Issue #16 aggregate publication is complete (PR #17), with the reviewed historical sample publicly hosted on Vercel. Issue #8 remains open for the business/technical portfolio case study and reproducibility publication.
+- Keep status accurate: the synthetic vertical slice and Issue #4 extraction are merged and validated. Issue #5 dimensional models and local sales marts are merged in PR #11. Issue #6 quality automation is merged in PR #12. Issue #7 sales dashboard is complete (PR #13). Issue #16 aggregate publication is complete (PR #17), with the reviewed historical sample publicly hosted on Vercel. The dashboard and business/technical case study are published. Issue #8 remains open for final reproducibility review, unresolved verification and licensing limitations, and explicit closure approval.
 - Synthetic fixtures use two tenant labels solely to exercise scoped composite keys. **Do not expand multi-tenant simulation into a required project deliverable.**
 - **Do not add legacy-vs-modern benchmarks or direct transactional-query comparisons** without an explicit change of scope.
 
@@ -20,7 +20,7 @@ Do not reference unrelated repositories, employer systems, proprietary schemas, 
 
 Python; SQL Server 2022 / AdventureWorks 2022 for optional local source reproduction; read-only extraction; Parquet with manifests; DuckDB; dbt Core + dbt-duckdb; independent SQL/Python validation; GitHub Actions. The local sales dashboard uses Next.js App Router, React, TypeScript, Tailwind and Recharts in `apps/web`, with Vitest/React Testing Library and Playwright. Avoid unnecessary cloud services, paid platforms, speculative abstractions, and frameworks.
 
-Planned full-source path:
+Implemented local/manual full-source path:
 1. Read AdventureWorks with least-privilege, read-only access.
 2. Publish immutable, validated Parquet snapshots and source manifests.
 3. Ingest snapshots into DuckDB with declared schemas.
@@ -29,7 +29,7 @@ Planned full-source path:
 6. Deliver business-ready sales reporting and insights.
 7. Publish reproducible technical and business case-study materials.
 
-Routine CI must not require SQL Server, Docker, credentials, source dataset downloads, or large datasets. Dependency and browser-binary installation may use official package/CDN services. Full-source reproduction remains local/manual until explicitly implemented and validated.
+Routine CI must not require SQL Server, Docker, credentials, source dataset downloads, or large datasets. Dependency and browser-binary installation may use official package/CDN services. Full-source reproduction is implemented as a local/manual path; routine CI does not establish a real-source run.
 
 ## Delivery roadmap
 
@@ -64,7 +64,7 @@ AGENTS.md
 - Dashboard USD presentation follows the reviewed `docs/currency-interpretation.md`: native sample amounts, no FX conversion; preserve exact calculations and source precision.
 - Project-created fictional fixtures/screenshots remain available for tests and rollback. Real-derived exports remain ignored under `output/`; only the exact reviewed aggregate artifact from PR #17 is approved and published, with pinned full-file/content hashes, snapshot identity, review manifest, Microsoft notice and a path-specific Git `-text` attribute to preserve exact bytes. Any replacement or new artifact requires a new redistribution review and explicit approval. `AW_DASHBOARD_DATA` is development-only; production loads the fixed reviewed artifact and fails closed.
 - Use `npm ci`, formatting, typecheck, Vitest, a production build and Playwright for web changes. Preserve Python/dbt gates and fixture-content reproduction checks.
-- The dashboard is live at https://adventureworks-analytics-flax.vercel.app/. Do not make further deployments, configuration changes, or scope additions without separate user approval. Merging to `main` can trigger Production automatically; confirm both merge and Production release approval.
+- The dashboard is live at https://adventureworks.mikezhao.dev. Do not make further deployments, configuration changes, or scope additions without separate user approval. Merging to `main` can trigger Production automatically; confirm both merge and Production release approval.
 
 ## Metric and data contracts
 

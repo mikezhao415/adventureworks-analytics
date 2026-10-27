@@ -1,5 +1,7 @@
 # Issue #5 local validation
 
+> Historical validation record: Issue #5 merged in PR #11. Pending-review or undeployed statements below describe the original validation stage, not current publication status. See [reproducibility](reproducibility.md) for current instructions.
+
 Validation on October 18, 2026 (America/Los_Angeles) consumed the existing
 AdventureWorks snapshot `20261019T001836Z-ee2547d8e90749b68133c76a806f9e6f`.
 Its verified input fingerprint is

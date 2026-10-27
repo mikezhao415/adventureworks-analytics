@@ -6,6 +6,8 @@ October 20, 2026: **exact artifact approved for repository publication and draft
 The [machine-readable manifest](dashboard-artifact-review.json) records its exact identity.
 The user explicitly authorized staging the 32 listed paths, committing and pushing the exact artifact, and creating a public-repository draft PR. Merge, ready-for-review status, deployment, Issue #16 closure and production configuration changes remain unauthorized.
 
+Current canonical dashboard: [adventureworks.mikezhao.dev](https://adventureworks.mikezhao.dev). The original Vercel URL and pre-release measurements below are retained as historical evidence. Current local reproduction is documented in [reproducibility.md](reproducibility.md).
+
 ## Source and licensing assessment
 
 Upstream: Microsoft's [AdventureWorks release](https://github.com/microsoft/sql-server-samples/releases/tag/adventureworks), `AdventureWorks2022.bak` (OLTP), and [installation instructions](https://learn.microsoft.com/en-us/sql/samples/adventureworks-install-configure).
