@@ -229,6 +229,8 @@ code revision/dirty state and physical database bytes are not required to match.
 Refreshing the tracked demo is an intentional reviewed change; validate the
 fixture mode, logical hash and absence of real source records before committing.
 
+Sales Overview KPI cards stack in one column at widths up to 600px; the existing two-column tablet and four-column desktop layouts remain. The shared SVG favicon uses the App Router file convention in `apps/web/app/icon.svg`. Browser regression tests cover icon delivery on all routes and KPI layout/text bounds at 320px, 375px, 768px and 1440px.
+
 ## Tests and evidence
 
 ```powershell

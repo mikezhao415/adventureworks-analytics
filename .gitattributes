@@ -1,2 +1,4 @@
 # Preserve the reviewed artifact's exact bytes across platforms and checkouts.
 apps/web/data/adventureworks2022.json -text whitespace=cr-at-eol
+# Preserve the shared SVG favicon byte-for-byte.
+apps/web/app/icon.svg -text
