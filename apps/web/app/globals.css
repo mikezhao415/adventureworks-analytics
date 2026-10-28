@@ -1008,6 +1008,7 @@ tbody tr:hover {
     font-size: 14px;
   }
   .kpi-grid {
+    grid-template-columns: 1fr;
     gap: 12px;
   }
   .kpi {
