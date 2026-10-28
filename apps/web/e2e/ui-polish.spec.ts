@@ -47,6 +47,7 @@ for (const [width, columns] of [
     await page.goto("/");
     const cards = page.locator(".kpi");
     await expect(cards).toHaveCount(4);
+    await expect(cards.first()).toBeVisible();
     const boxes = await cards.evaluateAll((elements) =>
       elements.map((element) => {
         const box = element.getBoundingClientRect();
