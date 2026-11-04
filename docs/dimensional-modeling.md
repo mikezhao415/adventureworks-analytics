@@ -64,6 +64,11 @@ with duckdb.connect(str(run / 'analytics.duckdb'), read_only=True) as con:
 
 ## Model inventory and lineage
 
+The [custom lineage guide](custom-dbt-lineage.md) describes the focused sales
+viewer and its reviewed metadata snapshot. Dependencies come only from dbt
+`depends_on.nodes`; test links and the conceptual architecture below are distinct
+from transformation edges. Refresh and artifact review remain manual.
+
 Every staging model preserves all selected source rows, statuses, timestamps,
 nulls and monetary scales. Names become snake_case; source `Group` becomes
 `territory_group`. Source columns/types are declared in the dbt source YAML and

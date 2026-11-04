@@ -1,0 +1,482 @@
+[
+  {
+    "name": "@types/d3-color",
+    "install_path": "node_modules/@types/d3-color",
+    "version": "3.1.3",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/d3-color/-/d3-color-3.1.3.tgz",
+    "integrity": "sha512-iO90scth9WAbmgv7ogoq57O9YpKmFBbmoEoCHDB2xMBY0+/KVrqAaCDyCE16dUspeOvIxFFRI+0sEtqDqy2b4A==",
+    "archive_sha256": "ca73ea290f4a58c9ae961e0abb5c6a42d7c90cc720cd855758d4b1b636ff6792",
+    "notices": [
+      {
+        "path": "d3-color/LICENSE",
+        "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+      }
+    ],
+    "type_only": true
+  },
+  {
+    "name": "@types/d3-drag",
+    "install_path": "node_modules/@types/d3-drag",
+    "version": "3.0.7",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/d3-drag/-/d3-drag-3.0.7.tgz",
+    "integrity": "sha512-HE3jVKlzU9AaMazNufooRJ5ZpWmLIoc90A37WU2JMmeq28w1FQqCZswHZ3xR+SuxYftzHq6WU6KJHvqxKzTxxQ==",
+    "archive_sha256": "4e8144e5a8b1d065aa9dbee8f7b4abb23c35fa5c957e6145f650bf00824c0244",
+    "notices": [
+      {
+        "path": "d3-drag/LICENSE",
+        "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+      }
+    ],
+    "type_only": true
+  },
+  {
+    "name": "@types/d3-interpolate",
+    "install_path": "node_modules/@types/d3-interpolate",
+    "version": "3.0.4",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/d3-interpolate/-/d3-interpolate-3.0.4.tgz",
+    "integrity": "sha512-mgLPETlrpVV1YRJIglr4Ez47g7Yxjl1lj7YKsiMCb27VJH9W8NVM6Bb9d8kkpG/uAQS5AmbA48q2IAolKKo1MA==",
+    "archive_sha256": "1600127c3e338461c6fa93fb88f5438151041f56ec4b40cdbb07c0ab3e5c4217",
+    "notices": [
+      {
+        "path": "d3-interpolate/LICENSE",
+        "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+      }
+    ],
+    "type_only": true
+  },
+  {
+    "name": "@types/d3-selection",
+    "install_path": "node_modules/@types/d3-selection",
+    "version": "3.0.12",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/d3-selection/-/d3-selection-3.0.12.tgz",
+    "integrity": "sha512-Qe/KWYhEiIIxGs7HrAAjMfShxKldx19SJtr5zu53f3afPsdZNz7HHtdTLXo/kqeiWNXVycI24kSnfzBYkTzpgw==",
+    "archive_sha256": "0f7766ed092c86906a939c586297d2ad13390822a1b467f4cc2b6ba5b8a244a8",
+    "notices": [
+      {
+        "path": "d3-selection/LICENSE",
+        "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+      }
+    ],
+    "type_only": true
+  },
+  {
+    "name": "@types/d3-transition",
+    "install_path": "node_modules/@types/d3-transition",
+    "version": "3.0.9",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/d3-transition/-/d3-transition-3.0.9.tgz",
+    "integrity": "sha512-uZS5shfxzO3rGlu0cC3bjmMFKsXv+SmZZcgp0KD22ts4uGXp5EVYGzu/0YdwZeKmddhcAccYtREJKkPfXkZuCg==",
+    "archive_sha256": "c2bb47a6737215473c81785812e5af1c354dbc5a2e0739a554b36fdbb10c30db",
+    "notices": [
+      {
+        "path": "d3-transition/LICENSE",
+        "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+      }
+    ],
+    "type_only": true
+  },
+  {
+    "name": "@types/d3-zoom",
+    "install_path": "node_modules/@types/d3-zoom",
+    "version": "3.0.9",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/d3-zoom/-/d3-zoom-3.0.9.tgz",
+    "integrity": "sha512-0sE1406XBYJGiqD3AusTl9ZqC//2mIXix51tbom25gDCA8ri4xnSZg28CaSE8Srl6FClqABUKfsn0qghgdepMA==",
+    "archive_sha256": "8588fda0fb1e2838eb9a59909969089d3a48f3fe21af28c48cd24ee9d3d6b830",
+    "notices": [
+      {
+        "path": "d3-zoom/LICENSE",
+        "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+      }
+    ],
+    "type_only": true
+  },
+  {
+    "name": "@types/react",
+    "install_path": "node_modules/@types/react",
+    "version": "19.3.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/react/-/react-19.3.0.tgz",
+    "integrity": "sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==",
+    "archive_sha256": "ffa77ffdbdc82e5f67a0fd74d750990375a7dfd8685ec7f10a27c0db128f7766",
+    "notices": [
+      {
+        "path": "react/LICENSE",
+        "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+      }
+    ],
+    "type_only": true
+  },
+  {
+    "name": "@types/react-dom",
+    "install_path": "node_modules/@types/react-dom",
+    "version": "19.3.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.3.0.tgz",
+    "integrity": "sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==",
+    "archive_sha256": "0782e1cd4af4a6a030843235a48e55dc690c36f9428b0b672dc53350806dcf21",
+    "notices": [
+      {
+        "path": "react-dom/LICENSE",
+        "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+      }
+    ],
+    "type_only": true
+  },
+  {
+    "name": "@xyflow/react",
+    "install_path": "node_modules/@xyflow/react",
+    "version": "12.12.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@xyflow/react/-/react-12.12.0.tgz",
+    "integrity": "sha512-74oXI0Rgm1Eu33cHQAd74J6oVgCH9mbFyTVQbsGgp2kmWwh0HdtBr2VP04z8mbPD+M/xO69nqG5dDEt7/EN2rQ==",
+    "archive_sha256": "b61b1486935902dc9c2002395004591873733ba48276a63622ce62cb13833fac",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "023119ac20fb1c8c9930abe0bcd196989a1960388529a96fc43cebf96f07c9ff"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "@xyflow/system",
+    "install_path": "node_modules/@xyflow/system",
+    "version": "0.0.83",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@xyflow/system/-/system-0.0.83.tgz",
+    "integrity": "sha512-a//eDjez3WZF47aaPTfVUDD0OINOq+WVwBZCRTqG+m0a5euX8EwlJ4jMY1Wxz0Ocj4xOeekJ70V22Pq0ll8RJw==",
+    "archive_sha256": "fc5d6ec987f33c14a83295d3deaaed2e36309ca3271d56f04c8442fba17e0d23",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "023119ac20fb1c8c9930abe0bcd196989a1960388529a96fc43cebf96f07c9ff"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-color",
+    "install_path": "node_modules/@xyflow/system/node_modules/d3-color",
+    "version": "3.1.0",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-color/-/d3-color-3.1.0.tgz",
+    "integrity": "sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA==",
+    "archive_sha256": "d41bbcd99dd4f00e696546bffc73fed9b8fb6c3354905b6ea1721bff25f33b42",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "faa682e3e430941f958d26180458f5934a62f58dac4d70ccdd15608c15d0f884"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-interpolate",
+    "install_path": "node_modules/@xyflow/system/node_modules/d3-interpolate",
+    "version": "3.0.1",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-interpolate/-/d3-interpolate-3.0.1.tgz",
+    "integrity": "sha512-3bYs1rOD33uo8aqJfKP3JWPAibgw8Zm2+L9vBKEHJ2Rg+viTR7o5Mmv5mZcieN+FRYaAOWX5SJATX6k1PWz72g==",
+    "archive_sha256": "7e8df78d233cd102a0bb518658dc0b7d5c38442b6f2dbc8b95ffc14ba87c7c33",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "classcat",
+    "install_path": "node_modules/classcat",
+    "version": "5.0.5",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/classcat/-/classcat-5.0.5.tgz",
+    "integrity": "sha512-JhZUT7JFcQy/EzW605k/ktHtncoo9vnyW/2GspNYwFlN1C/WmjuV/xtS04e9SOkL2sTdw0VAZ2UGCcQ9lR6p6w==",
+    "archive_sha256": "e0968992357c1ce4d0ab183986debed34971aff8a440338f0ea8a5b5ed04ed24",
+    "notices": [
+      {
+        "path": "package/LICENSE.md",
+        "sha256": "f101c761d255d0dddc77dd8a9327733b03d381798ec54a1bb718367207b48a8e"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "csstype",
+    "install_path": "node_modules/csstype",
+    "version": "3.2.3",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz",
+    "integrity": "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==",
+    "archive_sha256": "f3501f8ee1c73f7568fecb22c11231162c0467e59262461da5579519307427a3",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "11d55bd4541c75ee7879547ac49089c489163dae49551389713c3d026cab383e"
+      }
+    ],
+    "type_only": true
+  },
+  {
+    "name": "d3-dispatch",
+    "install_path": "node_modules/d3-dispatch",
+    "version": "3.0.2",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-dispatch/-/d3-dispatch-3.0.2.tgz",
+    "integrity": "sha512-sAzH4Y4nsLo8eSqw5jKiZt+LU2wZmL/qS+OkxQGjhwazB/D7TY34R/QK1eshfGr7cZEKymKZ/Haem7m+lu98Sg==",
+    "archive_sha256": "a7761dc785dd08d6b3c57c92bb245b581cfe36e6a581687142a2b6f3df104b23",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "2a6d2d5f32ba0b755ddbc1c833f766e30cdbe6ebe9a6d4e3e24427721f0b63d3"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-drag",
+    "install_path": "node_modules/d3-drag",
+    "version": "3.0.1",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-drag/-/d3-drag-3.0.1.tgz",
+    "integrity": "sha512-OWeoayCq8J69hUIjvL+Mb6Q6Oaj/fyHV5XaXByEUAG+JUjIfTGDnk3qGpcXrD3VmQ3BSV96fcbM6fqq7C0tbPA==",
+    "archive_sha256": "eba2676ca8fa25c2e75da5db59dafe83b7e830f8bd6729a0994b6560763f6e63",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "2a6d2d5f32ba0b755ddbc1c833f766e30cdbe6ebe9a6d4e3e24427721f0b63d3"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-selection",
+    "install_path": "node_modules/d3-selection",
+    "version": "3.0.1",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-selection/-/d3-selection-3.0.1.tgz",
+    "integrity": "sha512-ODSf35vqCrlCfp7hrm0eZjvOosSXSYLjqvIlhMBV9q9VOx7EBJG6pc+uXBswEZNJgCGJ+qnKYcWutbZDIxe/Xg==",
+    "archive_sha256": "d0662f266b67486711eed5a3dabac99b866d9bb944aebd077afddbe2be9e40bd",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "2a6d2d5f32ba0b755ddbc1c833f766e30cdbe6ebe9a6d4e3e24427721f0b63d3"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-transition",
+    "install_path": "node_modules/d3-transition",
+    "version": "3.0.2",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-transition/-/d3-transition-3.0.2.tgz",
+    "integrity": "sha512-RcjCsdFgyFoDB+QXLC5m60ZkTN0k9zH+ovoLlTdJnDS1AbfbcuowiM4pCKSTOclNibS4f4J4cbv2m7O7y8NTOQ==",
+    "archive_sha256": "64b03c10295a81208cc1c6185b1cafb4817446d94e3c945fc28b68f959d42726",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "2a6d2d5f32ba0b755ddbc1c833f766e30cdbe6ebe9a6d4e3e24427721f0b63d3"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-color",
+    "install_path": "node_modules/d3-transition/node_modules/d3-color",
+    "version": "3.1.0",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-color/-/d3-color-3.1.0.tgz",
+    "integrity": "sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA==",
+    "archive_sha256": "d41bbcd99dd4f00e696546bffc73fed9b8fb6c3354905b6ea1721bff25f33b42",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "faa682e3e430941f958d26180458f5934a62f58dac4d70ccdd15608c15d0f884"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-ease",
+    "install_path": "node_modules/d3-transition/node_modules/d3-ease",
+    "version": "3.0.1",
+    "license": "BSD-3-Clause",
+    "source": "https://registry.npmjs.org/d3-ease/-/d3-ease-3.0.1.tgz",
+    "integrity": "sha512-wR/XK3D3XcLIZwpbvQwQ5fK+8Ykds1ip7A2Txe0yxncXSdq1L9skcG7blcedkOX+ZcgxGAmLX1FrRGbADwzi0w==",
+    "archive_sha256": "b249afe4aa8b741beeaf2d14f625ccf49270adb645e3f1c755d11476c1fdbe2a",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "b989d9085148d21ff64a75e14462aefa06b2589a55553b07b1460c70081c7d08"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-interpolate",
+    "install_path": "node_modules/d3-transition/node_modules/d3-interpolate",
+    "version": "3.0.1",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-interpolate/-/d3-interpolate-3.0.1.tgz",
+    "integrity": "sha512-3bYs1rOD33uo8aqJfKP3JWPAibgw8Zm2+L9vBKEHJ2Rg+viTR7o5Mmv5mZcieN+FRYaAOWX5SJATX6k1PWz72g==",
+    "archive_sha256": "7e8df78d233cd102a0bb518658dc0b7d5c38442b6f2dbc8b95ffc14ba87c7c33",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-timer",
+    "install_path": "node_modules/d3-transition/node_modules/d3-timer",
+    "version": "3.0.1",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-timer/-/d3-timer-3.0.1.tgz",
+    "integrity": "sha512-ndfJ/JxxMd3nw31uyKoY2naivF+r29V+Lc0svZxe1JvvIRmi8hUsrMvdOwgS1o6uBHmiz91geQ0ylPP0aj1VUA==",
+    "archive_sha256": "05cdf901e1876a7f24f4c365a879252752e22e3cc52b131ca616639f07e8ed05",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-zoom",
+    "install_path": "node_modules/d3-zoom",
+    "version": "3.0.1",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-zoom/-/d3-zoom-3.0.1.tgz",
+    "integrity": "sha512-kfjD3BDQu/FOatpZ6JdMSyIoDwTxIpI29ySTI2J5ZlDaH1WbuJGQJ2Q9oJkWTEZEW98j6idezoomSD3Cn2zwiw==",
+    "archive_sha256": "07d5a89d19dca1c4b996fc60865d8b0da1d8dca8e0f7fa09f49e38e02fd11982",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "2a6d2d5f32ba0b755ddbc1c833f766e30cdbe6ebe9a6d4e3e24427721f0b63d3"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-color",
+    "install_path": "node_modules/d3-zoom/node_modules/d3-color",
+    "version": "3.1.0",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-color/-/d3-color-3.1.0.tgz",
+    "integrity": "sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA==",
+    "archive_sha256": "d41bbcd99dd4f00e696546bffc73fed9b8fb6c3354905b6ea1721bff25f33b42",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "faa682e3e430941f958d26180458f5934a62f58dac4d70ccdd15608c15d0f884"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "d3-interpolate",
+    "install_path": "node_modules/d3-zoom/node_modules/d3-interpolate",
+    "version": "3.0.1",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/d3-interpolate/-/d3-interpolate-3.0.1.tgz",
+    "integrity": "sha512-3bYs1rOD33uo8aqJfKP3JWPAibgw8Zm2+L9vBKEHJ2Rg+viTR7o5Mmv5mZcieN+FRYaAOWX5SJATX6k1PWz72g==",
+    "archive_sha256": "7e8df78d233cd102a0bb518658dc0b7d5c38442b6f2dbc8b95ffc14ba87c7c33",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "e008c5e25a6be382593089c29bfabbc553c6378eee02895aec46ce396cc404ee"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "react",
+    "install_path": "node_modules/react",
+    "version": "19.3.1",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/react/-/react-19.3.1.tgz",
+    "integrity": "sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==",
+    "archive_sha256": "56936913918dcf1f7a6fe58784e79df54b18200a88655ce809cf5e9c4ef871aa",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "react-dom",
+    "install_path": "node_modules/react-dom",
+    "version": "19.3.1",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/react-dom/-/react-dom-19.3.1.tgz",
+    "integrity": "sha512-Y0bARz53lhEC1NMCASs0/j+faB/zqt3R8hpvg1e8+61ZVJ4UL0UdC4cBbXfZMcIuhrfgeILTLe+ZeBCavQPtKQ==",
+    "archive_sha256": "8b49975821eec6311e00d2b3f4b8337923253c876517388a33f9839c61ab262e",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "scheduler",
+    "install_path": "node_modules/scheduler",
+    "version": "0.28.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/scheduler/-/scheduler-0.28.0.tgz",
+    "integrity": "sha512-juorfCmIkIw8tT+p5BXSm6PJjQF/ycEYmKyzURCIt/RaZIhL+PulbQ9Yu2z1HdOJDdqDTlxA1+xKBmHXJsczAw==",
+    "archive_sha256": "302995d590e3c0a11eeb40d1d0f299c1df1800135d599d85cdd5faeb614f32d6",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "use-sync-external-store",
+    "install_path": "node_modules/use-sync-external-store",
+    "version": "1.7.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.7.0.tgz",
+    "integrity": "sha512-6L+EeigHMQhdaIPNIFUKwfWJSwWFQ8gJbJ2DLOs5sDIegTwR9fRxvnM3uciHKjIZhFz+KAv2emhWMRvDmMcY8A==",
+    "archive_sha256": "4f62a44660396a55417322fb0c71c14413b784192e4cd18acfec6bdf3157e359",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+      }
+    ],
+    "type_only": false
+  },
+  {
+    "name": "zustand",
+    "install_path": "node_modules/zustand",
+    "version": "4.5.7",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/zustand/-/zustand-4.5.7.tgz",
+    "integrity": "sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==",
+    "archive_sha256": "5240b7736397aa0e8442d290dea0ce7a6dd324c986e1a8644ff91bf61864e863",
+    "notices": [
+      {
+        "path": "package/LICENSE",
+        "sha256": "c1e6e266563517467b1bf874817d23e426f3149252bd7d42758cd697514b8417"
+      }
+    ],
+    "type_only": false
+  }
+]

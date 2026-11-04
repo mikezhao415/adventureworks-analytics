@@ -37,6 +37,11 @@ export const PAGES = [
     title: "Filters",
     description: "Configure the shared analytics selection.",
   },
+  {
+    path: "/lineage",
+    title: "Data lineage",
+    description: "Explore reviewed dbt-derived sales dependencies.",
+  },
 ] as const;
 export type View =
   "overview" | "trends" | "products" | "customers" | "territories" | "filters";
@@ -55,5 +60,10 @@ export function filterHref(path: string, filters: Filter) {
   return path + "?" + new URLSearchParams(filters).toString();
 }
 export function preserveQuery(path: string, query: string) {
-  return path + (query ? "?" + query : "");
+  if (path === "/lineage") return path;
+  const filters = new URLSearchParams(query);
+  filters.delete("node");
+  filters.delete("mode");
+  const value = filters.toString();
+  return path + (value ? "?" + value : "");
 }

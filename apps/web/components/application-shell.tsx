@@ -11,6 +11,7 @@ import {
   Package,
   SlidersHorizontal,
   Users,
+  GitBranch,
 } from "lucide-react";
 import { PAGES, preserveQuery } from "../lib/navigation";
 const ICONS = [
@@ -21,6 +22,7 @@ const ICONS = [
   Globe2,
   BookOpen,
   SlidersHorizontal,
+  GitBranch,
 ];
 export function ApplicationShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname(),

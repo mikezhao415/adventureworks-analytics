@@ -14,6 +14,7 @@ const config: NextConfig = {
   },
   outputFileTracingExcludes: { "/*": ["./data/demo.json"] },
   outputFileTracingIncludes: {
+    "/lineage": ["./data/lineage/approval.json", "./data/lineage/sales.json"],
     "/*": [
       "./data/adventureworks2022.json",
       "./public/notices/microsoft-sql-server-samples.txt",
