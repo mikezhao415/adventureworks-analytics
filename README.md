@@ -4,7 +4,7 @@ An end-to-end **BI-as-Code analytics engineering portfolio project** demonstrati
 
 The goal is to **build and demonstrate a modern analytical implementation**, not to benchmark it against a traditional reporting approach. Correctness, version control, maintainability, reproducibility, and useful business metrics are the central themes.
 
-> **Current status:** The [dashboard](https://adventureworks.mikezhao.dev) and [case study](https://mikezhao.dev/projects/adventureworks-analytics), with [business](https://mikezhao.dev/projects/adventureworks-analytics/business) and [technical](https://mikezhao.dev/projects/adventureworks-analytics/technical) reading paths, are published. [Reproduction instructions](docs/reproducibility.md) are documented; final verification, licensing limitations and explicit issue-closure approval remain open under [Issue #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8).
+> **Current status:** The [dashboard](https://adventureworks.mikezhao.dev) and [case study](https://mikezhao.dev/projects/adventureworks-analytics), with [business](https://mikezhao.dev/projects/adventureworks-analytics/business) and [technical](https://mikezhao.dev/projects/adventureworks-analytics/technical) reading paths, are published. [Reproduction instructions](docs/reproducibility.md) are documented; publication was accepted and [Issue #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) was closed on October 27, 2026. The closure accepts the independent deployed-file inventory limitation; conditional licensing and provenance caveats remain.
 
 ## What this project demonstrates
 
@@ -13,14 +13,14 @@ The goal is to **build and demonstrate a modern analytical implementation**, not
 - **Quality:** Independent source reconciliation, data contracts, referential checks, regression tests, and fail-closed publication.
 - **Automation:** Repeatable local execution and appropriately scoped GitHub Actions validation.
 - **Business intelligence:** Useful sales KPIs, trends, and customer, product, and regional reporting.
+- **Interactive lineage:** [Explore six dbt models, two sources and nine direct dependencies](https://adventureworks.mikezhao.dev/lineage), with upstream/downstream highlighting, model/source details, a desktop React Flow graph, a mobile selector and shareable URL state. Metadata is historical and manually reviewed.
 - **Communication:** A reproducible technical implementation and accessible business-facing case study.
 
 ## Architecture
 
-The dashboard includes a custom, manifest-derived sales lineage viewer at
-`/lineage`: a desktop graph, mobile node selector and reviewed model/source
+The dashboard includes a custom, manifest-derived [sales lineage viewer](https://adventureworks.mikezhao.dev/lineage): a desktop graph, mobile node selector and reviewed model/source
 metadata. See the [lineage guide](docs/custom-dbt-lineage.md) for scope, manual
-refresh, approval, packaging and validation. Release remains separately gated.
+refresh, approval, packaging and validation. The viewer was merged in [PR #22](https://github.com/mikezhao415/adventureworks-analytics/pull/22) and is published. Future metadata replacement and release require separate approval.
 
 ```text
 AdventureWorks 2022 / SQL Server
@@ -42,6 +42,9 @@ AdventureWorks 2022 / SQL Server
           v
   Public Next.js dashboard on Vercel
 
+  Reviewed dbt manifest -> separately approved historical lineage metadata
+                       -> /lineage (no financial filter dependency)
+
   Separate published business/technical portfolio case study on mikezhao.dev
 ```
 
@@ -58,7 +61,7 @@ SQL Server ingestion publishes validated local Parquet snapshots. A separate rea
 | Transformations | dbt Core + dbt-duckdb | SQL modeling, tests, and documentation |
 | Validation | Python, SQL, dbt | Independent data and financial controls |
 | Automation | GitHub Actions | Lightweight CI; optional local full-source validation |
-| Reporting | Next.js / React / TypeScript / Tailwind CSS / Recharts | Responsive sales dashboard, typed API, and validated, URL-persistent filters |
+| Reporting | Next.js / React / TypeScript / Tailwind CSS / Recharts / React Flow | Responsive sales dashboard, typed API, and validated, URL-persistent filters |
 
 ## Execution modes
 
@@ -75,7 +78,7 @@ python -m src.analytics_check
 
 ## Explore the published dashboard
 
-**Live:** [adventureworks.mikezhao.dev](https://adventureworks.mikezhao.dev) — Microsoft's fictional historical AdventureWorks 2022 sample business data, not live or actual commercial results. The pinned static aggregate is published with Microsoft attribution; no SQL Server or analytics database is hosted on Vercel.
+**Published dashboard:** [adventureworks.mikezhao.dev](https://adventureworks.mikezhao.dev) — Microsoft's fictional historical AdventureWorks 2022 sample business data, not live or actual commercial results. The pinned static aggregate is published with Microsoft attribution; no SQL Server or analytics database is hosted on Vercel.
 
 Read the [case study](https://mikezhao.dev/projects/adventureworks-analytics), [business narrative](https://mikezhao.dev/projects/adventureworks-analytics/business), and [technical implementation](https://mikezhao.dev/projects/adventureworks-analytics/technical). The [reproducibility guide](docs/reproducibility.md) separates local fixture/approved-aggregate viewing from full source reproduction. Publication does not establish live production data, complete accessibility coverage, or asset-level licensing clearance.
 
@@ -115,7 +118,7 @@ The [implemented metric contract](docs/dimensional-modeling.md#metric-contract) 
 4. **[Dimensional modeling and transformations — #5](https://github.com/mikezhao415/adventureworks-analytics/issues/5) — merged in PR #11.** Staging, facts, dimensions, sales marts, contracts, tests, and lineage.
 5. **[Data quality and automation — #6](https://github.com/mikezhao415/adventureworks-analytics/issues/6).** Merged in PR #12: quality gates, regression coverage, repeatability, and evidence.
 6. **[Business intelligence and analytics — #7](https://github.com/mikezhao415/adventureworks-analytics/issues/7) — complete (PR #13).** Validated local dashboard, versioned export, fictional public-safe demo, responsive views, documented metric definitions, and passing browser/CI checks.
-7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) — published, final review open.** The dashboard serves the reviewed sample aggregate (PR #17, Issue #16 completed). The case study and its business/technical paths are published. Reproduction instructions are documented; fresh full-source execution, remaining independent hosted verification, licensing limitations, and explicit issue-closure approval remain separate.
+7. **[Publication and reproducibility — #8](https://github.com/mikezhao415/adventureworks-analytics/issues/8) — complete.** The dashboard serves the reviewed sample aggregate (PR #17, Issue #16 completed). The case study and its business/technical paths are published. Reproduction instructions are documented. Issue closure accepted the independent deployed-file inventory limitation; it did not establish a fresh full-source run or resolve the conditional licensing assessment. Interactive lineage was subsequently published in PR #22 with separate metadata approval.
 
 Phases may overlap where practical, but each issue must state its own acceptance evidence. **Neither direct-query comparisons nor multi-tenant simulation is required.**
 
