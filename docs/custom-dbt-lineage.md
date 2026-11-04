@@ -45,10 +45,13 @@ identity; `sales-lineage.json` declares the expected focused graph. Neither full
 input manifests nor analytical databases are distributed with this feature.
 
 After following the [full-source reproduction guide](reproducibility.md), a
-maintainer with the required local reviewed evidence can run from the root:
+maintainer with the required local reviewed evidence can run from the root.
+Use the exact 40-character source revision verified against the reviewed dbt
+manifest and input evidence, **not** the current feature-branch HEAD. A newer
+checkout does not by itself establish a new reviewed source revision:
 
 ```powershell
-$lineageRevision = git rev-parse HEAD
+$lineageRevision = '<reviewed-source-revision-sha>'
 python -m scripts.build_custom_lineage `
   --manifest <reviewed-manifest.json> `
   --analytics-root <analytics-evidence-root> `
@@ -78,8 +81,9 @@ approval true, a trimmed nonempty review reference, exact full-file hash,
 canonical JSON, independently recomputed semantic hash, strict metadata schema
 and the expected graph. The semantic digest excludes only `content_sha256` and
 `provenance.generated_at`. Invalid metadata fails closed with no fixture fallback.
-The original approved review reference remains part of the immutable approval
-record; it records the historical review and is not a deployment authorization.
+The approval record identifies the historical metadata review and the draft PR
+publication context. Its hashes pin the unchanged artifact; the reference is not
+an authorization to merge or deploy to production.
 
 `npm run build` runs `scripts/check-lineage-package.mjs` before and after Next.js.
 The explicit public asset inventory accepts only reviewed notice paths/bytes;
