@@ -268,6 +268,7 @@ describe("URL boundary and multi-selection", () => {
       "Territory Performance",
       "Data & Definitions",
       "Filters",
+      "Data lineage",
     ]);
     expect(
       filterHref("/products", {

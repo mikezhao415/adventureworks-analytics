@@ -1,0 +1,4 @@
+# Canonical Python/JavaScript cross-language hashing fixture; exact bytes matter.
+tests/fixtures/lineage.json
+# Reviewed runtime metadata is canonical and hash-pinned, not pretty-printed.
+data/lineage/sales.json

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "files": {
+    "notices/custom-lineage-dependencies.txt": [
+      "2eb5819983551f2da7d7ef2c075f5be6c144dde47b4feeaabbe2e60dc1706f6b"
+    ],
+    "notices/microsoft-sql-server-samples.txt": [
+      "c9561ec78a9920227e19a4806b3747f583a8b8758c23703327b9d6c674a4076d",
+      "4071597c1942e5d45dfc8aced070b8930f038022183a376edd6af266f9dc450e"
+    ]
+  },
+  "emitted_media": {
+    "1e3ab035772786401753a1e6e803441ffcb536636f1efbbceb76a131da686f99": "app/icon.svg"
+  }
+}

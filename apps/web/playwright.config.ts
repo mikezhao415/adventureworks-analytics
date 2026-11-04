@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 import path from "node:path";
 export default defineConfig({
   testDir: "./e2e",
+  testIgnore: ["**/lineage-fixture.spec.ts"],
   metadata: {
     data_mode:
       process.env.AW_E2E_SAMPLE === "1"

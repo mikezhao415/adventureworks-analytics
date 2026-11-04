@@ -1,0 +1,83 @@
+{
+  "target": "model.adventureworks.mart_sales_summary",
+  "nodes": [
+    {
+      "id": "model.adventureworks.dim_date",
+      "name": "dim_date",
+      "kind": "model"
+    },
+    {
+      "id": "model.adventureworks.fct_sales_order_lines",
+      "name": "fct_sales_order_lines",
+      "kind": "model"
+    },
+    {
+      "id": "model.adventureworks.fct_sales_orders",
+      "name": "fct_sales_orders",
+      "kind": "model"
+    },
+    {
+      "id": "model.adventureworks.mart_sales_summary",
+      "name": "mart_sales_summary",
+      "kind": "model"
+    },
+    {
+      "id": "model.adventureworks.stg_sales_order_detail",
+      "name": "stg_sales_order_detail",
+      "kind": "model"
+    },
+    {
+      "id": "model.adventureworks.stg_sales_order_header",
+      "name": "stg_sales_order_header",
+      "kind": "model"
+    },
+    {
+      "id": "source.adventureworks.snapshot.sales_order_detail",
+      "name": "sales_order_detail",
+      "kind": "source"
+    },
+    {
+      "id": "source.adventureworks.snapshot.sales_order_header",
+      "name": "sales_order_header",
+      "kind": "source"
+    }
+  ],
+  "edges": [
+    {
+      "source": "model.adventureworks.dim_date",
+      "target": "model.adventureworks.mart_sales_summary"
+    },
+    {
+      "source": "model.adventureworks.fct_sales_order_lines",
+      "target": "model.adventureworks.mart_sales_summary"
+    },
+    {
+      "source": "model.adventureworks.fct_sales_orders",
+      "target": "model.adventureworks.fct_sales_order_lines"
+    },
+    {
+      "source": "model.adventureworks.fct_sales_orders",
+      "target": "model.adventureworks.mart_sales_summary"
+    },
+    {
+      "source": "model.adventureworks.stg_sales_order_detail",
+      "target": "model.adventureworks.fct_sales_order_lines"
+    },
+    {
+      "source": "model.adventureworks.stg_sales_order_header",
+      "target": "model.adventureworks.dim_date"
+    },
+    {
+      "source": "model.adventureworks.stg_sales_order_header",
+      "target": "model.adventureworks.fct_sales_orders"
+    },
+    {
+      "source": "source.adventureworks.snapshot.sales_order_detail",
+      "target": "model.adventureworks.stg_sales_order_detail"
+    },
+    {
+      "source": "source.adventureworks.snapshot.sales_order_header",
+      "target": "model.adventureworks.stg_sales_order_header"
+    }
+  ]
+}

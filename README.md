@@ -17,6 +17,11 @@ The goal is to **build and demonstrate a modern analytical implementation**, not
 
 ## Architecture
 
+The dashboard includes a custom, manifest-derived sales lineage viewer at
+`/lineage`: a desktop graph, mobile node selector and reviewed model/source
+metadata. See the [lineage guide](docs/custom-dbt-lineage.md) for scope, manual
+refresh, approval, packaging and validation. Release remains separately gated.
+
 ```text
 AdventureWorks 2022 / SQL Server
           |
