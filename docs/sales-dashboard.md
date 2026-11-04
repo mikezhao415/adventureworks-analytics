@@ -109,12 +109,15 @@ and a Configure Filters link; the full form exists only on `/filters`.
 | `/customers` | Customers |
 | `/territories` | Territory Performance |
 | `/definitions` | Data & Definitions |
+| `/lineage` | Data lineage |
 | `/filters` | Filters |
 
 ![Fictional Filters page, desktop](screenshots/sales-dashboard-filters-desktop.png)
 
 ![Fictional customer comparisons, desktop](screenshots/sales-dashboard-customers-desktop.png)
 ![Fictional dashboard, mobile](screenshots/sales-dashboard-mobile.png)
+
+The published [lineage viewer](https://adventureworks.mikezhao.dev/lineage) uses a separately approved historical metadata snapshot derived from dbt, not the financial aggregate above. Its focused graph has six models, two sources and nine direct dependencies. Desktop React Flow exploration supports upstream/downstream highlighting; mobile uses a native node selector. Model/source details and selection/highlighting URL state are independent of financial filters. Metadata refresh is manual, with separate review, publication approval and validation. See the [lineage guide](custom-dbt-lineage.md); displayed test definitions are not fresh execution results.
 
 ## Questions and supported interactions
 
@@ -250,7 +253,7 @@ npm run evidence
 
 The web workflow uses Node 22, `npm ci`, locked versions, formatting, TypeScript,
 Vitest/React Testing Library, an actual production build, and Chromium desktop
-and mobile emulation through Playwright. It tests all seven routes, active navigation, filter persistence and history,
+and mobile emulation through Playwright. It tests the financial routes and `/lineage`, active navigation, filter persistence and history,
 category scope, reset, search, exact tables, keyboard entry, empty responses,
 invalid/duplicate API filters, no document-wide horizontal overflow and axe A/AA
 checks. Python CI keeps the existing synthetic checks and adds fixture-regeneration

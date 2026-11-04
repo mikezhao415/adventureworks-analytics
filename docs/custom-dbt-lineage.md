@@ -1,6 +1,6 @@
 # Sales lineage viewer
 
-The dashboard's `/lineage` route explores the ancestors of
+The published [lineage viewer](https://adventureworks.mikezhao.dev/lineage), merged in [PR #22](https://github.com/mikezhao415/adventureworks-analytics/pull/22), explores the ancestors of
 `mart_sales_summary`: six dbt models, two sources and nine direct dependencies.
 This is a custom React Flow viewer of reviewed dbt metadata. Dependencies come
 only from model/source `depends_on.nodes`; SQL joins and test relationships do
