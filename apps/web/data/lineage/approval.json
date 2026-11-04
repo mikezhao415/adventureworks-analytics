@@ -3,5 +3,5 @@
   "publication_approved": true,
   "sha256": "02f767c2dcceed082425cf86ba5740861f30f0230d92607eed9dd37f16ade9e7",
   "content_sha256": "d5dfc6f729e878df3ba65d126a9ccd4ae7538aa32919284e6e939e24490dca47",
-  "review_reference": "LOCAL STAGING AND TESTING ONLY. Explicit user authorization 2026-11-03, attachment 96a3e16b-5491-48df-86fe-ba8f3374dbd0; exact candidate 88a69b9030b34915b2db0888622bac3b. Metadata/integrity: final custom-lineage publication audit in this chat and docs/custom-dbt-lineage-implementation.md; licensing: docs/lineage/custom-viewer-dependencies.json; F1/F2: docs/f1-f2-corrections.md and docs/lineage/f1-f2-correction-review.json. No repository publication or deployment authorized."
+  "review_reference": "Exact metadata candidate 88a69b9030b34915b2db0888622bac3b reviewed and approved for local staging on 2026-11-03; included in draft PR #22 at the repository owner's direction. Artifact identity is pinned by the full-file and semantic SHA-256 values above. See docs/custom-dbt-lineage.md and docs/lineage/custom-viewer-dependencies.json for current publication safeguards and dependency notices. This record does not authorize merging or production deployment."
 }
